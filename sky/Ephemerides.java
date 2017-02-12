@@ -1,13 +1,8 @@
 package com.mkreidl.ephemeris.sky;
 
-import com.mkreidl.ephemeris.Time;
-import com.mkreidl.ephemeris.geometry.Angle;
-import com.mkreidl.ephemeris.geometry.Cartesian;
-import com.mkreidl.ephemeris.geometry.Coordinates;
-import com.mkreidl.ephemeris.geometry.Spherical;
-import com.mkreidl.ephemeris.sky.coordinates.Ecliptical;
-import com.mkreidl.ephemeris.sky.coordinates.Equatorial;
-import com.mkreidl.ephemeris.sky.coordinates.Horizontal;
+import com.mkreidl.ephemeris.*;
+import com.mkreidl.ephemeris.geometry.*;
+import com.mkreidl.ephemeris.sky.coordinates.*;
 
 
 public class Ephemerides
@@ -46,6 +41,12 @@ public class Ephemerides
     {
         velocityHeliocentric.set( velBody );
         velocityGeocentric.set( velBody ).sub( velEarth );
+    }
+
+    public void setGeocentricVelocities( Ecliptical.Cart velBody, Ecliptical.Cart velEarth )
+    {
+        velocityGeocentric.set( velBody );
+        velocityHeliocentric.set( velBody ).add( velEarth );
     }
 
     public void setTimeLocation( Time time, Spherical geographicLocation )
@@ -160,20 +161,30 @@ public class Ephemerides
     }
 
     /**
-     * Compute angle between the rays originating from this body,
-     * pointing to the sun and the earth, resp.
+     * Compute the phase angle
      */
     public Angle getPhase( Angle phase )
     {
-        final double gh = helioCart.dot( geoCart );
-        final double cosPhase = gh / ( geoCart.length() * helioCart.length() );
-        return phase.set( Math.acos( cosPhase ), Angle.Unit.RADIANS );
+        // This computes the angle beween the three bodies:
+        final double cosPhase = helioCart.dot( geoCart ) / ( geoCart.length() * helioCart.length() );
+        final double det = helioCart.x * geoCart.y - helioCart.y * geoCart.x;
+        final double angle = Math.acos( cosPhase );
+        if ( angle < 0 && det < 0 || angle > 0 && det > 0 )
+            return phase.set( angle, Angle.Unit.RADIANS );
+        else
+            return phase.set( -angle, Angle.Unit.RADIANS );
+        // This, in contrast, computes the difference in equatorial longitude, which
+        // seems to be the correct thing to do according to reference values from
+        // www.ephemeris.com:
+        //        final double hlon = helioCart.transform( tmpSphericalEcliptical ).lon;
+        //        final double glon = geoCart.transform( tmpSphericalEcliptical ).lon;
+        //        return phase.set( glon - hlon, Angle.Unit.RADIANS ).standardize();
     }
 
     /**
      * Compute the fraction of the disk which is lighted by the sun
      */
-    public double getLightenedArea()
+    public double getIlluminatedArea()
     {
         final double gh = helioCart.dot( geoCart );
         final double cosPhase = gh / ( geoCart.length() * helioCart.length() );
@@ -183,14 +194,18 @@ public class Ephemerides
     /**
      * Compute angle between the rays originating from the earth (observer),
      * pointing to the sun and this body, resp.
+     *
+     * @return Angle between -180° and +180°
      */
-    public double getElongation()
+    public Angle getElongation( Angle elongation )
     {
-        double gg = geoCart.length() * geoCart.length();
-        double hh = helioCart.length() * helioCart.length();
-        double gh = helioCart.dot( geoCart );
-        double cosElong = ( gg - gh ) / ( geoCart.length() * Math.sqrt( gg - 2 * gh + hh ) );
-        return Math.acos( cosElong );
+        tmpCartesian.set( geoCart ).sub( helioCart );  // geocentric coordinates of the Sun
+        final double ce = geoCart.dot( tmpCartesian ) / ( geoCart.length() * tmpCartesian.length() );
+        final double e = Math.acos( ce );
+        return elongation.set(
+                tmpCartesian.x * geoCart.y > tmpCartesian.y * geoCart.x ? e : -e,
+                Angle.Unit.RADIANS
+        );
     }
 
     public boolean isVisible( double ecliptic, Cartesian zenit )
@@ -204,6 +219,6 @@ public class Ephemerides
     public boolean isRetrograde()
     {
         // calculate the z-coordinate of the cross produce r x v (with r and v geocentric)
-        return geoCart.x * velocityGeocentric.y - geoCart.y - velocityGeocentric.x < 0;
+        return geoCart.x * velocityGeocentric.y - geoCart.y * velocityGeocentric.x < 0;
     }
 }

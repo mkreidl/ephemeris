@@ -1,9 +1,6 @@
 package com.mkreidl.ephemeris.astrolabe;
 
-import com.mkreidl.ephemeris.geometry.Cartesian;
-import com.mkreidl.ephemeris.geometry.Circle;
-import com.mkreidl.ephemeris.geometry.Spherical;
-import com.mkreidl.ephemeris.geometry.Stereographic;
+import com.mkreidl.ephemeris.geometry.*;
 
 /**
  * Created by mkreidl on 01.09.2016.

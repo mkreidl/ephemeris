@@ -1,18 +1,12 @@
 package com.mkreidl.ephemeris.astrolabe;
 
-import com.mkreidl.ephemeris.Time;
-import com.mkreidl.ephemeris.dynamics.VSOP87.PrecessionMatrix;
-import com.mkreidl.ephemeris.geometry.Angle;
-import com.mkreidl.ephemeris.geometry.Cartesian;
-import com.mkreidl.ephemeris.geometry.Circle;
-import com.mkreidl.ephemeris.sky.StarsCatalogue;
-import com.mkreidl.ephemeris.sky.Zodiac;
-import com.mkreidl.ephemeris.sky.coordinates.Ecliptical;
-import com.mkreidl.ephemeris.sky.coordinates.Equatorial;
+import com.mkreidl.ephemeris.*;
+import com.mkreidl.ephemeris.dynamics.VSOP87.*;
+import com.mkreidl.ephemeris.geometry.*;
+import com.mkreidl.ephemeris.sky.*;
+import com.mkreidl.ephemeris.sky.coordinates.*;
 
-import java.util.EnumMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 
 public class Rete extends AbstractPart
@@ -25,18 +19,19 @@ public class Rete extends AbstractPart
     public final Circle ecliptic = new Circle( 0.0, 0.0, 1.0 );
 
     private final Zodiac zodiac = new Zodiac();
-    private final Ecliptical.Cart eclipticalCart = new Ecliptical.Cart();
+    private final Equatorial.Sphe equatorialSphe = new Equatorial.Sphe();
     private final Equatorial.Cart equatorialCart = new Equatorial.Cart();
-    private final Equatorial.Cart vEquatorialCart = new Equatorial.Cart();
     private final Angle angle = new Angle();
     private final PrecessionMatrix precessionMatrix = new PrecessionMatrix();
 
     public final EnumMap<Zodiac.Sign, Cartesian> signs = new EnumMap<>( Zodiac.Sign.class );
     public final EnumMap<Zodiac.Sign, Cartesian> signsMiddle = new EnumMap<>( Zodiac.Sign.class );
     public final EnumMap<Zodiac.Sign, Cartesian[]> signBoundaries = new EnumMap<>( Zodiac.Sign.class );
+    public final Ecliptical.Cart[] eclipticalPos = new Ecliptical.Cart[StarsCatalogue.CATALOG_SIZE];
+    public final float[] projectedPos = new float[2 * StarsCatalogue.CATALOG_SIZE];
 
-    public final Map<Integer, Ecliptical.Cart> coordinates = new LinkedHashMap<>();
-    public final Map<Integer, Cartesian> projectedPositions = new LinkedHashMap<>();
+    private final Cartesian tmpCartesian = new Cartesian();
+    private boolean calculatePrecession = true;
 
     public Rete( Astrolabe astrolabe )
     {
@@ -49,11 +44,9 @@ public class Rete extends AbstractPart
             for ( int i = 0; i < POINT_COUNT_SIGN_BOUNDARY; i++ )
                 signBoundaries.get( sign )[i] = new Cartesian();
         }
-        for ( int index : StarsCatalogue.POSITIONS.keySet() )
-        {
-            coordinates.put( index, new Ecliptical.Cart() );
-            projectedPositions.put( index, new Cartesian() );
-        }
+        for ( int i = 0; i < StarsCatalogue.CATALOG_SIZE; ++i )
+            eclipticalPos[i] = new Ecliptical.Cart();
+        equatorialSphe.set( 1.0, 0.0, 0.0 );
     }
 
     @Override
@@ -86,24 +79,29 @@ public class Rete extends AbstractPart
             );
             calculateSignBoundary( sign );
         }
-        for ( int index : StarsCatalogue.POSITIONS.keySet() )
+        // TODO: MAKE PARALLEL FOR LOOP
+        for ( int i = 0; i < StarsCatalogue.CATALOG_SIZE; ++i )
         {
-            final Ecliptical.Cart eclipticalCart = coordinates.get( index );
-            StarsCatalogue.POSITIONS.get( index ).transform( eclipticalCart );
-            StarsCatalogue.VELOCITIES.get( index ).transform( vEquatorialCart );
-            eclipticalCart.add( vEquatorialCart.scale(
-                    Angle.MAS / Time.DAYS_PER_YEAR  // vEquatorial is in mas/a -> transform into rad/d
-                            * astrolabe.time.julianDayNumberSince( Time.J2000 )
-            ) );
-            precessionMatrix.apply( eclipticalCart );
-            eclipticalCart.toEquatorial( zodiac.obliquity, equatorialCart ).normalize();
-            astrolabe.camera.project( equatorialCart, projectedPositions.get( index ) );
-        }
-    }
+            final double yearsSince2000 = astrolabe.time.julianDayNumberSince( Time.J2000 ) / Time.DAYS_PER_YEAR;
+            // Calculate spherical equatorial coordinates to date
+            equatorialSphe.lon = StarsCatalogue.POS[i].lon + StarsCatalogue.VEL[i].lon * yearsSince2000;
+            equatorialSphe.lat = StarsCatalogue.POS[i].lat + StarsCatalogue.VEL[i].lat * yearsSince2000;
+            // Transform into Cartesian equatorial coordinates, store in map coordinates
+            equatorialSphe.toEcliptical( zodiac.obliquity, eclipticalPos[i] );
+            if ( calculatePrecession )
+                // We calculate positions relative to the mean equinox of the date,
+                // thus apply the precession matrix to the coordinates of the J2000:
+                precessionMatrix.apply( eclipticalPos[i] );
+            eclipticalPos[i].toEquatorial( zodiac.obliquity, equatorialCart ).normalize();
+            astrolabe.camera.project( equatorialCart, tmpCartesian );
+            projectedPos[2 * i] = (float)tmpCartesian.x;
+            projectedPos[2 * i + 1] = (float)tmpCartesian.y;
 
-    public Cartesian getPosition( int object )
-    {
-        return projectedPositions.get( object );
+            // keep eclipticalPos[i].dst == 1.0 as a calculation-dummy for those stars
+            // which have StarsCatalogue.POS[i].dst == Double.NaN:
+            if ( !Double.isNaN( StarsCatalogue.POS[i].dst ) )
+                eclipticalPos[i].scale( StarsCatalogue.POS[i].dst * Distance.ly.toMeters() );
+        }
     }
 
     private void calculateSignBoundary( Zodiac.Sign sign )
@@ -117,5 +115,26 @@ public class Rete extends AbstractPart
             ecliptical.toEquatorial( zodiac.obliquity, equatorialCart );
             astrolabe.camera.project( equatorialCart, signBoundaries.get( sign )[lat + POINT_COUNT_SIGN_BOUNDARY / 2] );
         }
+    }
+
+    // TODOS: constellations names
+    // phases/magnitudes
+    // google maps
+    // translate
+    // style
+
+    public Cartesian getConstellationCenter( Constellations.Constellation constellation, Cartesian output, boolean weighted )
+    {
+        double totalWeight = 0.0;
+        output.set( 0, 0, 0 );
+        for ( int star : constellation )
+        {
+            double weight = ( weighted ? StarsCatalogue.MAG[star] : 1 );
+            output.x += projectedPos[2 * star] * weight;
+            output.y += projectedPos[2 * star + 1] * weight;
+            totalWeight += weight;
+        }
+        output.scale( 1.0 / totalWeight );
+        return output;
     }
 }

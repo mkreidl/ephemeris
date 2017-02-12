@@ -1,11 +1,8 @@
 package com.mkreidl.ephemeris.sky;
 
-import com.mkreidl.ephemeris.Time;
-import com.mkreidl.ephemeris.geometry.Angle;
-import com.mkreidl.ephemeris.geometry.Cartesian;
-import com.mkreidl.ephemeris.geometry.Spherical;
-import com.mkreidl.ephemeris.sky.coordinates.Ecliptical;
-import com.mkreidl.ephemeris.sky.coordinates.Equatorial;
+import com.mkreidl.ephemeris.*;
+import com.mkreidl.ephemeris.geometry.*;
+import com.mkreidl.ephemeris.sky.coordinates.*;
 
 public class Zodiac
 {
@@ -16,7 +13,7 @@ public class Zodiac
 
     public static Sign getSign( Angle lon )
     {
-        return Sign.values()[ (int)lon.get( Angle.Unit.DEGREES ) / 30 ];
+        return Sign.values()[(int)lon.get( Angle.Unit.DEGREES ) / 30];
     }
 
     public static double getLongitude( Sign sign, Angle.Unit unit )

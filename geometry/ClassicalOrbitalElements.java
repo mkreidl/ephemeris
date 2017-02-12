@@ -1,9 +1,6 @@
 package com.mkreidl.ephemeris.geometry;
 
-import static java.lang.Math.sin;
-import static java.lang.Math.cos;
-import static java.lang.Math.sqrt;
-import static java.lang.Math.abs;
+import static java.lang.Math.*;
 
 public class ClassicalOrbitalElements extends OrbitalElements
 {
@@ -52,7 +49,8 @@ public class ClassicalOrbitalElements extends OrbitalElements
         double e0;
         double excentricAnom = meanAnom;
         // Solve Kepler's equation E - e*sin(E) = M by Newton iteration
-        do {
+        do
+        {
             e0 = excentricAnom;
             excentricAnom = e0 - ( e0 - exc * sin( e0 ) - meanAnom ) / ( 1.0 - exc * cos( e0 ) );
         } while ( abs( excentricAnom - e0 ) > eps );

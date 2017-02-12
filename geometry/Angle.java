@@ -15,10 +15,12 @@ public class Angle
     public static final double MIN = DEG / 60;
     public static final double SEC = MIN / 60;
     public static final double MAS = SEC / 1000;
+
     public static final double HOURS = 12 / PI;
 
     private double radians = 0.0;
     private Unit unit = Unit.RADIANS;
+    private final int[] split = new int[4];
 
     public static double standardize( double angle )
     {
@@ -43,6 +45,12 @@ public class Angle
     public Angle( double d, Unit unit )
     {
         set( d, unit );
+    }
+
+    @Override
+    public String toString()
+    {
+        return toStringAs( unit );
     }
 
     public Angle standardize()
@@ -70,8 +78,6 @@ public class Angle
                 return radians / DEG;
             case HOURS:
                 return radians / HRS;
-            case RADIANS:
-                return radians;
             default:
                 return radians;
         }
@@ -81,13 +87,12 @@ public class Angle
     {
         if ( unit != Unit.DEGREES && unit != Unit.HOURS )
             throw new IllegalArgumentException( "Splitting off minutes and seconds requires DEGREES or HOURS" );
-        final float v = (float)get( unit );
-        signHrsMinSec[0] = (int)Math.signum( v );
-        final float a = Math.abs( v );
-        signHrsMinSec[1] = (int)a;
-        final float m = ( a - signHrsMinSec[1] ) * 60;
-        signHrsMinSec[2] = (int)m;
-        signHrsMinSec[3] = Math.round( ( m - signHrsMinSec[2] ) * 60 );
+        signHrsMinSec[0] = radians > 0 ? 1 : ( radians < 0 ? -1 : 0 );
+        int s = (int)Math.round( Math.abs( get( unit ) * 3600 ) );
+        signHrsMinSec[3] = s % 60;
+        s /= 60;
+        signHrsMinSec[2] = s % 60;
+        signHrsMinSec[1] = s / 60;
         return signHrsMinSec;
     }
 
@@ -109,27 +114,18 @@ public class Angle
         return this;
     }
 
-    @Override
-    public String toString()
+    public synchronized String toStringAs( Unit unit )
     {
-        return toStringAs( unit );
-    }
-
-    public String toStringAs( Unit unit )
-    {
-        if ( unit == Unit.RADIANS )
-            return String.format( "%f", radians );
-        else
+        switch ( unit )
         {
-            double hd = Math.abs( get( unit ) );
-            long h = (long)hd;
-            double mm = 60 * ( hd - h );
-            long m = (long)mm;
-            long s = (long)( 60 * ( mm - m ) );
-            if ( unit == Unit.HOURS )
-                return ( radians >= 0.0 ? "" : "-" ) + String.format( "%02d:%02d:%02d", h, m, s );
-            else
-                return ( radians >= 0.0 ? "+" : "-" ) + String.format( "%02dd %02d' %02d\"", h, m, s );
+            case HOURS:
+                get( unit, split );
+                return ( radians >= 0.0 ? "" : "-" ) + String.format( "%02d:%02d:%02d", split[1], split[2], split[3] );
+            case DEGREES:
+                get( unit, split );
+                return ( radians >= 0.0 ? "+" : "-" ) + String.format( "%02dd %02d' %02d\"", split[1], split[2], split[3] );
+            default:
+                return String.format( "%f", radians );
         }
     }
 }

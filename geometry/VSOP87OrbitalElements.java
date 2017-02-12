@@ -1,15 +1,9 @@
 package com.mkreidl.ephemeris.geometry;
 
-import static java.lang.Math.asin;
-import static java.lang.Math.atan2;
-import static java.lang.Math.sqrt;
+import static com.mkreidl.ephemeris.geometry.Angle.*;
+import static java.lang.Math.*;
 
-import static com.mkreidl.ephemeris.geometry.Angle.standardize;
 
-/**
- * @author martin
- *
- */
 public class VSOP87OrbitalElements extends OrbitalElements
 {
     private final ClassicalOrbitalElements classical = new ClassicalOrbitalElements();

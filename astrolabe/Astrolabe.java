@@ -1,14 +1,11 @@
 package com.mkreidl.ephemeris.astrolabe;
 
-import android.support.annotation.NonNull;
+import android.support.annotation.*;
 
-import com.mkreidl.ephemeris.Time;
-import com.mkreidl.ephemeris.geometry.Angle;
-import com.mkreidl.ephemeris.geometry.Spherical;
-import com.mkreidl.ephemeris.sky.Ephemerides;
-import com.mkreidl.ephemeris.sky.SolarSystem;
-import com.mkreidl.ephemeris.sky.StarsCatalogue;
-import com.mkreidl.ephemeris.sky.coordinates.Equatorial;
+import com.mkreidl.ephemeris.*;
+import com.mkreidl.ephemeris.geometry.*;
+import com.mkreidl.ephemeris.sky.*;
+import com.mkreidl.ephemeris.sky.coordinates.*;
 
 
 public class Astrolabe
@@ -21,9 +18,9 @@ public class Astrolabe
     public final Rete rete = new Rete( this );
     public final Planets planets = new Planets( this );
 
-    public Spherical getGeographicLocation()
+    public Time getTime()
     {
-        return geographicLocation;
+        return time;
     }
 
     public long getTimeInMillis()
@@ -31,41 +28,34 @@ public class Astrolabe
         return time.getTime();
     }
 
-    public Time getTime()
+    public void setTimeInMillis( long timeInMillis )
     {
-        return time;
-    }
-
-    public void setTime( @NonNull Time newTime )
-    {
-        time.setTime( newTime.getTime() );
+        time.setTime( timeInMillis );
     }
 
     public Ephemerides getEphemerides( String object, Ephemerides output )
     {
+        output.setTimeLocation( time, geographicLocation );
         try
         {
-            output.setTimeLocation( time, geographicLocation );
-            return planets.getEphemerides( SolarSystem.Body.valueOf( object ), output );
+            planets.solarSystem.getEphemerides( SolarSystem.Body.valueOf( object ), output );
         }
         catch ( IllegalArgumentException e )
         {
             // In that case, object was not convertible to a planet enum constant
-            // => lets try with a star
-            int index = StarsCatalogue.findIndexByName( object );
-            return planets.solarSystem.getEphemerides( rete.coordinates.get( index ), output );
+            // => let's try with a star...
+            final int index = StarsCatalogue.findIndexByName( object );
+            planets.solarSystem.getEphemerides( rete.eclipticalPos[index], output );
         }
+        return output;
     }
 
-    public void synchronize( long timeInMillis, boolean full )
+    public void synchronize( long timeInMillis )
     {
         time.setTime( timeInMillis );
         tympanon.synchronize();
-        if ( full )
-        {
-            rete.synchronize();
-            planets.synchronize();
-        }
+        rete.synchronize();
+        planets.synchronize();
     }
 
     public void localize( @NonNull Spherical newLocation )

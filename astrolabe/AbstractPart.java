@@ -1,12 +1,18 @@
 package com.mkreidl.ephemeris.astrolabe;
 
-/**
- * Created by mkreidl on 08.09.2016.
- */
+
 public abstract class AbstractPart
 {
-    protected final Astrolabe astrolabe;
     private long lastSynchronizedMillis;
+    protected final Astrolabe astrolabe;
+    protected OnRecalculateListener onRecalculateListener = new OnRecalculateListener()
+    {
+        @Override
+        public void onRecalculate()
+        {
+            // Null object pattern
+        }
+    };
 
     AbstractPart( Astrolabe astrolabe )
     {
@@ -24,27 +30,40 @@ public abstract class AbstractPart
         return astrolabe.camera;
     }
 
-    public long getLastSynchronizedMillis()
+    public boolean isTimedOut( int timeoutMillis )
     {
-        return lastSynchronizedMillis;
+        return Math.abs( astrolabe.getTimeInMillis() - lastSynchronizedMillis ) > timeoutMillis;
     }
 
-    void localize()
+    public void localize()
     {
         onChangeObserverParams();
         recalculate();
+        onRecalculateListener.onRecalculate();
     }
 
     public void view()
     {
         onChangeObserverParams();
         recalculate();
+        onRecalculateListener.onRecalculate();
     }
 
-    void synchronize()
+    public void synchronize()
     {
         lastSynchronizedMillis = astrolabe.time.getTime();
         onSynchronize();
         recalculate();
+        onRecalculateListener.onRecalculate();
+    }
+
+    public void setRecalculateListener( OnRecalculateListener onRecalculateListener )
+    {
+        this.onRecalculateListener = onRecalculateListener;
+    }
+
+    public interface OnRecalculateListener
+    {
+        void onRecalculate();
     }
 }

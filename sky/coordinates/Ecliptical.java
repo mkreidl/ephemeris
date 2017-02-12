@@ -1,12 +1,8 @@
 package com.mkreidl.ephemeris.sky.coordinates;
 
-import com.mkreidl.ephemeris.geometry.Angle;
-import com.mkreidl.ephemeris.geometry.Cartesian;
-import com.mkreidl.ephemeris.geometry.Spherical;
+import com.mkreidl.ephemeris.geometry.*;
 
-/**
- * Created by mkreidl on 29.08.2016.
- */
+
 public interface Ecliptical
 {
     Cartesian toEquatorial( double ecliptic, Cartesian cartesian );

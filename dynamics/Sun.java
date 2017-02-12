@@ -1,14 +1,11 @@
 package com.mkreidl.ephemeris.dynamics;
 
-import com.mkreidl.ephemeris.Time;
-import com.mkreidl.ephemeris.geometry.Cartesian;
+import com.mkreidl.ephemeris.*;
+import com.mkreidl.ephemeris.geometry.*;
 
-/**
- * Created by mkreidl on 20.08.2016.
- */
+
 public class Sun extends OrbitalModel<Cartesian>
 {
-
     @Override
     public Type getType()
     {

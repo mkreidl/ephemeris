@@ -1,14 +1,11 @@
 package com.mkreidl.ephemeris.dynamics.VSOP87;
 
-import com.mkreidl.ephemeris.Time;
-import com.mkreidl.ephemeris.geometry.Matrix;
+import com.mkreidl.ephemeris.*;
+import com.mkreidl.ephemeris.geometry.*;
 
-import static com.mkreidl.ephemeris.Time.DAYS_PER_MILLENNIUM;
-import static com.mkreidl.ephemeris.Time.J2000;
+import static com.mkreidl.ephemeris.Time.*;
 
-/**
- * Created by mkreidl on 02.01.2017.
- */
+
 public class PrecessionMatrix extends Matrix
 {
     public PrecessionMatrix calculate( final Time time )

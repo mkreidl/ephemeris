@@ -1,8 +1,6 @@
 package com.mkreidl.ephemeris.geometry;
 
-import static java.lang.Math.asin;
-import static java.lang.Math.atan2;
-import static java.lang.Math.sqrt;
+import static java.lang.Math.*;
 
 public class Cartesian extends Coordinates<Cartesian>
 {
@@ -11,6 +9,7 @@ public class Cartesian extends Coordinates<Cartesian>
     public double z = 0.0;
 
     public static final Cartesian ORIGIN = new Cartesian( 0, 0, 0 );
+    public static final Matrix rotation = new Matrix();
 
     public Cartesian()
     {
@@ -68,8 +67,6 @@ public class Cartesian extends Coordinates<Cartesian>
         this.z *= factor;
         return this;
     }
-
-    public static final Matrix rotation = new Matrix();
 
     @Override
     public Cartesian rotate( Axis axis, double angle )

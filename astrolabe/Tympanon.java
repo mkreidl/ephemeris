@@ -1,18 +1,12 @@
 package com.mkreidl.ephemeris.astrolabe;
 
-import android.support.annotation.NonNull;
+import android.support.annotation.*;
 
-import com.mkreidl.ephemeris.geometry.Angle;
-import com.mkreidl.ephemeris.geometry.Cartesian;
-import com.mkreidl.ephemeris.geometry.Circle;
-import com.mkreidl.ephemeris.geometry.Coordinates;
-import com.mkreidl.ephemeris.geometry.Matrix;
-import com.mkreidl.ephemeris.sky.coordinates.Equatorial;
-import com.mkreidl.ephemeris.sky.coordinates.Horizontal;
+import com.mkreidl.ephemeris.geometry.*;
+import com.mkreidl.ephemeris.sky.coordinates.*;
 
-import static com.mkreidl.ephemeris.geometry.Angle.DEG;
-import static com.mkreidl.ephemeris.geometry.Angle.MIN;
-import static java.lang.Math.PI;
+import static com.mkreidl.ephemeris.geometry.Angle.*;
+import static java.lang.Math.*;
 
 
 public class Tympanon extends AbstractPart

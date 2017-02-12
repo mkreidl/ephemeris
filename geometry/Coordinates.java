@@ -1,6 +1,6 @@
 package com.mkreidl.ephemeris.geometry;
 
-import com.mkreidl.ephemeris.Distance;
+import com.mkreidl.ephemeris.*;
 
 /**
  * Created by mkreidl on 27.08.2016.

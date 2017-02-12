@@ -1,15 +1,11 @@
 package com.mkreidl.ephemeris.dynamics;
 
-import com.mkreidl.ephemeris.Distance;
-import com.mkreidl.ephemeris.Time;
-import com.mkreidl.ephemeris.geometry.Cartesian;
-import com.mkreidl.ephemeris.geometry.ClassicalOrbitalElements;
-import com.mkreidl.ephemeris.geometry.Spherical;
+import com.mkreidl.ephemeris.*;
+import com.mkreidl.ephemeris.geometry.*;
 
-import static com.mkreidl.ephemeris.geometry.Angle.DEG;
-import static com.mkreidl.ephemeris.sky.SolarSystem.Body;
-import static java.lang.Math.cos;
-import static java.lang.Math.sin;
+import static com.mkreidl.ephemeris.geometry.Angle.*;
+import static com.mkreidl.ephemeris.sky.SolarSystem.*;
+import static java.lang.Math.*;
 
 /**
  * @author mkreidl
@@ -25,11 +21,19 @@ public class Moon extends OrbitalModel<Cartesian>
     @Override
     public void calculate( Time time, Cartesian position, Cartesian velocity )
     {
-        //        if ( velocity != null )
-        //            throw new RuntimeException( "Velocity calculation for moon not yet implemented" );
-        // TODO: Implement velocity calculation for the Moon
         calculate( time );
         position.set( posCartesian );
+        if ( velocity != null )
+        {
+            // TODO: Implement velocity calculation for the Moon
+            // This is a dummy which sets the velocity in a qualitative way
+            // to ensure that the Moon is not retrograde
+            velocity.x = -position.y;
+            velocity.y = position.x;
+            velocity.z = 0;
+            // Adjust the velocity to result in 1 rotation per 29 days (unit of velocity [m/Millennium])
+            velocity.scale( Time.DAYS_PER_MILLENNIUM * ( 2 * Math.PI / 29 ) );
+        }
     }
 
     @Override

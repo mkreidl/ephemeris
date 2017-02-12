@@ -1,21 +1,33 @@
 package com.mkreidl.ephemeris.sky.coordinates;
 
-import com.mkreidl.ephemeris.geometry.Angle;
-import com.mkreidl.ephemeris.geometry.Cartesian;
-import com.mkreidl.ephemeris.geometry.Coordinates;
-import com.mkreidl.ephemeris.geometry.Spherical;
+import com.mkreidl.ephemeris.geometry.*;
 
-/**
- * Created by mkreidl on 29.08.2016.
- */
+
 public interface Equatorial
 {
+    Cartesian toEcliptical( double ecliptic, Cartesian eclipticalCart );
+
+    Spherical toEcliptical( double ecliptic, Spherical eclipticalCart );
+
     Cartesian toHorizontal( Spherical zenit, Cartesian horizontal );
 
     Spherical toHorizontal( Spherical zenit, Spherical horizontal );
 
     class Cart extends Cartesian implements Equatorial
     {
+
+        @Override
+        public Cartesian toEcliptical( double ecliptic, Cartesian eclipticalCart )
+        {
+            return eclipticalCart.set( this ).rotate( Axis.X, -ecliptic );
+        }
+
+        @Override
+        public Spherical toEcliptical( double ecliptic, Spherical eclipticalSphe )
+        {
+            return toEcliptical( ecliptic, eclipticalSphe.tmpCartesian ).transform( eclipticalSphe );
+        }
+
         @Override
         public Cartesian toHorizontal( Spherical zenit, Cartesian horizontal )
         {
@@ -33,6 +45,18 @@ public interface Equatorial
     class Sphe extends Spherical implements Equatorial
     {
         private final Equatorial.Cart tmp = new Equatorial.Cart();
+
+        @Override
+        public Cartesian toEcliptical( double ecliptic, Cartesian eclipticalCart )
+        {
+            return transform( eclipticalCart ).rotate( Axis.X, -ecliptic );
+        }
+
+        @Override
+        public Spherical toEcliptical( double ecliptic, Spherical eclipticalSphe )
+        {
+            return toEcliptical( ecliptic, tmpCartesian ).transform( eclipticalSphe );
+        }
 
         @Override
         public Cartesian toHorizontal( Spherical zenit, Cartesian horizontal )

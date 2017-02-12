@@ -1,25 +1,13 @@
 package com.mkreidl.ephemeris.sky;
 
-import com.mkreidl.ephemeris.Time;
-import com.mkreidl.ephemeris.dynamics.Moon;
-import com.mkreidl.ephemeris.dynamics.OrbitalModel;
-import com.mkreidl.ephemeris.dynamics.Sun;
-import com.mkreidl.ephemeris.dynamics.VSOP87.C.Earth;
-import com.mkreidl.ephemeris.dynamics.VSOP87.C.Jupiter;
-import com.mkreidl.ephemeris.dynamics.VSOP87.C.Mars;
-import com.mkreidl.ephemeris.dynamics.VSOP87.C.Mercury;
-import com.mkreidl.ephemeris.dynamics.VSOP87.C.Neptune;
-import com.mkreidl.ephemeris.dynamics.VSOP87.C.Saturn;
-import com.mkreidl.ephemeris.dynamics.VSOP87.C.Uranus;
-import com.mkreidl.ephemeris.dynamics.VSOP87.C.Venus;
-import com.mkreidl.ephemeris.sky.coordinates.Ecliptical;
+import com.mkreidl.ephemeris.*;
+import com.mkreidl.ephemeris.dynamics.*;
+import com.mkreidl.ephemeris.dynamics.VSOP87.C.*;
+import com.mkreidl.ephemeris.sky.coordinates.*;
 
-import java.util.EnumMap;
-import java.util.LinkedList;
+import java.util.*;
 
-/**
- * @author martin
- */
+
 public class SolarSystem
 {
     private final EnumMap<Body, Ecliptical.Cart> positions = new EnumMap<>( Body.class );
@@ -97,12 +85,13 @@ public class SolarSystem
         {
             case HELIOCENTRIC:
                 output.setHeliocentric( positions.get( body ), positions.get( Body.EARTH ) );
+                output.setHeliocentricVelocities( velocities.get( body ), velocities.get( Body.EARTH ) );
                 break;
             case GEOCENTRIC:
                 output.setGeocentric( positions.get( body ), positions.get( Body.EARTH ) );
+                output.setGeocentricVelocities( velocities.get( body ), velocities.get( Body.EARTH ) );
                 break;
         }
-        output.setHeliocentricVelocities( velocities.get( body ), velocities.get( Body.EARTH ) );
         return output;
     }
 
@@ -117,20 +106,19 @@ public class SolarSystem
     public Ephemerides getEphemerides( final Ecliptical.Cart heliocentricPosition, final Ephemerides output )
     {
         final Ecliptical.Cart earthPos = positions.get( Body.EARTH );
-        final Ecliptical.Cart earthVel = velocities.get( Body.EARTH );
         output.setHeliocentric( heliocentricPosition, earthPos );
         return output;
     }
 
-    public Ephemerides calculate( final Time time, final Body body, final Ephemerides ephemerides )
+    public void calculate( final Time time, final Body body )
     {
         final OrbitalModel model = models.get( body );
-        final OrbitalModel earth = models.get( Body.EARTH );
-        model.calculate( time, positions.get( body ) ).scale( model.getUnit().toMeters() );
-        earth.calculate( time, positions.get( Body.EARTH ) ).scale( earth.getUnit().toMeters() );
-        return getEphemerides( body, ephemerides );
+        final Ecliptical.Cart pos = positions.get( body );
+        final Ecliptical.Cart vel = velocities.get( body );
+        model.calculate( time, pos, vel );
+        pos.scale( model.getUnit().toMeters() );
+        vel.scale( model.getUnit().toMeters() );
     }
-
 
     /**
      * Parallel computation of all the positions and velocities of objects in the solar
@@ -147,12 +135,7 @@ public class SolarSystem
             {
                 public void run()
                 {
-                    final OrbitalModel model = models.get( body );
-                    final Ecliptical.Cart pos = positions.get( body );
-                    final Ecliptical.Cart vel = velocities.get( body );
-                    model.calculate( time, pos, vel );
-                    pos.scale( model.getUnit().toMeters() );
-                    vel.scale( model.getUnit().toMeters() );
+                    calculate( time, body );
                 }
             };
             threadList.add( calculationThread );

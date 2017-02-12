@@ -1,8 +1,7 @@
 package com.mkreidl.ephemeris.dynamics;
 
-import com.mkreidl.ephemeris.Distance;
-import com.mkreidl.ephemeris.Time;
-import com.mkreidl.ephemeris.geometry.Coordinates;
+import com.mkreidl.ephemeris.*;
+import com.mkreidl.ephemeris.geometry.*;
 
 public abstract class OrbitalModel<T extends Coordinates>
 {

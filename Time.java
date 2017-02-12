@@ -1,15 +1,10 @@
 package com.mkreidl.ephemeris;
 
-import com.mkreidl.ephemeris.geometry.Angle;
-import com.mkreidl.ephemeris.geometry.Spherical;
+import com.mkreidl.ephemeris.geometry.*;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Locale;
-import java.util.TimeZone;
+import java.text.*;
+import java.util.*;
+
 
 public class Time extends Date
 {

@@ -1,18 +1,14 @@
 package com.mkreidl.ephemeris.dynamics.VSOP87;
 
-import android.support.annotation.Nullable;
+import android.support.annotation.*;
 
-import com.mkreidl.ephemeris.Distance;
-import com.mkreidl.ephemeris.Time;
-import com.mkreidl.ephemeris.dynamics.OrbitalModel;
-import com.mkreidl.ephemeris.geometry.Cartesian;
-import com.mkreidl.ephemeris.geometry.Coordinates;
-import com.mkreidl.ephemeris.geometry.Spherical;
+import com.mkreidl.ephemeris.*;
+import com.mkreidl.ephemeris.dynamics.*;
+import com.mkreidl.ephemeris.geometry.*;
 
-import static com.mkreidl.ephemeris.Time.DAYS_PER_MILLENNIUM;
-import static com.mkreidl.ephemeris.Time.J2000;
-import static java.lang.Math.cos;
-import static java.lang.Math.sin;
+import static com.mkreidl.ephemeris.Time.*;
+import static java.lang.Math.*;
+
 
 public abstract class Model<T extends Coordinates> extends OrbitalModel<T>
 {
@@ -123,6 +119,7 @@ public abstract class Model<T extends Coordinates> extends OrbitalModel<T>
     {
         /**
          * Calculate position and velocity in spherical coordinates
+         *
          * @param time
          * @param position
          * @param velocity Units: [rad/day], [rad], [rad]
