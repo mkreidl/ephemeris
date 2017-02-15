@@ -1,6 +1,7 @@
-package com.mkreidl.ephemeris.sky;
+package com.mkreidl.ephemeris.test.sky;
 
-import static org.junit.Assert.assertEquals;
+import com.mkreidl.ephemeris.Time;
+import com.mkreidl.ephemeris.sky.SolarSystem;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,9 +13,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import static com.mkreidl.ephemeris.geometry.Angle.DEG;
-
-import com.mkreidl.ephemeris.Time;
-import com.mkreidl.ephemeris.sky.SolarSystem;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
 public class EclipticTest
@@ -26,23 +25,23 @@ public class EclipticTest
     public static Iterable<Object[]> data()
     {
         return Arrays.asList( new Object[][]
-        {
                 {
-                        -3000, 24.0266666667, 10e-3
-                },
-                {
-                        0, 23.695, 1e-3
-                },
-                {
-                        2000, 23.44, 1e-3
-                },
-                {
-                        2016, 23.43721, 0.1 / 3600,
-                },
-                {
-                        3000, 23.31, 1e-3
-                },
-        } );
+                        {
+                                -3000, 24.0266666667, 10e-3
+                        },
+                        {
+                                0, 23.695, 1e-3
+                        },
+                        {
+                                2000, 23.44, 1e-3
+                        },
+                        {
+                                2016, 23.43721, 0.1 / 3600,
+                        },
+                        {
+                                3000, 23.31, 1e-3
+                        },
+                } );
     }
 
     public EclipticTest( int year, double ecliptic, double tolerance )

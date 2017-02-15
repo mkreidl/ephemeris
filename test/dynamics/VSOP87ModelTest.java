@@ -1,10 +1,10 @@
-package com.mkreidl.ephemeris.dynamics;
+package com.mkreidl.ephemeris.test.dynamics;
 
 import com.mkreidl.ephemeris.Time;
-import com.mkreidl.ephemeris.geometry.VSOP87CoordinateTransformationTest;
-import com.mkreidl.ephemeris.geometry.VSOP87File;
 import com.mkreidl.ephemeris.dynamics.VSOP87.Model;
 import com.mkreidl.ephemeris.geometry.Cartesian;
+import com.mkreidl.ephemeris.test.geometry.VSOP87CoordinateTransformationTest;
+import com.mkreidl.ephemeris.test.geometry.VSOP87File;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -82,13 +82,11 @@ public class VSOP87ModelTest extends VSOP87Test
     {
         final LinkedList<Object[]> parameters = new LinkedList<>();
         for ( VSOP87File.Planet planet : VSOP87CoordinateTransformationTest.fullData.keySet() )
-        {
             for ( String timeStr : fullData.get( planet ).get( VSOP87File.Version.C ).keySet() )
                 parameters.add( new Object[]
                         {
                                 planet, timeStr, fullData.get( planet ).get( VSOP87File.Version.C ).get( timeStr )
                         } );
-        }
         return parameters;
     }
 

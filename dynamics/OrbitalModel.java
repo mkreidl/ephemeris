@@ -3,7 +3,7 @@ package com.mkreidl.ephemeris.dynamics;
 import com.mkreidl.ephemeris.*;
 import com.mkreidl.ephemeris.geometry.*;
 
-public abstract class OrbitalModel<T extends Coordinates>
+public abstract class OrbitalModel<T extends Coordinates<T>>
 {
     public enum Type
     {

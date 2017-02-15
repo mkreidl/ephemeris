@@ -101,15 +101,24 @@ public class Angle
         this.unit = unit;
         switch ( unit )
         {
-            case DEGREES:
-                radians = d * DEG;
-                break;
-            case HOURS:
-                radians = d * HRS;
-                break;
-            case RADIANS:
-                radians = d;
-                break;
+	        case HOURS:
+	            radians = d * HRS;
+	            break;
+	        case DEGREES:
+	            radians = d * DEG;
+	            break;
+	        case MIN:
+	            radians = d * MIN;
+	            break;
+	        case SEC:
+	            radians = d * SEC;
+	            break;
+	        case MAS:
+	            radians = d * MAS;
+	            break;
+	        default:
+	            radians = d;
+	            break;
         }
         return this;
     }

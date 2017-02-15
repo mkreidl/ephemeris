@@ -1,4 +1,4 @@
-package com.mkreidl.ephemeris.geometry;
+package com.mkreidl.ephemeris.test.geometry;
 
 import com.mkreidl.ephemeris.geometry.Circle;
 import com.mkreidl.ephemeris.geometry.Spherical;

@@ -1,6 +1,6 @@
 package com.mkreidl.ephemeris.dynamics.VSOP87;
 
-import android.support.annotation.*;
+import org.eclipse.jdt.annotation.Nullable;
 
 import com.mkreidl.ephemeris.*;
 import com.mkreidl.ephemeris.dynamics.*;
@@ -10,7 +10,7 @@ import static com.mkreidl.ephemeris.Time.*;
 import static java.lang.Math.*;
 
 
-public abstract class Model<T extends Coordinates> extends OrbitalModel<T>
+public abstract class Model<T extends Coordinates<T>> extends OrbitalModel<T>
 {
     protected final static int DIMENSION = 3;
     protected double[][][][] coeff;

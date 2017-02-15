@@ -1,7 +1,11 @@
-package com.mkreidl.ephemeris.geometry;
+package com.mkreidl.ephemeris.test.geometry;
 
 import com.mkreidl.ephemeris.dynamics.VSOP87.PrecessionMatrix;
-import com.mkreidl.ephemeris.dynamics.VSOP87Test;
+import com.mkreidl.ephemeris.geometry.Cartesian;
+import com.mkreidl.ephemeris.geometry.Matrix;
+import com.mkreidl.ephemeris.geometry.Spherical;
+import com.mkreidl.ephemeris.geometry.VSOP87OrbitalElements;
+import com.mkreidl.ephemeris.test.dynamics.VSOP87Test;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

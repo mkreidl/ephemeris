@@ -1,4 +1,4 @@
-package com.mkreidl.ephemeris.dynamics;
+package com.mkreidl.ephemeris.test.dynamics;
 
 import static org.junit.Assert.*;
 

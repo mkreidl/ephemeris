@@ -1,9 +1,10 @@
-package com.mkreidl.ephemeris.dynamics;
+package com.mkreidl.ephemeris.test.dynamics;
 
 import com.mkreidl.ephemeris.Time;
-import com.mkreidl.ephemeris.geometry.VSOP87File;
+import com.mkreidl.ephemeris.test.geometry.VSOP87File;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
@@ -13,25 +14,19 @@ import static com.mkreidl.ephemeris.geometry.Angle.standardize;
 
 public abstract class VSOP87Test
 {
-    private static final String DATASETS = "/VSOP87/vsop87.chk";
+    private static final String DATASETS = "../VSOP87/vsop87.chk";
     protected static final LinkedHashMap<VSOP87File.Planet, LinkedHashMap<VSOP87File.Version, LinkedHashMap<String, DataSet>>> fullData
             = new LinkedHashMap<>();
 
     protected static class DataSet
     {
         public VSOP87File.Planet planet;
-        public VSOP87File.Version version;
         public Time time;
         public VSOP87File model;
         String VSOP87filename;
         String dateString;
         double julianDate;
-        double[] coordinates;
-
-        DataSet()
-        {
-            coordinates = new double[6];
-        }
+        double[] coordinates = new double[6];
     }
 
     static
@@ -57,8 +52,8 @@ public abstract class VSOP87Test
 
         try
         {
-            URL url = VSOP87File.class.getResource( DATASETS );
-            lineReader = new BufferedReader( new FileReader( url.getPath() ) );
+            URL file = VSOP87File.class.getResource( DATASETS );
+            lineReader = new BufferedReader( new FileReader( file.getPath() ) );
         }
         catch ( IOException e )
         {
@@ -69,10 +64,8 @@ public abstract class VSOP87Test
         {
             try
             {
-                do
-                {
-                    line = lineReader.readLine();
-                } while ( line != null && !line.startsWith( " VSOP87" ) );
+                do line = lineReader.readLine();
+                while ( line != null && !line.startsWith( " VSOP87" ) );
                 if ( line == null )
                 {
                     lineReader.close();
@@ -87,7 +80,7 @@ public abstract class VSOP87Test
 
                 // Save time and space by creating only one instance of VSOP87 per ( Planet, Version )-pair
                 if ( !VSOP87filename.equals( nextRecord.VSOP87filename ) )
-                    model = VSOP87File.getModel( VSOP87File.class.getResource( "/VSOP87/" + VSOP87filename ) );
+                    model = VSOP87File.getModel( VSOP87File.class.getResource( "../VSOP87/" + VSOP87filename ) );
 
                 nextRecord = new DataSet();
                 nextRecord.VSOP87filename = VSOP87filename;

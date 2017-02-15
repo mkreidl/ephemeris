@@ -1,4 +1,4 @@
-package com.mkreidl.ephemeris.geometry;
+package com.mkreidl.ephemeris.test.geometry;
 
 
 import static org.junit.Assert.*;

@@ -1,4 +1,4 @@
-package com.mkreidl.ephemeris;
+package com.mkreidl.ephemeris.test;
 
 import static org.junit.Assert.*;
 
@@ -7,6 +7,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+
+import com.mkreidl.ephemeris.Time;
 
 import java.security.InvalidParameterException;
 import java.util.Arrays;

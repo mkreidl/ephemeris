@@ -1,6 +1,6 @@
 package com.mkreidl.ephemeris.astrolabe;
 
-import android.support.annotation.*;
+import org.eclipse.jdt.annotation.NonNull;
 
 import com.mkreidl.ephemeris.*;
 import com.mkreidl.ephemeris.geometry.*;

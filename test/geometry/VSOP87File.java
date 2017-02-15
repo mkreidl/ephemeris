@@ -1,7 +1,10 @@
-package com.mkreidl.ephemeris.geometry;
+package com.mkreidl.ephemeris.test.geometry;
 
 import com.mkreidl.ephemeris.Distance;
 import com.mkreidl.ephemeris.Time;
+import com.mkreidl.ephemeris.geometry.Cartesian;
+import com.mkreidl.ephemeris.geometry.Spherical;
+import com.mkreidl.ephemeris.geometry.VSOP87OrbitalElements;
 
 import java.io.BufferedReader;
 import java.io.File;

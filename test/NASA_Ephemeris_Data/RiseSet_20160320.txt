@@ -1,0 +1,16 @@
+2016.03.20
++11.5
++48.0
+CET
+
+Sun
+Begin civil twilight	05:45
+Sunrise	06:16
+Sun transit	12:21
+Sunset	18:27
+End civil twilight	18:58
+Moon
+Moonset	04:51
+Moonrise	15:34
+Moon transit	22:32
+Moonset	05:20 on following day

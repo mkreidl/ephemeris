@@ -3,6 +3,7 @@ package com.mkreidl.ephemeris.sky;
 import com.mkreidl.ephemeris.*;
 import com.mkreidl.ephemeris.dynamics.*;
 import com.mkreidl.ephemeris.dynamics.VSOP87.C.*;
+import com.mkreidl.ephemeris.geometry.Cartesian;
 import com.mkreidl.ephemeris.sky.coordinates.*;
 
 import java.util.*;
@@ -12,7 +13,7 @@ public class SolarSystem
 {
     private final EnumMap<Body, Ecliptical.Cart> positions = new EnumMap<>( Body.class );
     private final EnumMap<Body, Ecliptical.Cart> velocities = new EnumMap<>( Body.class );
-    private final EnumMap<Body, OrbitalModel> models = new EnumMap<>( Body.class );
+    private final EnumMap<Body, OrbitalModel<Cartesian>> models = new EnumMap<>( Body.class );
 
     /**
      * Calculate the ecliptic of the ecliptic.
@@ -112,7 +113,7 @@ public class SolarSystem
 
     public void calculate( final Time time, final Body body )
     {
-        final OrbitalModel model = models.get( body );
+        final OrbitalModel<Cartesian> model = models.get( body );
         final Ecliptical.Cart pos = positions.get( body );
         final Ecliptical.Cart vel = velocities.get( body );
         model.calculate( time, pos, vel );

@@ -53,6 +53,11 @@ public class Constellations
                     }
                     return mEdges.get( edge )[vertex];
                 }
+
+				@Override
+				public void remove() {
+					// Dummy: we never want to remove elements from a constellation definition
+				}
             };
         }
     }

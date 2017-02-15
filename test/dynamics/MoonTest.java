@@ -1,4 +1,4 @@
-package com.mkreidl.ephemeris.dynamics;
+package com.mkreidl.ephemeris.test.dynamics;
 
 import com.mkreidl.ephemeris.Time;
 import com.mkreidl.ephemeris.dynamics.Moon;

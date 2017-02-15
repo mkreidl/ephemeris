@@ -1,12 +1,4 @@
-package com.mkreidl.ephemeris.sky;
-
-import static java.lang.Math.PI;
-import static java.lang.Math.abs;
-
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Before;
-import org.junit.Test;
+package com.mkreidl.ephemeris.test.sky;
 
 import com.mkreidl.ephemeris.Time;
 import com.mkreidl.ephemeris.geometry.Angle;
@@ -16,7 +8,14 @@ import com.mkreidl.ephemeris.sky.SolarSystem;
 import com.mkreidl.ephemeris.sky.coordinates.Equatorial;
 import com.mkreidl.ephemeris.sky.coordinates.Horizontal;
 
+import org.junit.Before;
+import org.junit.Test;
+
 import java.util.EnumMap;
+
+import static java.lang.Math.PI;
+import static java.lang.Math.abs;
+import static org.junit.Assert.assertEquals;
 
 public class HorizontalCoordinatesTest
 {

@@ -1,4 +1,4 @@
-package com.mkreidl.ephemeris.sky;
+package com.mkreidl.ephemeris.test.sky;
 
 import org.junit.Test;
 
