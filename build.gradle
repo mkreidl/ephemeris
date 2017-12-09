@@ -1,0 +1,12 @@
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+version = '1.0'
+
+dependencies {
+    repositories {
+        mavenCentral()
+    }
+    implementation 'org.threeten:threetenbp:1.3.6'
+    testImplementation 'junit:junit:4.12'
+}

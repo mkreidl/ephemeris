@@ -1,0 +1,237 @@
+V/53A               Catalogue of the Brightest Stars  (Ochsenbein+ 1988)
+================================================================================
+Le catalogue des etoiles les plus brillantes
+Catalogue of the brightest stars
+    Ochsenbein F., Halbwachs J.L.
+   <Bull. Inform. CDS 32, 83 (1987)>
+   =1987BICDS..32...83O
+    Ochsenbein F., Acker A., Legrand E., Poncelet J.M., Thuet-Fleck E.
+   <A.Acker (ed.), Strasbourg Obs. (1988)>
+================================================================================
+ADC_Keywords: Stars, bright ; Combined data
+
+Introduction au catalogue (version francaise):
+    Ce catalogue fournit des donnees sur les 1628 etoiles brillantes de
+    magnitude allant jusqu'a 5.01 contenues dans le "catalogue des etoiles
+    les plus brillantes" de F. Ochsenbein et co. (1984), lui-meme derive
+    de la 4eme edition du "Bright Star Catalogue" (Hoffleit 1982). Il
+    differe de la version originale imprimee par les points suivants:
+    - les designations des etoiles dane le catalogue Hipparcos, ainsi que
+      les positions Hipparcos, exprimees dans l'International Celestial
+      Reference System (ICRS), ont ete rajoutees (A)
+    - les valeurs des parallaxes et mouvements propres ont ete remplacees
+      par les valeurs du catalogue Hipparcos pour la quasi-totalite des
+      etoiles (A)
+    - les distances en annees-lumieres ont ete calculees  (A)
+    - les coordonnees ecliptiques ont ete ajoutees aux donnees
+      astrometriques.
+    - la photometrie UBVRI a ete extraite du catalogue de Lanz (1986);
+      ceci explique que trois etoiles soient de magnitude superieure a
+      5.00 (HR 3229, HR 4392 et HR 6161). De plus, afin de faciliter les
+      traitements par programme, on donne la valeur 99.99 en cas de mesure
+      manquante (99.999 pour l'uvbyHbeta).
+    - la lettre grecque "delta", qui apparaissait dans les types spectraux
+      sous la forme codee "<04>" est maintenant ecrite en toutes lettres.
+    - une colonne donnant la classe de luminosite en chiffre arabe a ete
+      ajoutee a l'ecriture classique du type spectral.
+    - le nombre de composantes des etoiles doubles visuelles (2) est donne
+      explicitement.
+    (A) indique les donnees ajoutees dans la version 'A'
+
+Description:
+    This catalogue provides data on the 1628 stars brighter than
+    magnitude 5.01 contained in the "catalogue des etoiles les plus
+    brillantes" by Ochsenbein et al. (1984), compiled from the fourth
+    edition of The Bright Star Catalogue (Hoffleit 1982). It differs
+    from the original printed version by the following points:
+    - the star designations in Hipparcos catalogue were added, as well
+      as the positions expressed in the International Celestial
+      Reference System (ICRS) (A)
+    - the parallax and proper motion data were replaced by the
+      Hipparcos values for almost all the bright stars (A)
+    - the distances (expressed in light-years) were computed (A)
+    - ecliptic coordinates were added to astrometric data
+    - UBVRI photometry was taken from Lanz (1986); for that reason,
+      three stars (HR 3229, HR 4392 and HR 6161) are fainter than 5 mag.
+      Moreover, the blanks due to unknown indices were filled with the
+      value 99.99 (or 99.999 for the uvbyHbeta photometry).
+    - the greek letter "delta" that appears in some spectral types is
+      now written in latin letters instead of the code "<04>".
+    - the luminosity classes are coded as integer numbers in an
+      additional column.
+    - the number of components of visual double stars is given.
+    (A) indicates data added for version 'A'
+
+File Summary:
+--------------------------------------------------------------------------------
+ FileName    Lrecl    Records    Explanations
+--------------------------------------------------------------------------------
+ReadMe          80          .    This file
+catalog.dat    278       1628    The Catalogue
+names.dat       18         80    Star names / Noms des etoiles
+--------------------------------------------------------------------------------
+
+See also:
+    V/50 : The Bright Star Catalogue, 5th Edition
+   I/239 : The Hipparcos and Tycho Catalogues (ESA 1997)
+
+Byte-by-byte Description of file: catalog.dat
+--------------------------------------------------------------------------------
+   Bytes Format Units   Label     Explanations
+--------------------------------------------------------------------------------
+   1-  4  I4    ---     HR        [1/9110]+ "Bright Star" catalog <V/50>
+   6- 11  I6    ---     HD        [1/225300] Henry Draper" catalog <III/135>
+  13- 15  I3    ---    Flamsteed  ? Flamsteed number
+  18- 21  A4    ---     Bayer     Greek letter (lettre grecque)
+  23- 25  A3    ---     Const     Constellation (3 characters)
+  28- 37  A10   ---     VarName   Designation as Variable Star
+  39- 40  I2    h       RAh       Right Ascension J2000 (hours)
+  42- 43  I2    min     RAm       Right Ascension J2000 (minutes)
+  45- 48  F4.1  s       RAs       Right Ascension J2000 (seconds)
+      50  A1    ---     DE-       Declination J2000 (sign)
+  51- 52  I2    deg     DEd       Declination J2000 (degrees)
+  54- 55  I2    arcmin  DEm       Declination J2000 (minutes)
+  57- 58  I2    arcsec  DEs       Declination J2000 (seconds)
+  61- 66  F6.1  0.1s/a  precRA    Precession in RA for 10 years
+  68- 71  I4 0.1arcsec/a precDE   Precession in DE for 10 years
+  74- 79  F6.2  deg     ELON      Ecliptic longitude, J2000
+  81- 86  F6.2  deg     ELAT      Ecliptic latitude, J2000
+  88- 93  F6.2  deg     GLON      Galactic longitude
+  95-100  F6.2  deg     GLAT      Galactic latitude
+ 102-105  I4    ---     HRm       [0,9110] 2nd HR number when combined (4)
+ 107-112  I6    ---     HIP       ?=0 Hipparcos (Cat. <I/239>) designation (4)
+     114  A1    ---   n_HIP       [*] Note on Plx, pmRA, pmDE (4)
+ 115-117  I3    mas     Plx       ? Parallax from Hipparcos (1) (4)
+ 119-124  I6    mas/yr  pmRA      Proper motion (mouvement propre) in RA (4) (9)
+ 126-131  I6    mas/yr  pmDE      Proper motion (mouvement propre) in DE (4)
+ 133-142  F10.6 deg     RA(ICRS)  ? Right ascension from Hipparcos (10)
+ 144-153  F10.6 deg     DE(ICRS)  ? Declination from Hipparcos (10)
+ 155-159  I5    al      Dist      Distance of star in light-years (5)
+     160  A1    ---   n_Dist      [ts] Trigonometric/Spectroscopic distance (5)
+ 162-165  I4    km/s    RVel      Radial velocity (vitesse radiale)
+ 167-170  A4    ---   n_RVel      [VSB12O? ]  Comment on RVel (3)
+ 172-176  F5.2  mag     Vmag      [-1.46/5.03] Visual magnitude
+                                       (magnitude visuelle)
+ 178-182  F5.2  mag     B-V       ?=99.99  B-V (Johnson) index (2)
+ 183-187  F5.2  mag     U-B       ?=99.99  U-B (Johnson) index (2)
+ 188-192  F5.2  mag     V-R       ?=99.99  V-R (Johnson) index (2)
+ 193-197  F5.2  mag     R-I       ?=99.99  R-I (Johnson) index (2)
+ 199-204  F6.3  mag     b-y       ?=99.999 Stromegren index (2)
+ 205-210  F6.3  mag     m1        ?=99.999 Stroemgren index (2)
+ 211-216  F6.3  mag     c1        ?=99.999 Stroemgren index (2)
+ 217-222  F6.3  mag     Hbeta     ?=99.999 Stroemgren index (2)
+     226  A1    ---   l_vsini     [:<] Limit flag for vsini (6)
+ 227-229  I3    km/s    vsini     ? Projected rotational velocity
+                                   (projection de la vitesse de rotation
+                                    sur la ligne de visee) (1)
+     230  A1    ---   u_vsini     ':' for uncertainty (marque d'incertitude)
+ 231-235  F5.1  0.1nm   Wgamma    ? Equivalent width of H-gamma line
+                                    (largeur equivalente de la raie Hgamma)
+                                    (en Angstroem = 10-10m) (1)
+ 237-238  A2    ---     WilsonLC  Wilson Luminosity Class (7)
+ 239-257  A19   ---     SpType    MK Spectral Type
+     258  I1    ---     LClass    [1/6]? Numeric Luminosity Class (classe de
+                                          luminosite exprimee en chiffre) (1)
+ 260-261  I2    ---     nComp     [1/13]? Number of visual components
+                                      (nombre de composantes visuelles)
+ 263-266  F4.1  mag     Dmag      ? Magnitude difference between components
+                                       (difference de magnitude entre les
+                                       composantes) Comp (1)
+ 268-273  F6.1  arcsec  Sep       ? Separation between Comp (1)
+ 275-278  A4    ---     Comp      Designation of components (8)
+--------------------------------------------------------------------------------
+
+Note (1): Field may be blank (la donnee peut etre inexistante)
+
+Note (2): The value  99.99 or 99.999 indicates an unknown value
+          (la valeur 99.99 ou 99.999 indique l'inexistance de la donnee)
+
+Note (3): Note on RVel:
+       V: variable velocity without known reason
+          (vitesse variable sans raison determinee)
+      SB: spectroscopic binary (binaire spectroscopique)
+          SB1: one-spectrum binary (binaire a un spectre)
+          SB2: two visible spectra (le deuxieme spectre est visible)
+       O: known orbit (les elements orbitaux ont ete determines)
+
+Note (4):
+     Some close stars are combined in Hipparcos catalogue; the second
+          HR number is then provided in the column HRm.
+          The HRm column is zero in all other cases.
+     (certaines binaires serrees ont des donnees Hipparcos qui
+          combinent 2 etoiles, dont le numero HR est dans la colonne HRm;
+          cette colonne HRm contient 0 pour les etoiles simples)
+     Some bright stars, flagged by an * in column n_HIP, could not
+          be resolved by Hipparcos; the parallax and proper motions are
+          then taken from the Bright Star Catalogue.
+     (Certaines etoiles brillantes n'ont pas de solution astrometrique
+          dans Hipparcos; les parallaxes et mouvements propres affiches
+          proviennent alors du "Bright Star" catalogue)
+     The Hipparcos parallax has an accuracy almost always better than 1mas
+     (la parallaxe Hipparcos a une precision generalement meilleure que 1mas)
+
+Note (5): The distance, in light-years (1al=(1/3.26)pc) was computed from:
+          (la distance, exprimee en annees-lumieres, est calculee par):
+          - the trigonometric parallax (dist=3260/Plx) when n_Dist is 't';
+            this method was adopted when the parallax is larger than 5mas
+            (la parallaxe trigonometrique quand n_Dist contient 't',
+             methode adoptee lorsque la parallaxe est d'au moins 5mas)
+          - the spectroscopic distance, derived from the UBV photometry
+            and the spectral classification, for distances over 650al
+            (la distance spectroscopique, calculee a partir de la
+             photometrie UBV et de la classification spectrale, a ete
+             adoptee pour des distances depassant 650al)
+          The accuracy of the distance should always be better than 20%.
+          (La precision de la distance devrait etre meilleure que 20%)
+
+Note (6): The ':' in the flag n_vsini stands for "less or equal"
+          (le symbole ':' signifie "inferieur ou egal")
+
+Note (7): only present when MK luminosity class absent
+          (uniquement lorsque le type MK n'est pas complet)
+
+Note (8): Designation of components concerned by columns Dmag and Sep
+          (Designation des composantes concernees par Dmag et Sep);
+          "O" designates a binary discovered by occultation methods
+              (binaire decouverte par occultation)
+
+Note (9): Proper motion contains the cos(DE) term (ce mouvement propre est
+          la variation annuelle de RA * cos(DE))
+
+Note (10): The Hipparcos positions are expressed in the ICRS system,
+           close to J2000 FK5-based frame, at the epoch 1991.25
+           which is the median epoch of the Hipparcos mission
+           (les positions Hipparcos sont dans le systeme ICRS, qui est
+           proche du systeme FK5 equinoxe J2000; les positions sont
+           donnees pour l'epoque 1991.25, milieu de la mission Hipparcos)
+--------------------------------------------------------------------------------
+
+Byte-by-byte Description of file: names.dat
+--------------------------------------------------------------------------------
+   Bytes Format Units   Label     Explanations
+--------------------------------------------------------------------------------
+   1-  4  I4    ---     HR        Bright Star number
+   7- 18  A12   ---     Name      Common name of the star / Nom usuel
+--------------------------------------------------------------------------------
+
+History:
+  * The catalogue was first prepared in 1984 (Ochsenbein et al., 1984)
+    and published by the Observatoire de Strasbourg
+  * 31-May-1996: documentation standardized
+  * 03-Feb-1999: Hipparcos data were added, and distances were computed.
+    (F. Ochsenbein, CDS)
+  * 24-Dec-2004: File "names.dat" added.
+
+References:
+   Hoffleit D. 1982, "The Bright Star Catalogue", 4th Edition (in
+      collaboration with C. Jaschek), Yale Observatory
+      (catalog <V/25>)
+   Ochsenbein F., Acker A., Legrand E., Poncelet J.M., and Thuet-Fleck E.
+      1984, "Catalogue des Etoiles les Plus Brillantes", ed. Acker A.,
+      Observatoire de Strasbourg, Centre de Donnees astronomiques
+      et Planetarium de Strasbourg
+   Lanz T. =1986A&AS...65..195L (catalog <II/116>)
+   "The Hipparcos and Tycho Catalogues", 1997, ESA SP-1200
+      (See Cat. <I/239>)
+================================================================================
+(End)                                     Francois Ochsenbein [CDS]  03-Feb-1999

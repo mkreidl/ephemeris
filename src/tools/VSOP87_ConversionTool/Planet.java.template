@@ -1,0 +1,38 @@
+package dynamics;
+
+public class PLANET extends VSOP87Planet
+{
+	public PLANET()
+	{
+		// Here we emulate virtual static members:
+		// coeff is a member of the abstract super-class VSOP87Planet,
+		// and it references different things, depending on and
+		// only on the  c l a s s  of the instance created here.
+		coeff = classCoeff;
+	}
+	
+	private static double[][][][] classCoeff = new double[ DIMENSION ][][][];
+	static {
+		classCoeff[0] = new double[6][][];
+		classCoeff[1] = new double[6][][];
+		classCoeff[2] = new double[6][][];
+		initialize_1_0();
+		initialize_1_1();
+		initialize_1_2();
+		initialize_1_3();
+		initialize_1_4();
+		initialize_1_5();
+		initialize_2_0();
+		initialize_2_1();
+		initialize_2_2();
+		initialize_2_3();
+		initialize_2_4();
+		initialize_2_5();
+		initialize_3_0();
+		initialize_3_1();
+		initialize_3_2();
+		initialize_3_3();
+		initialize_3_4();
+		initialize_3_5();
+	}
+
