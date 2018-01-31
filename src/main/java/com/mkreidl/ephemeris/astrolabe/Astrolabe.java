@@ -1,15 +1,14 @@
 package com.mkreidl.ephemeris.astrolabe;
 
+import java.util.EnumMap;
+
 import com.mkreidl.ephemeris.Time;
 import com.mkreidl.ephemeris.geometry.Angle;
 import com.mkreidl.ephemeris.geometry.Spherical;
 import com.mkreidl.ephemeris.geometry.Stereographic;
 import com.mkreidl.ephemeris.sky.SolarSystem;
 import com.mkreidl.ephemeris.sky.StarsCatalog;
-import com.mkreidl.ephemeris.sky.coordinates.Ecliptical;
 import com.mkreidl.ephemeris.sky.coordinates.Equatorial;
-
-import java.util.EnumMap;
 
 
 public class Astrolabe extends Stereographic
@@ -297,8 +296,6 @@ public class Astrolabe extends Stereographic
     public class Star extends CelestialObject
     {
         private final int index;
-        private final Ecliptical.Cart toDatePositionEcliptical = new Ecliptical.Cart();
-        private final Ecliptical.Cart earth = new Ecliptical.Cart();
 
         Star( int index )
         {
@@ -336,14 +333,14 @@ public class Astrolabe extends Stereographic
         @Override
         public String getScientificName()
         {
-            final String name = StarsCatalog.SCIENTIFIC_NAME[index];
+            final String name = StarsCatalog.FLAMSTEED_BAYER[index];
             return name != null ? name : super.getScientificName();
         }
 
         @Override
         public String getTrivialName()
         {
-            final String name = StarsCatalog.TRADITIONAL_NAME[index];
+            final String name = StarsCatalog.IAU_NAME[index];
             return name != null ? name : super.getTrivialName();
         }
 

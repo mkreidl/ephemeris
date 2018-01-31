@@ -1,11 +1,11 @@
 package com.mkreidl.ephemeris;
 
-import org.threeten.bp.Instant;
-import org.threeten.bp.LocalDateTime;
-import org.threeten.bp.ZoneId;
-import org.threeten.bp.ZonedDateTime;
-import org.threeten.bp.format.DateTimeFormatter;
-import org.threeten.bp.format.DateTimeParseException;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

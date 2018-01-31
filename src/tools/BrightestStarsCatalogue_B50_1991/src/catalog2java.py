@@ -5,13 +5,14 @@ Created on 24.01.2017
 '''
 
 
-CATALOG = r"C:\Users\mkreidl\Projekte\Astrolapp\app\src\resources\BrightestStarsCatalogue_B50_1991\catalog"
-NAMES = r"C:\Users\mkreidl\Projekte\Astrolapp\app\src\resources\BrightestStarsCatalogue\names.dat"
+CATALOG = r"/home/martin/Projekte/Ephemeris/src/tools/BrightestStarsCatalogue_B50_1991/catalog"
+NAMES = r"/home/martin/Projekte/Ephemeris/src/tools/BrightestStarsCatalogue_B50_1991/names.dat"
+IAU_NAMES = r"/home/martin/Projekte/Ephemeris/src/tools/IAU_starnames_2017.txt"
 
 INDEX_VARIABLE = "BRIGHT_STAR_NUMBER"
 INDEX_LOOKUP_VARIABLE = "INDEX_LOOKUP"
-SCI_NAME_VARIABLE = "SCIENTIFIC_NAME"
-NAME_VARIABLE = "TRADITIONAL_NAME"
+SCI_NAME_VARIABLE = "FLAMSTEED_BAYER"
+NAME_VARIABLE = "IAU_NAME"
 POS_VARIABLE = "POS"
 VEL_VARIABLE = "VEL"
 PHASE_VARIABLE = "QP"
@@ -39,6 +40,15 @@ def parse_names( names_file ):
     with open( names_file, "r" ) as names:
         for line in names:
             result[ int( line[0:4] ) ] = line[6:].strip()
+    return result
+
+def parse_IAU_names( iau_file ):
+    result = {}
+    with open( iau_file, "r" ) as iau:
+        for line in iau:
+            components = line.split()
+            if components[1] == "HR":
+                result[ int( components[2] )] = components[0].strip()
     return result
 
 def parse( catalog_iterable, names_dict, java_output ):
@@ -125,7 +135,7 @@ def parse( catalog_iterable, names_dict, java_output ):
             java_file.write( "{0}[{1}] = {2}{3};\n".format( MAG_VARIABLE, count, mag, "f" if type( mag ) is float else "" ) )
             java_file.write( "{0}[{1}] = {2}{3};\n".format( PAR_VARIABLE, count, par, "f" if type( par ) is float else "" ) )
             
-            java_file.write( "{0}[{1}] = new float[6]{{{dst}, {ra}, {de}, {vdst}, {vra}, {vde}}};\n".format(
+            java_file.write( "{0}[{1}] = new float[]{{{dst}, {ra}, {de}, {vdst}, {vra}, {vde}}};\n".format(
                 PHASE_VARIABLE, count, dst=dist, ra=ra_j2000_rad, de=de_j2000_rad, vdst=r_v_kmsec, vra=ra_v_rad, vde=de_v_rad
             ) )
             java_file.write( "{0}[{1}] = '{2}';\n".format( "SPECTRAL_TYPE", count, spectral_type ) )
@@ -155,4 +165,6 @@ def parse( catalog_iterable, names_dict, java_output ):
 if __name__ == '__main__':
     with open( CATALOG, "r" ) as catalog_file:
         lines = lines_sorted_by_magnitude( catalog_file )
-    parse( lines, parse_names( NAMES ), "catalog.java" )
+    names_dict = parse_names( NAMES )
+    iau_names = parse_IAU_names( IAU_NAMES )
+    parse( lines, iau_names, "catalog.java" )

@@ -12,3 +12,10 @@ gradlew.bat
 local.properties
 settings.gradle
 *.iml
+.classpath
+.project
+.pydevproject
+.settings
+
+src/tools/BrightestStarsCatalogue_B50_1991/src/catalog*
+
