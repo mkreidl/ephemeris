@@ -1,0 +1,60 @@
+
+NA-Nr.	NJ-Nr.	HR-Nr.	Eigenname	mag	Bayer-Bezeichnung	SHA	δ	Entfernung (ly)
+1	    1	    15	    Alpheratz	2,07	α And	        358	N 29°	97
+2	    3	    99	    Ankaa	    2,4	    α Phe	354	S 42°	77
+3	    4	    168	    Schedir 	2,24	α Cas	350	N 57°	230
+4	    5	    188	    Diphda  	2,04	β Cet	349	S 18°	96
+5	8	472	Achernar	0,45    α Eri	336	S 57°	144
+6	11	617	Hamal	2,01	α Ari	328	N 23°	66
+*	9	424	Polaris	1,99 var	α UMi	322	N 89°	430
+7	*	897 898	Acamar	2,88	θ Eri	316	S 40°	160
+8	12	911	Menkar	2,54	α Cet	315	N 04°	220
+9	14	1017	Mirfak	1,8	α Per	309	N 50°	590
+10	16	1457	Aldebaran	0,86 var	α Tau	291	N 17°	65
+11	17	1713	Rigel	0,15 var	β Ori	281	S 08°	770
+12	18	1708	Capella	0,07	α Aur	281	N 46°	42
+13	19	1790	Bellatrix	1,64	γ Ori	279	N 06°	240
+14	20	1791	Elnath	1,66	β Tau	279	N 29°	130
+15	21	1903	Alnilam	1,69	ε Ori	276	S 01°	1300
+16	24	2061	Beteigeuze	0,55 var	α Ori	271	N 07°	430
+17	27	2326	Canopus	−0,73	α Car	264	S 53°	310
+18	29	2491	Sirius	−1,46	α CMa	259	S 17°	9
+19	30	2618	Adhara	1,5	ε CMa	255	S 29°	430
+20	33	2943	Prokyon	0,36	α CMi	245	N 05°	11
+21	34	2990	Pollux	1,14	β Gem	244	N 28°	34
+22	35	3307	Avior	1,87	ε1 Car	234	S 60°	630
+23	36	3634	Suhail	2,23	λ Vel	223	S 43°	570
+24	37	3685	Miaplacidus	1,67	β Car	222	S 70°	113
+25	38	3748	Alphard	1,98	α Hya	218	S 09°	180
+26	39	3982	Regulus	1,36	α Leo	208	N 12°	78
+27	41	4301	Dubhe	1,8	α1 UMa	194	N 62°	124
+28	42	4534	Denebola	2,14	β Leo	183	N 15°	36
+29	*	4662	Gienah Gurab	2,58	γ Crv	176	S 18°	165
+30	43	4730	Acrux	0,79	α1 Cru	173	S 63°	320
+31	44	4763	Gacrux	1,63	γ Cru	172	S 57°	88
+32	46	4905	Alioth	1,77	ε UMa	167	N 56°	81
+33	49	5056	Spica	0,97	α Vir	159	S 11°	260
+34	50	5191	Alkaid	1,86	η UMa	153	N 49°	101
+35	51	5267	Hadar	0,61	β Cen	149	S 60°	530
+36	52	5288	Menkent	2,06	θ Cen	148	S 36°	61
+37	53	5340	Arktur	−0,05	α Boo	146	N 19°	37
+38	54	5459	Alpha Centauri	−0,27	α1 Cen	140	S 61°	4
+39	56	5530 5531	Zuben-el-dschenubi	2,64	α Lib	137	S 16°	77
+40	57	5563	Kochab	2,07	β UMi	137	N 74°	127
+41	59	5793	Alphekka	2,22 var	α1 CrB	126	N 27°	75
+42	61	6134	Antares	0,95 var	α Sco	113	S 26°	600
+43	62	6217	Atria	1,92	α TrA	108	S 69°	420
+44	*	6378	Sabik	2,43	η Oph	103	S 16°	84
+45	64	6527	Shaula	1,62	λ Sco	097	S 37°	700
+46	65	6556	Ras Alhague	2,08	α Oph	096	N 13°	47
+47	67	6705	Etamin	2,24	γ Dra	091	N 52°	148
+48	68	6879	Kaus Australis	1,84	ε Sgr	084	S 34°	145
+49	69	7001	Wega	0,03	α Lyr	081	N 39°	25
+50	70	7121	Nunki	2,05	σ Sgr	076	S 26°	220
+51	71	7557	Altair	0,77	α Aql	062	N 09°	17
+52	72	7790	Peacock	1,93	α Pav	054	S 57°	180
+53	73	7924	Deneb	1,24	α Cyg	050	N 45°	3000
+54	75	8308	Enif	2,38	ε Peg	034	N 10°	670
+55	76	8425	Al Nair	1,74	α Gru	028	S 47°	101
+56	78	8728	Fomalhaut	1,15	α PsA	016	S 30°	25
+57	80	8781	Markab	2,49	α Peg	014	N 15°	140
