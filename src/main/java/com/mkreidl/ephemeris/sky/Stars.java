@@ -15,20 +15,15 @@ import static java.lang.Math.sin;
 
 public class Stars
 {
-    private static final Ecliptical.Cart[] POS_J2000 = new Ecliptical.Cart[StarsCatalog.CATALOG_SIZE];
-    private static final Ecliptical.Cart[] VEL_J2000 = new Ecliptical.Cart[StarsCatalog.CATALOG_SIZE];
-
-    private static final float[] PROJ_N_POS_J2000 = new float[2 * StarsCatalog.CATALOG_SIZE];
-    private static final float[] PROJ_N_VEL_J2000 = new float[2 * StarsCatalog.CATALOG_SIZE];
-    private static final float[] PROJ_S_POS_J2000 = new float[2 * StarsCatalog.CATALOG_SIZE];
-    private static final float[] PROJ_S_VEL_J2000 = new float[2 * StarsCatalog.CATALOG_SIZE];
+    private static final Ecliptical.Cart[] POS_J2000 = new Ecliptical.Cart[StarsCatalog.SIZE];
+    private static final Ecliptical.Cart[] VEL_J2000 = new Ecliptical.Cart[StarsCatalog.SIZE];
 
     private final PrecessionMatrix precession = new PrecessionMatrix();
     private final Matrix rotation = new Matrix();
     private final Matrix transformation = new Matrix();
     private int numberOfThreads = 8;
+    private int numCalcPerThread = StarsCatalog.SIZE / numberOfThreads + 1;
     private Thread[] threads = new Thread[numberOfThreads];
-    private int numCalcPerThread = StarsCatalog.CATALOG_SIZE / numberOfThreads + 1;
 
     static
     {
@@ -39,10 +34,7 @@ public class Stars
         final Equatorial.Cart posEquatorial = new Equatorial.Cart();
         final Equatorial.Sphe posJ2000 = new Equatorial.Sphe();
 
-        final Stereographic northpole = new Stereographic( 1.0 );
-        final Stereographic southpole = new Stereographic( -1.0 );
-
-        for ( int i = 0; i < StarsCatalog.CATALOG_SIZE; ++i )
+        for ( int i = 0; i < StarsCatalog.SIZE; ++i )
         {
             final double ra = StarsCatalog.getRAscJ2000( i );
             final double decl = StarsCatalog.getDeclJ2000( i );
@@ -58,29 +50,13 @@ public class Stars
             posJ2000.set( 1.0, StarsCatalog.getRAscJ2000( i ), StarsCatalog.getDeclJ2000( i ) );
             posJ2000.transform( posEquatorial );
             POS_J2000[i] = (Ecliptical.Cart)equ2ecl.apply( posEquatorial, new Ecliptical.Cart() );
-
-            northpole.project( posEquatorial, tmp );
-            PROJ_N_POS_J2000[2 * i] = (float)tmp.x;
-            PROJ_N_POS_J2000[2 * i + 1] = (float)tmp.y;
-            northpole.getJacobian( posEquatorial, jacobian );
-            jacobian.apply( velEquatorial, tmp );
-            PROJ_N_VEL_J2000[2 * i] = (float)tmp.x;
-            PROJ_N_VEL_J2000[2 * i + 1] = (float)tmp.y;
-
-            southpole.project( posEquatorial, tmp );
-            PROJ_S_POS_J2000[2 * i] = (float)tmp.x;
-            PROJ_S_POS_J2000[2 * i + 1] = (float)tmp.y;
-            southpole.getJacobian( posEquatorial, jacobian );
-            jacobian.apply( velEquatorial, tmp );
-            PROJ_S_VEL_J2000[2 * i] = (float)tmp.x;
-            PROJ_S_VEL_J2000[2 * i + 1] = (float)tmp.y;
         }
     }
 
     public void setNumberOfThreads( int numberOfThreads )
     {
         this.numberOfThreads = numberOfThreads;
-        numCalcPerThread = StarsCatalog.CATALOG_SIZE / numberOfThreads + 1;
+        numCalcPerThread = StarsCatalog.SIZE / numberOfThreads + 1;
         threads = new Thread[numberOfThreads];
     }
 
@@ -166,7 +142,7 @@ public class Stars
         @Override
         public void run()
         {
-            for ( int i = from; i < to && i < StarsCatalog.CATALOG_SIZE; ++i )
+            for ( int i = from; i < to && i < StarsCatalog.SIZE; ++i )
             {
                 // Calculate ecliptical cartesian coordinates to date
                 outputPositions[i].x = POS_J2000[i].x + VEL_J2000[i].x * yearsSince2000;
@@ -197,7 +173,7 @@ public class Stars
         @Override
         public void run()
         {
-            for ( int i = from; i < to && i < StarsCatalog.CATALOG_SIZE; ++i )
+            for ( int i = from; i < to && i < StarsCatalog.SIZE; ++i )
             {
                 stereographic.project( input[i], tmpCartesian );
                 output[2 * i] = (float)tmpCartesian.x;

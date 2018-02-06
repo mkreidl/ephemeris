@@ -20,6 +20,7 @@ public class Planets extends AbstractPart
     private final Equatorial.Sphe topocentric = new Equatorial.Sphe();
     private final Position position = new Position();
 
+    private final EnumMap<SolarSystem.Body, String> planetNames = new EnumMap<>( SolarSystem.Body.class );
     private final EnumMap<SolarSystem.Body, Circle> apparentDisks = new EnumMap<>( SolarSystem.Body.class );
     private final EnumMap<SolarSystem.Body, Cartesian> projectedPositions = new EnumMap<>( SolarSystem.Body.class );
 
@@ -35,7 +36,18 @@ public class Planets extends AbstractPart
                 sortedByDistance.add( body );
             projectedPositions.put( body, new Cartesian() );
             apparentDisks.put( body, new Circle() );
+            planetNames.put( body, body.toString() );
         }
+    }
+
+    public void setPlanetNames( EnumMap<SolarSystem.Body, String> planetNames )
+    {
+        this.planetNames.putAll( planetNames );
+    }
+
+    public String getName( SolarSystem.Body planet )
+    {
+        return planetNames.get( planet );
     }
 
     public Circle getApparentDisk( SolarSystem.Body object )

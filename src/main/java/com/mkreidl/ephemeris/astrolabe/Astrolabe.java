@@ -1,7 +1,5 @@
 package com.mkreidl.ephemeris.astrolabe;
 
-import java.util.EnumMap;
-
 import com.mkreidl.ephemeris.Time;
 import com.mkreidl.ephemeris.geometry.Angle;
 import com.mkreidl.ephemeris.geometry.Spherical;
@@ -25,7 +23,6 @@ public class Astrolabe extends Stereographic
     protected final Time time = new Time();
     final Equatorial.Sphe geographicLocation = new Equatorial.Sphe();
 
-    private EnumMap<SolarSystem.Body, String> planetNames = new EnumMap<>( SolarSystem.Body.class );
     private int tympanonTimeout;
     private int reteTimeout;
     private int planetsTimeout;
@@ -35,8 +32,6 @@ public class Astrolabe extends Stereographic
     {
         super( 1 );
         geographicLocation.set( new Spherical( 1, 0, 0 ) );
-        for ( SolarSystem.Body planet : SolarSystem.Body.values() )
-            planetNames.put( planet, planet.toString() );
     }
 
     public Hemisphere getHemisphere()
@@ -100,11 +95,6 @@ public class Astrolabe extends Stereographic
         changeObserverLocation();
     }
 
-    public void setPlanetNames( EnumMap<SolarSystem.Body, String> planetNames )
-    {
-        this.planetNames = planetNames;
-    }
-
     /**
      * Calculate the angle as it appears after stereographic projection between
      * the points South and West on the mathematical horizon
@@ -140,7 +130,7 @@ public class Astrolabe extends Stereographic
 
     public CelestialObject createStar( int index )
     {
-        return index > -1 && index < StarsCatalog.CATALOG_SIZE ? new Star( index ) : NO_OBJECT;
+        return index > -1 && index < StarsCatalog.SIZE ? new Star( index ) : NO_OBJECT;
     }
 
     private void changeObserverLocation()
@@ -276,7 +266,7 @@ public class Astrolabe extends Stereographic
         @Override
         public String getScientificName()
         {
-            final String name = planetNames.get( body );
+            final String name = planets.getName( body );
             return name != null ? name : super.getScientificName();
         }
 
@@ -321,7 +311,7 @@ public class Astrolabe extends Stereographic
         @Override
         public String toString()
         {
-            return StarsCatalog.getCatalogName( index );
+            return "HR " + Integer.toString( StarsCatalog.BRIGHT_STAR_NUMBER[index] );
         }
 
         @Override
@@ -347,7 +337,7 @@ public class Astrolabe extends Stereographic
         @Override
         public String getCatalogName()
         {
-            return StarsCatalog.getCatalogName( index );
+            return "HR " + Integer.toString( StarsCatalog.BRIGHT_STAR_NUMBER[index] );
         }
     }
 }

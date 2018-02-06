@@ -31,12 +31,13 @@ public class Rete extends AbstractPart
     private final Equatorial.Cart equatorialCart = new Equatorial.Cart();
     private final Matrix matrixEcl2Equ = new Matrix();
 
-    public final EnumMap<Zodiac.Sign, Cartesian> signs = new EnumMap<>( Zodiac.Sign.class );
-    public final EnumMap<Zodiac.Sign, Cartesian> signsMiddle = new EnumMap<>( Zodiac.Sign.class );
-    public final EnumMap<Zodiac.Sign, Cartesian[]> signBoundariesEcliptical = new EnumMap<>( Zodiac.Sign.class );
+    private final EnumMap<Zodiac.Sign, Cartesian> signs = new EnumMap<>( Zodiac.Sign.class );
+    private final EnumMap<Zodiac.Sign, Cartesian[]> signBoundariesEcliptical = new EnumMap<>( Zodiac.Sign.class );
+    private final Equatorial.Cart[] toDatePositionsEquatorial = new Equatorial.Cart[StarsCatalog.SIZE];
+
+    public final EnumMap<Zodiac.Sign, Cartesian> signsCenter = new EnumMap<>( Zodiac.Sign.class );
     public final EnumMap<Zodiac.Sign, Cartesian[]> signBoundariesProjected = new EnumMap<>( Zodiac.Sign.class );
-    public final Equatorial.Cart[] toDatePositionsEquatorial = new Equatorial.Cart[StarsCatalog.CATALOG_SIZE];
-    public final float[] projectedPos = new float[2 * StarsCatalog.CATALOG_SIZE];
+    public final float[] projectedPos = new float[2 * StarsCatalog.SIZE];
 
     public Rete( Astrolabe astrolabe )
     {
@@ -44,7 +45,7 @@ public class Rete extends AbstractPart
         for ( Zodiac.Sign sign : Zodiac.Sign.values() )
         {
             signs.put( sign, new Cartesian() );
-            signsMiddle.put( sign, new Cartesian() );
+            signsCenter.put( sign, new Cartesian() );
             signBoundariesEcliptical.put( sign, new Cartesian[POINT_COUNT_SIGN_BOUNDARY] );
             signBoundariesProjected.put( sign, new Cartesian[POINT_COUNT_SIGN_BOUNDARY] );
             eclipticalSphe.set( 1.0, Zodiac.getLongitude( sign, Angle.Unit.RADIANS ), 0 );
@@ -55,7 +56,7 @@ public class Rete extends AbstractPart
                 signBoundariesProjected.get( sign )[i] = new Cartesian();
             }
         }
-        for ( int i = 0; i < StarsCatalog.CATALOG_SIZE; ++i )
+        for ( int i = 0; i < StarsCatalog.SIZE; ++i )
             toDatePositionsEquatorial[i] = new Equatorial.Cart();
     }
 
@@ -85,7 +86,7 @@ public class Rete extends AbstractPart
             );
             astrolabe.project(
                     zodiac.getEquatorialDirectionMiddle( sign, equatorialCart ),
-                    signsMiddle.get( sign )
+                    signsCenter.get( sign )
             );
             computeSignBoundary( sign );
         }

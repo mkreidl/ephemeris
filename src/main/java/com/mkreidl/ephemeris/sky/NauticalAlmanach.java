@@ -81,7 +81,8 @@ public class NauticalAlmanach
 
     public static int getNAIndex( int hrNumber )
     {
-        return NA_MAP.get( hrNumber );
+        final Integer na = NA_MAP.get( hrNumber );
+        return na != null ? na : 0;
     }
 
     public static int getHRNumber( int naIndex )

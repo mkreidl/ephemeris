@@ -4,19 +4,19 @@ public class StarsCatalog
 {
     public static final java.util.Map<Character, Integer> COLOR_TABLE = new java.util.HashMap<>();
 
-    public static final int CATALOG_SIZE = 9096; // 9110 HR entries, 14 of which are Novae and thus excluded here
+    public static final int SIZE = 9096; // 9110 HR entries, 14 of which are Novae and thus excluded here
 
-    public static final int[] BRIGHT_STAR_NUMBER = new int[CATALOG_SIZE];
-    public static final float[][] QP = new float[CATALOG_SIZE][];
-    public static final float[] MAG = new float[CATALOG_SIZE];
-    public static final float[] PAR = new float[CATALOG_SIZE];
-    public static final String[] FLAMSTEED_BAYER = new String[CATALOG_SIZE];
-    public static final char[] SPECTRAL_TYPE = new char[CATALOG_SIZE];
+    public static final int[] BRIGHT_STAR_NUMBER = new int[SIZE];
+    public static final float[][] QP = new float[SIZE][];
+    public static final float[] MAG = new float[SIZE];
+    public static final float[] PAR = new float[SIZE];
+    public static final String[] FLAMSTEED_BAYER = new String[SIZE];
+    public static final char[] SPECTRAL_TYPE = new char[SIZE];
 
-    public static final String[] IAU_NAME = new String[CATALOG_SIZE];
-    public static final float[] BRIGHTNESS = new float[CATALOG_SIZE];
-    public static final float[] SQRT_BRIGHTNESS = new float[CATALOG_SIZE];
-    public static final int[] COLOR = new int[CATALOG_SIZE];
+    public static final String[] IAU_NAME = new String[SIZE];
+    public static final float[] BRIGHTNESS = new float[SIZE];
+    public static final float[] SQRT_BRIGHTNESS = new float[SIZE];
+    public static final int[] COLOR = new int[SIZE];
 
     static
     {
@@ -39,11 +39,6 @@ public class StarsCatalog
 
     private StarsCatalog()
     {
-    }
-
-    public static String getCatalogName( int index )
-    {
-        return "HR " + Integer.toString( BRIGHT_STAR_NUMBER[index] );
     }
 
     public static double getDist( int index )
@@ -81,8 +76,8 @@ public class StarsCatalog
 
     public static int findIndexByName( String name )
     {
-        for ( int index = 0; index < CATALOG_SIZE; ++index )
-            if ( name.equals( FLAMSTEED_BAYER[index] ) || name.equals( getCatalogName( index ) ) )
+        for ( int index = 0; index < SIZE; ++index )
+            if ( name.equals( FLAMSTEED_BAYER[index] ) || name.equals( "HR " + Integer.toString( BRIGHT_STAR_NUMBER[index] ) ) )
                 return index;
         return -1;
     }
@@ -90,7 +85,7 @@ public class StarsCatalog
     private static void initializeDerived()
     {
         final double base = -0.2 * Math.log( 100 );
-        for ( int i = 0; i < CATALOG_SIZE; ++i )
+        for ( int i = 0; i < SIZE; ++i )
         {
             BRIGHTNESS[i] = (float) Math.exp( MAG[i] * base );
             SQRT_BRIGHTNESS[i] = (float) Math.sqrt( BRIGHTNESS[i] );

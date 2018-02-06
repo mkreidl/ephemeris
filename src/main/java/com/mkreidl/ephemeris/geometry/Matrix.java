@@ -13,19 +13,9 @@ public class Matrix
         this.setIdentity();
     }
 
-    public Matrix set( double a11, double a12, double a13,
-                       double a21, double a22, double a23,
-                       double a31, double a32, double a33 )
+    public Matrix set( double... values )
     {
-        values[0] = a11;
-        values[1] = a12;
-        values[2] = a13;
-        values[3] = a21;
-        values[4] = a22;
-        values[5] = a23;
-        values[6] = a31;
-        values[7] = a32;
-        values[8] = a33;
+        this.values = values;
         return this;
     }
 
