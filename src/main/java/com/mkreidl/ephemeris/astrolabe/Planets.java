@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class Planets extends AbstractPart
@@ -40,7 +41,7 @@ public class Planets extends AbstractPart
         }
     }
 
-    public void setPlanetNames( EnumMap<SolarSystem.Body, String> planetNames )
+    public void setPlanetNames( Map<SolarSystem.Body, String> planetNames )
     {
         this.planetNames.putAll( planetNames );
     }

@@ -1,5 +1,8 @@
 package com.mkreidl.ephemeris.sky;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class StarsCatalog
 {
     public static final java.util.Map<Character, Integer> COLOR_TABLE = new java.util.HashMap<>();
@@ -17,6 +20,8 @@ public class StarsCatalog
     public static final float[] BRIGHTNESS = new float[SIZE];
     public static final float[] SQRT_BRIGHTNESS = new float[SIZE];
     public static final int[] COLOR = new int[SIZE];
+
+    public static final List<Integer> NAMED_STARS = new ArrayList<>();
 
     static
     {
@@ -87,9 +92,11 @@ public class StarsCatalog
         final double base = -0.2 * Math.log( 100 );
         for ( int i = 0; i < SIZE; ++i )
         {
-            BRIGHTNESS[i] = (float) Math.exp( MAG[i] * base );
-            SQRT_BRIGHTNESS[i] = (float) Math.sqrt( BRIGHTNESS[i] );
+            BRIGHTNESS[i] = (float)Math.exp( MAG[i] * base );
+            SQRT_BRIGHTNESS[i] = (float)Math.sqrt( BRIGHTNESS[i] );
             COLOR[i] = COLOR_TABLE.containsKey( SPECTRAL_TYPE[i] ) ? COLOR_TABLE.get( SPECTRAL_TYPE[i] ) : 0xffffffff;
+            if ( IAU_NAME[i] != null )
+                NAMED_STARS.add( i );
         }
     }
 
@@ -213,6 +220,7 @@ public class StarsCatalog
         SPECTRAL_TYPE[2] = 'K';
         BRIGHT_STAR_NUMBER[3] = 5459;
         FLAMSTEED_BAYER[3] = "Alp1Cen";
+        IAU_NAME[3] = "Rigil Kentaurus";
         MAG[3] = -0.01f;
         PAR[3] = 0.751f;
         QP[3] = new float[]{4.341e+00f, 3.84e+00f, -1.06e+00f, -2.20e+01f, -1.77e-05f, 3.39e-06f};
@@ -440,6 +448,7 @@ public class StarsCatalog
         SPECTRAL_TYPE[35] = 'F';
         BRIGHT_STAR_NUMBER[36] = 6879;
         FLAMSTEED_BAYER[36] = "20Eps Sgr";
+        IAU_NAME[36] = "Kaus Australis";
         MAG[36] = 1.85f;
         PAR[36] = 0.023f;
         QP[36] = new float[]{1.417e+02f, 4.82e+00f, -6.00e-01f, -1.50e+01f, -1.84e-07f, -6.01e-07f};
@@ -1001,6 +1010,7 @@ public class StarsCatalog
         SPECTRAL_TYPE[117] = 'K';
         BRIGHT_STAR_NUMBER[118] = 6859;
         FLAMSTEED_BAYER[118] = "19Del Sgr";
+        IAU_NAME[118] = "Kaus Media";
         MAG[118] = 2.7f;
         PAR[118] = 0.047f;
         QP[118] = new float[]{6.936e+01f, 4.80e+00f, -5.21e-01f, -2.00e+01f, 1.70e-07f, -1.36e-07f};
@@ -1014,6 +1024,7 @@ public class StarsCatalog
         SPECTRAL_TYPE[119] = 'K';
         BRIGHT_STAR_NUMBER[120] = 6056;
         FLAMSTEED_BAYER[120] = "1Del Oph";
+        IAU_NAME[120] = "Yed Prior";
         MAG[120] = 2.74f;
         PAR[120] = 0.034f;
         QP[120] = new float[]{9.588e+01f, 4.25e+00f, -6.45e-02f, -2.00e+01f, -2.13e-07f, -6.93e-07f};
@@ -1112,6 +1123,7 @@ public class StarsCatalog
         SPECTRAL_TYPE[134] = 'G';
         BRIGHT_STAR_NUMBER[135] = 6913;
         FLAMSTEED_BAYER[135] = "22Lam Sgr";
+        IAU_NAME[135] = "Kaus Borealis";
         MAG[135] = 2.81f;
         PAR[135] = 0.053f;
         QP[135] = new float[]{6.151e+01f, 4.83e+00f, -4.44e-01f, -4.30e+01f, -2.13e-07f, -8.97e-07f};
@@ -1188,6 +1200,7 @@ public class StarsCatalog
         SPECTRAL_TYPE[146] = 'B';
         BRIGHT_STAR_NUMBER[147] = 8322;
         FLAMSTEED_BAYER[147] = "49Del Cap";
+        IAU_NAME[147] = "Deneb Algedi";
         MAG[147] = 2.87f;
         PAR[147] = 0.087f;
         QP[147] = new float[]{3.747e+01f, 5.70e+00f, -2.81e-01f, -6.00e+00f, 1.28e-06f, -1.44e-06f};
@@ -1247,6 +1260,7 @@ public class StarsCatalog
         SPECTRAL_TYPE[155] = 'B';
         BRIGHT_STAR_NUMBER[156] = 4915;
         FLAMSTEED_BAYER[156] = "12Alp2CVn";
+        IAU_NAME[156] = "Cor Caroli";
         MAG[156] = 2.9f;
         PAR[156] = 0.027f;
         QP[156] = new float[]{1.207e+02f, 3.39e+00f, 6.69e-01f, -3.00e+00f, -1.13e-06f, 2.71e-07f};
@@ -1428,6 +1442,7 @@ public class StarsCatalog
         SPECTRAL_TYPE[183] = 'B';
         BRIGHT_STAR_NUMBER[184] = 4069;
         FLAMSTEED_BAYER[184] = "34Mu UMa";
+        IAU_NAME[184] = "Tania Australis";
         MAG[184] = 3.05f;
         PAR[184] = 0.035f;
         QP[184] = new float[]{9.314e+01f, 2.72e+00f, 7.24e-01f, -2.10e+01f, -3.98e-07f, 1.70e-07f};
@@ -1667,6 +1682,7 @@ public class StarsCatalog
         SPECTRAL_TYPE[220] = 'M';
         BRIGHT_STAR_NUMBER[221] = 6075;
         FLAMSTEED_BAYER[221] = "2Eps Oph";
+        IAU_NAME[221] = "Yed Posterior";
         MAG[221] = 3.24f;
         PAR[221] = 0.043f;
         QP[221] = new float[]{7.581e+01f, 4.27e+00f, -8.19e-02f, -1.00e+01f, 4.12e-07f, 1.99e-07f};
@@ -1992,6 +2008,7 @@ public class StarsCatalog
         SPECTRAL_TYPE[272] = 'K';
         BRIGHT_STAR_NUMBER[273] = 4033;
         FLAMSTEED_BAYER[273] = "33Lam UMa";
+        IAU_NAME[273] = "Tania Borealis";
         MAG[273] = 3.45f;
         PAR[273] = 0.03f;
         QP[273] = new float[]{1.087e+02f, 2.69e+00f, 7.49e-01f, 1.80e+01f, -7.95e-07f, -1.84e-07f};
@@ -2043,6 +2060,7 @@ public class StarsCatalog
         SPECTRAL_TYPE[280] = 'M';
         BRIGHT_STAR_NUMBER[281] = 4377;
         FLAMSTEED_BAYER[281] = "54Nu UMa";
+        IAU_NAME[281] = "Alula Borealis";
         MAG[281] = 3.48f;
         PAR[281] = 0.02f;
         QP[281] = new float[]{1.630e+02f, 2.96e+00f, 5.78e-01f, -9.00e+00f, -1.26e-07f, 1.36e-07f};
@@ -2422,6 +2440,7 @@ public class StarsCatalog
         SPECTRAL_TYPE[340] = 'A';
         BRIGHT_STAR_NUMBER[341] = 1346;
         FLAMSTEED_BAYER[341] = "54Gam Tau";
+        IAU_NAME[341] = "Prima Hyadum";
         MAG[341] = 3.65f;
         PAR[341] = 0.028f;
         QP[341] = new float[]{1.164e+02f, 1.13e+00f, 2.73e-01f, 3.90e+01f, 5.58e-07f, -1.21e-07f};
@@ -2609,6 +2628,7 @@ public class StarsCatalog
         SPECTRAL_TYPE[370] = 'F';
         BRIGHT_STAR_NUMBER[371] = 539;
         FLAMSTEED_BAYER[371] = "55Zet Cet";
+        IAU_NAME[371] = "Baten Kaitos";
         MAG[371] = 3.73f;
         PAR[371] = 0.031f;
         QP[371] = new float[]{1.052e+02f, 4.86e-01f, -1.80e-01f, 9.00e+00f, 1.99e-07f, -1.89e-07f};
@@ -2695,6 +2715,7 @@ public class StarsCatalog
         SPECTRAL_TYPE[384] = 'K';
         BRIGHT_STAR_NUMBER[385] = 1373;
         FLAMSTEED_BAYER[385] = "61Del1Tau";
+        IAU_NAME[385] = "Secunda Hyadum";
         MAG[385] = 3.76f;
         PAR[385] = 0.021f;
         QP[385] = new float[]{1.552e+02f, 1.15e+00f, 3.06e-01f, 3.90e+01f, 5.19e-07f, -1.45e-07f};
@@ -3298,6 +3319,7 @@ public class StarsCatalog
         SPECTRAL_TYPE[482] = 'A';
         BRIGHT_STAR_NUMBER[483] = 3461;
         FLAMSTEED_BAYER[483] = "47Del Cnc";
+        IAU_NAME[483] = "Asellus Australis";
         MAG[483] = 3.94f;
         PAR[483] = 0.025f;
         QP[483] = new float[]{1.304e+02f, 2.29e+00f, 3.17e-01f, 1.70e+01f, -8.73e-08f, -1.11e-06f};
@@ -3547,6 +3569,7 @@ public class StarsCatalog
         SPECTRAL_TYPE[523] = 'K';
         BRIGHT_STAR_NUMBER[524] = 7337;
         FLAMSTEED_BAYER[524] = "Bet1Sgr";
+        IAU_NAME[524] = "Arkab Prior";
         MAG[524] = 4.01f;
         PAR[524] = Float.NaN;
         QP[524] = new float[]{Float.NaN, 5.07e+00f, -7.76e-01f, -1.10e+01f, 4.36e-08f, -9.70e-08f};
@@ -4654,6 +4677,7 @@ public class StarsCatalog
         SPECTRAL_TYPE[706] = 'K';
         BRIGHT_STAR_NUMBER[707] = 7343;
         FLAMSTEED_BAYER[707] = "Bet2Sgr";
+        IAU_NAME[707] = "Arkab Posterior";
         MAG[707] = 4.29f;
         PAR[707] = 0.03f;
         QP[707] = new float[]{1.087e+02f, 5.08e+00f, -7.82e-01f, 1.90e+01f, 4.70e-07f, -2.62e-07f};
@@ -5275,6 +5299,7 @@ public class StarsCatalog
         SPECTRAL_TYPE[809] = 'B';
         BRIGHT_STAR_NUMBER[810] = 4375;
         FLAMSTEED_BAYER[810] = "53Xi UMa";
+        IAU_NAME[810] = "Alula Australis";
         MAG[810] = 4.41f;
         PAR[810] = 0.137f;
         QP[810] = new float[]{2.380e+01f, 2.96e+00f, 5.50e-01f, -1.60e+01f, -2.08e-06f, -2.84e-06f};
@@ -5835,6 +5860,7 @@ public class StarsCatalog
         SPECTRAL_TYPE[904] = 'K';
         BRIGHT_STAR_NUMBER[905] = 824;
         FLAMSTEED_BAYER[905] = "39 Ari";
+        IAU_NAME[905] = "Lilii Borea";
         MAG[905] = 4.51f;
         PAR[905] = 0.027f;
         QP[905] = new float[]{1.207e+02f, 7.33e-01f, 5.10e-01f, -1.50e+01f, 7.22e-07f, -5.96e-07f};
@@ -6826,6 +6852,7 @@ public class StarsCatalog
         SPECTRAL_TYPE[1074] = 'B';
         BRIGHT_STAR_NUMBER[1075] = 3449;
         FLAMSTEED_BAYER[1075] = "43Gam Cnc";
+        IAU_NAME[1075] = "Asellus Borealis";
         MAG[1075] = 4.66f;
         PAR[1075] = 0.016f;
         QP[1075] = new float[]{2.037e+02f, 2.28e+00f, 3.75e-01f, 2.90e+01f, -5.14e-07f, -1.89e-07f};
@@ -16555,6 +16582,7 @@ public class StarsCatalog
         SPECTRAL_TYPE[2780] = 'A';
         BRIGHT_STAR_NUMBER[2781] = 7228;
         FLAMSTEED_BAYER[2781] = "Sig Oct";
+        IAU_NAME[2781] = "Polaris Australis";
         MAG[2781] = 5.47f;
         PAR[2781] = Float.NaN;
         QP[2781] = new float[]{Float.NaN, 5.54e+00f, -1.55e+00f, 1.20e+01f, 1.12e-07f, 2.42e-08f};

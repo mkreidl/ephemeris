@@ -49,6 +49,11 @@ def parse_IAU_names( iau_file ):
             components = line.split()
             if components[1] == "HR":
                 result[ int( components[2] )] = components[0].strip()
+            else:
+                if components[2] == "HR":
+                    result[ int( components[3] )] = (components[0] + " " + components[1]).strip()
+                else:
+                    print line
     return result
 
 def parse( catalog_iterable, names_dict, java_output ):
