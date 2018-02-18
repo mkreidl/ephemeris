@@ -9,9 +9,9 @@ public class Constellations
 
     public static class Constellation implements Iterable<Integer>
     {
-
-        protected List<int[]> mEdges;
         private String name = "";
+
+        List<int[]> mEdges;
 
         public List<int[]> getEdges()
         {
@@ -34,7 +34,6 @@ public class Constellations
         {
             return new Iterator<Integer>()
             {
-
                 int edge = 0;
                 int vertex = 0;
 

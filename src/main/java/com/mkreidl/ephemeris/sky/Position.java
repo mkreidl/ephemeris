@@ -201,7 +201,7 @@ public class Position
     /**
      * Compute the fraction of the disk which is lighted by the sun
      */
-    public double getIlluminatedArea()
+    public double getIlluminatedFraction()
     {
         final double gh = helioCart.dot( geoCart );
         final double cosPhase = gh / ( geoCart.length() * helioCart.length() );

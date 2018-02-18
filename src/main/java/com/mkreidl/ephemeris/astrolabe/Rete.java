@@ -14,7 +14,6 @@ import com.mkreidl.ephemeris.sky.coordinates.Equatorial;
 
 import java.util.EnumMap;
 
-
 public class Rete extends AbstractPart
 {
     public static final int POINT_COUNT_SIGN_BOUNDARY = 31;
@@ -39,7 +38,7 @@ public class Rete extends AbstractPart
     public final EnumMap<Zodiac.Sign, Cartesian[]> signBoundariesProjected = new EnumMap<>( Zodiac.Sign.class );
     public final float[] projectedPos = new float[2 * StarsCatalog.SIZE];
 
-    public Rete( Astrolabe astrolabe )
+    Rete( Astrolabe astrolabe )
     {
         super( astrolabe );
         for ( Zodiac.Sign sign : Zodiac.Sign.values() )
@@ -98,19 +97,17 @@ public class Rete extends AbstractPart
         stars.setNumberOfThreads( numberOfThreads );
     }
 
-    public Cartesian getConstellationCenter( Constellations.Constellation constellation, Cartesian output, boolean weighted )
+    public void getConstellationCenter( Constellations.Constellation constellation, Cartesian output )
     {
-        double totalWeight = 0.0;
+        int count = 0;
         output.set( 0, 0, 0 );
         for ( int star : constellation )
         {
-            double weight = ( weighted ? StarsCatalog.MAG[star] : 1 );
-            output.x += projectedPos[2 * star] * weight;
-            output.y += projectedPos[2 * star + 1] * weight;
-            totalWeight += weight;
+            output.x += projectedPos[2 * star];
+            output.y += projectedPos[2 * star + 1];
+            ++count;
         }
-        output.scale( 1.0 / totalWeight );
-        return output;
+        output.scale( 1.0 / count );
     }
 
     private void computeSignBoundary( Zodiac.Sign sign )
