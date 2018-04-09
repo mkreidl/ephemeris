@@ -6,7 +6,7 @@ import static com.mkreidl.ephemeris.geometry.Coordinates.Axis;
 
 public class Matrix
 {
-    protected double[] values = new double[9];
+    public double[] values = new double[9];
 
     public Matrix()
     {

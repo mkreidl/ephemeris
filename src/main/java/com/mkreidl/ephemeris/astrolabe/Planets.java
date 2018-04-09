@@ -7,9 +7,6 @@ import com.mkreidl.ephemeris.sky.Position;
 import com.mkreidl.ephemeris.sky.SolarSystem;
 import com.mkreidl.ephemeris.sky.coordinates.Equatorial;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -20,21 +17,19 @@ public class Planets extends AbstractPart
     private final Cartesian onUnitSphere = new Cartesian();
     private final Equatorial.Sphe topocentric = new Equatorial.Sphe();
     private final Position position = new Position();
+    private final SolarSystem solarSystem = new SolarSystem();
 
-    private final EnumMap<SolarSystem.Body, String> planetNames = new EnumMap<>( SolarSystem.Body.class );
-    private final EnumMap<SolarSystem.Body, Circle> apparentDisks = new EnumMap<>( SolarSystem.Body.class );
-    private final EnumMap<SolarSystem.Body, Cartesian> projectedPositions = new EnumMap<>( SolarSystem.Body.class );
+    private final Map<SolarSystem.Body, String> planetNames = new EnumMap<>( SolarSystem.Body.class );
+    private final Map<SolarSystem.Body, Circle> apparentDisks = new EnumMap<>( SolarSystem.Body.class );
+    private final Map<SolarSystem.Body, Cartesian> projectedPositions = new EnumMap<>( SolarSystem.Body.class );
 
-    final SolarSystem solarSystem = new SolarSystem();
-    public final List<SolarSystem.Body> sortedByDistance = new ArrayList<>();
+    public List<SolarSystem.Body> sortedByDistance;
 
-    public Planets( Astrolabe astrolabe )
+    Planets( Astrolabe astrolabe )
     {
         super( astrolabe );
         for ( SolarSystem.Body body : SolarSystem.Body.values() )
         {
-            if ( body != SolarSystem.Body.EARTH )  // don't draw earth (coordinates has no meaning on projection)
-                sortedByDistance.add( body );
             projectedPositions.put( body, new Cartesian() );
             apparentDisks.put( body, new Circle() );
             planetNames.put( body, body.toString() );
@@ -56,7 +51,7 @@ public class Planets extends AbstractPart
         return apparentDisks.get( object );
     }
 
-    public Cartesian getPosition( SolarSystem.Body object )
+    Cartesian getPosition( SolarSystem.Body object )
     {
         return projectedPositions.get( object );
     }
@@ -77,10 +72,9 @@ public class Planets extends AbstractPart
     protected void onRecomputeProjection()
     {
         onChangeViewParameters();
-        // Arrays.stream( SolarSystem.Body.values() ).forEach( this::recompute );
         for ( SolarSystem.Body object : SolarSystem.Body.values() )
             recompute( object );
-        Collections.sort( sortedByDistance, distanceComparator );
+        sortedByDistance = solarSystem.getSortedByDistanceDescending();
         //CHECK? onRecomputeListener.onRecomputeProjection();
     }
 
@@ -100,12 +94,8 @@ public class Planets extends AbstractPart
         astrolabe.project( topocentric, apparentRadius, apparentDisks.get( object ) );
     }
 
-    private final Comparator<SolarSystem.Body> distanceComparator = ( o1, o2 ) ->
+    public List<SolarSystem.Body> getSortedByDistance()
     {
-        solarSystem.getEphemerides( o1, position );
-        final double d1 = position.get( topocentric, Position.CoordinatesCenter.TOPOCENTRIC ).distance( Distance.m );
-        solarSystem.getEphemerides( o2, position );
-        final double d2 = position.get( topocentric, Position.CoordinatesCenter.TOPOCENTRIC ).distance( Distance.m );
-        return Double.compare( d2, d1 );
-    };
+        return sortedByDistance;
+    }
 }

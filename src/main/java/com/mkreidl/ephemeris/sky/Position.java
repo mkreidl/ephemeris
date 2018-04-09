@@ -45,7 +45,7 @@ public class Position
         posSun.set( earth ).scale( -1 );
     }
 
-    public void setHeliocentricPosition( Ecliptical.Cart heliocentric, Ecliptical.Cart earth )
+    void setHeliocentricPosition( Ecliptical.Cart heliocentric, Ecliptical.Cart earth )
     {
         helioCart.set( heliocentric );
         geoCart.set( heliocentric ).sub( earth );
@@ -73,15 +73,20 @@ public class Position
         velocitySun.set( velEarth ).scale( -1 );
     }
 
-    public void correctAberration()
+    void correctAberration()
     {
         final double timeLightTravel = geoCart.distance( Distance.m ) / Distance.ls.toMeters();
         tmpEclipticalCartesian.set( velocityGeocentric ).scale( -timeLightTravel );
         geoCart.add( tmpEclipticalCartesian );
-
         final double timeLightTravelSun = posSun.distance( Distance.m ) / Distance.ls.toMeters();
         tmpEclipticalCartesian.set( velocitySun ).scale( -timeLightTravelSun );
         posSun.add( tmpEclipticalCartesian );
+    }
+
+    public void setTimeLocation( Time time, double lonDeg, double latDeg )
+    {
+        toposEquatorialSpherical.set( 1, Math.toRadians( lonDeg ), Math.toRadians( latDeg ) );
+        setTimeLocation( time, toposEquatorialSpherical );
     }
 
     public void setTimeLocation( Time time, Spherical geographicLocation )
@@ -89,7 +94,7 @@ public class Position
         this.currentEcliptic = SolarSystem.getEcliptic( time );
         angle.setRadians( geographicLocation.lon );
         final double localSiderealTime = time.getMeanSiderealTime( angle, angle ).get( Angle.Unit.RADIANS );
-        // current equatorial coordinates of zenit are used to compute current horizontal positions (in Planets)
+        // current equatorial coordinates of zenith are used to compute current horizontal positions (in Planets)
         toposEquatorialSpherical.set(
                 SolarSystem.Body.EARTH.RADIUS_MEAN, localSiderealTime, geographicLocation.lat );
         toposEquatorialSpherical.transform( toposEquatorial );

@@ -21,6 +21,7 @@ public class Stars
     private final PrecessionMatrix precession = new PrecessionMatrix();
     private final Matrix rotation = new Matrix();
     private final Matrix transformation = new Matrix();
+    private final Cartesian[] positions = new Cartesian[StarsCatalog.SIZE];
     private int numberOfThreads = 8;
     private int numCalcPerThread = StarsCatalog.SIZE / numberOfThreads + 1;
     private Thread[] threads = new Thread[numberOfThreads];
@@ -69,6 +70,16 @@ public class Stars
         outputPosition.y = POS_J2000[starIndex].y + VEL_J2000[starIndex].y * yearsSince2000;
         outputPosition.z = POS_J2000[starIndex].z + VEL_J2000[starIndex].z * yearsSince2000;
         transformation.apply( outputPosition ).normalize();
+    }
+
+    public synchronized void computeAll( Time time )
+    {
+        computeAll( time, positions );
+    }
+
+    public synchronized void getPosition( int index, Cartesian position )
+    {
+        position.set( positions[index] );
     }
 
     public synchronized void computeAll( Time time, final Cartesian[] outputPositions )
