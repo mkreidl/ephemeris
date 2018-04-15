@@ -34,7 +34,7 @@ public class Circle
 
     public double distFromOrigin()
     {
-        return Math.sqrt( x*x + y*y );
+        return Math.sqrt( x * x + y * y );
     }
 
     @Override

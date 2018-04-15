@@ -2,7 +2,7 @@ package com.mkreidl.ephemeris.geometry;
 
 import com.mkreidl.ephemeris.Distance;
 import com.mkreidl.ephemeris.Time;
-import com.mkreidl.ephemeris.sky.Position;
+import com.mkreidl.ephemeris.sky.Ephemerides;
 import com.mkreidl.ephemeris.sky.SolarSystem;
 import com.mkreidl.ephemeris.sky.coordinates.Equatorial;
 
@@ -19,12 +19,12 @@ public class TopocentricTest
     private final Equatorial.Sphe topoSphe = new Equatorial.Sphe();
 
     private final SolarSystem solarSystem = new SolarSystem();
-    private final EnumMap<SolarSystem.Body, Position> ephemerides = new EnumMap<>( SolarSystem.Body.class );
+    private final EnumMap<SolarSystem.Body, Ephemerides> ephemerides = new EnumMap<>( SolarSystem.Body.class );
     private final Spherical expected = new Spherical();
     private final Spherical actual = new Spherical();
 
     private final Spherical geographicLocation = new Spherical(
-            SolarSystem.Body.EARTH.RADIUS_MEAN, 11.5 * Angle.DEG, 48.0 * Angle.DEG
+            SolarSystem.Body.EARTH.RADIUS_MEAN_M, 11.5 * Angle.DEG, 48.0 * Angle.DEG
     );
     private final Stereographic camera = new Stereographic( 1.0 );
 
@@ -38,7 +38,7 @@ public class TopocentricTest
 
         for ( SolarSystem.Body object : SolarSystem.Body.values() )
         {
-            final Position ephem = new Position();
+            final Ephemerides ephem = new Ephemerides();
             ephemerides.put( object, ephem );
             solarSystem.getEphemerides( object, ephem );  // read data into ephem
             ephem.setTimeLocation( Time.J2000, geographicLocation );
@@ -46,14 +46,14 @@ public class TopocentricTest
 
         for ( SolarSystem.Body object : SolarSystem.Body.values() )
         {
-            ephemerides.get( object ).get( topoCart, Position.CoordinatesCenter.TOPOCENTRIC );
+            ephemerides.get( object ).get( topoCart, Ephemerides.CoordinatesCenter.TOPOCENTRIC );
             topoCart.transform( expected );
-            final double radExpected = object.RADIUS_EQUATORIAL / topoCart.distance( Distance.m );
+            final double radExpected = object.RADIUS_EQUATORIAL_M / topoCart.distance( Distance.m );
             camera.project( expected, radExpected, diskExpected );
 
-            ephemerides.get( object ).get( topoSphe, Position.CoordinatesCenter.TOPOCENTRIC );
+            ephemerides.get( object ).get( topoSphe, Ephemerides.CoordinatesCenter.TOPOCENTRIC );
             actual.set( topoSphe );
-            final double radActual = object.RADIUS_EQUATORIAL / topoSphe.distance( Distance.m );
+            final double radActual = object.RADIUS_EQUATORIAL_M / topoSphe.distance( Distance.m );
             camera.project( actual, radActual, diskActual );
 
             assertEquals( radExpected, radActual, 10e-15 );

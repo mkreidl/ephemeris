@@ -80,12 +80,12 @@ public class Astrolabe extends Stereographic
         return geographicLocation;
     }
 
-    public synchronized void setLocation( double newLon, double newLat )
+    public synchronized void setLocation( double lonRad, double latRad )
     {
-        if ( newLat < 0 ^ geographicLocation.lat < 0 )
+        if ( latRad < 0 ^ geographicLocation.lat < 0 )
             centerZ = -centerZ;
-        geographicLocation.lon = newLon;
-        geographicLocation.lat = newLat;
+        geographicLocation.lon = lonRad;
+        geographicLocation.lat = latRad;
         changeObserverLocation();
     }
 

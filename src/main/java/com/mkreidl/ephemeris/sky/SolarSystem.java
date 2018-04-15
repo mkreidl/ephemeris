@@ -55,7 +55,7 @@ public class SolarSystem
 
     public enum Body
     {
-        SUN( 0.0, 0.0, 6.96342e8 ),
+        SUN( 0.0, 6.96342e8, 6.96342e8 ),
         MOON( 7.342e22, 1.7371e6, 1.7381e6 ),
         MERCURY( 0.0, 0.0, 2.439764e6 ),
         VENUS( 0.0, 0.0, 6.05159e6 ),
@@ -67,14 +67,14 @@ public class SolarSystem
         NEPTUNE( 0.0, 0.0, 2.4764e7 ),;
 
         public final double MASS;
-        public final double RADIUS_EQUATORIAL;
-        public final double RADIUS_MEAN;
+        public final double RADIUS_EQUATORIAL_M;
+        public final double RADIUS_MEAN_M;
 
         Body( double mass, double radiusMean, double radiusEquatorial )
         {
             MASS = mass;
-            RADIUS_EQUATORIAL = radiusEquatorial;
-            RADIUS_MEAN = radiusMean;
+            RADIUS_EQUATORIAL_M = radiusEquatorial;
+            RADIUS_MEAN_M = radiusMean;
         }
     }
 
@@ -131,27 +131,27 @@ public class SolarSystem
      * Calculate ephemerides of objects in the solar system
      *
      * @param body
-     * @param position
+     * @param ephemerides
      * @return
      */
-    public Position getEphemerides( final Body body, final Position position )
+    public Ephemerides getEphemerides( final Body body, final Ephemerides ephemerides )
     {
         synchronized ( positions )
         {
             switch ( models.get( body ).getType() )
             {
                 case HELIOCENTRIC:
-                    position.setHeliocentricPosition( positions.get( body ), positions.get( Body.EARTH ) );
-                    position.setHeliocentricVelocity( velocities.get( body ), velocities.get( Body.EARTH ) );
+                    ephemerides.setHeliocentricPosition( positions.get( body ), positions.get( Body.EARTH ) );
+                    ephemerides.setHeliocentricVelocity( velocities.get( body ), velocities.get( Body.EARTH ) );
                     break;
                 case GEOCENTRIC:
-                    position.setGeocentricPosition( positions.get( body ), positions.get( Body.EARTH ) );
-                    position.setGeocentricVelocity( velocities.get( body ), velocities.get( Body.EARTH ) );
+                    ephemerides.setGeocentricPosition( positions.get( body ), positions.get( Body.EARTH ) );
+                    ephemerides.setGeocentricVelocity( velocities.get( body ), velocities.get( Body.EARTH ) );
                     break;
             }
         }
-        position.correctAberration();
-        return position;
+        ephemerides.correctAberration();
+        return ephemerides;
     }
 
     public void compute( final Time time, final Body body )

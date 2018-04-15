@@ -28,7 +28,7 @@ public class HorizontalCoordinatesTest
     private final Horizontal.Sphe spherical = new Horizontal.Sphe();
 
     private final Spherical geographicLocation = new Spherical(
-            SolarSystem.Body.EARTH.RADIUS_MEAN,
+            SolarSystem.Body.EARTH.RADIUS_MEAN_M,
             11.5820 * Angle.DEG, 48.1351 * Angle.DEG
     );
 
@@ -78,10 +78,10 @@ public class HorizontalCoordinatesTest
         {
             final double azimutExpected = azimut.get( planet ).get( Angle.Unit.DEGREES );
             final double heightExpected = height.get( planet ).get( Angle.Unit.DEGREES );
-            final Position ephemerides = solarSystem.getEphemerides( planet, new Position() );
+            final Ephemerides ephemerides = solarSystem.getEphemerides( planet, new Ephemerides() );
 
             ephemerides.setTimeLocation( time, geographicLocation );
-            ephemerides.get( horizontal, Position.CoordinatesCenter.GEOCENTRIC );
+            ephemerides.get( horizontal, Ephemerides.CoordinatesCenter.GEOCENTRIC );
 
             System.out.println( "===================" );
             System.out.println( planet.toString() + " -- height" );
@@ -115,7 +115,7 @@ public class HorizontalCoordinatesTest
         locationSphe.toHorizontal( locationSphe, spherical );
         System.out.println( cartesian );
         System.out.println( spherical );
-        assertEquals( cartesian.z, SolarSystem.Body.EARTH.RADIUS_MEAN, 1e-16 );
+        assertEquals( cartesian.z, SolarSystem.Body.EARTH.RADIUS_MEAN_M, 1e-16 );
         assertEquals( spherical.getHeight( angle ).get( Angle.Unit.DEGREES ), 90, 1e-16 );
         System.out.println( "================================" );
     }

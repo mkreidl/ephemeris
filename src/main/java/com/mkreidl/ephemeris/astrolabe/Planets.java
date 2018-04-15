@@ -3,7 +3,7 @@ package com.mkreidl.ephemeris.astrolabe;
 import com.mkreidl.ephemeris.Distance;
 import com.mkreidl.ephemeris.geometry.Cartesian;
 import com.mkreidl.ephemeris.geometry.Circle;
-import com.mkreidl.ephemeris.sky.Position;
+import com.mkreidl.ephemeris.sky.Ephemerides;
 import com.mkreidl.ephemeris.sky.SolarSystem;
 import com.mkreidl.ephemeris.sky.coordinates.Equatorial;
 
@@ -16,7 +16,7 @@ public class Planets extends AbstractPart
 {
     private final Cartesian onUnitSphere = new Cartesian();
     private final Equatorial.Sphe topocentric = new Equatorial.Sphe();
-    private final Position position = new Position();
+    private final Ephemerides ephemerides = new Ephemerides();
     private final SolarSystem solarSystem = new SolarSystem();
 
     private final Map<SolarSystem.Body, String> planetNames = new EnumMap<>( SolarSystem.Body.class );
@@ -65,7 +65,7 @@ public class Planets extends AbstractPart
     @Override
     protected void onChangeViewParameters()
     {
-        position.setTimeLocation( astrolabe.time, astrolabe.geographicLocation );
+        ephemerides.setTimeLocation( astrolabe.time, astrolabe.geographicLocation );
     }
 
     @Override
@@ -87,10 +87,10 @@ public class Planets extends AbstractPart
 
     private void recompute( SolarSystem.Body object )
     {
-        solarSystem.getEphemerides( object, position );
-        position.get( topocentric, Position.CoordinatesCenter.TOPOCENTRIC ).transform( onUnitSphere ).normalize();
+        solarSystem.getEphemerides( object, ephemerides );
+        ephemerides.get( topocentric, Ephemerides.CoordinatesCenter.TOPOCENTRIC ).transform( onUnitSphere ).normalize();
         astrolabe.project( onUnitSphere, projectedPositions.get( object ) );
-        final double apparentRadius = object.RADIUS_EQUATORIAL / topocentric.distance( Distance.m );
+        final double apparentRadius = object.RADIUS_EQUATORIAL_M / topocentric.distance( Distance.m );
         astrolabe.project( topocentric, apparentRadius, apparentDisks.get( object ) );
     }
 

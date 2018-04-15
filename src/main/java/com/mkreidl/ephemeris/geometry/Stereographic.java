@@ -6,9 +6,6 @@ import static java.lang.Math.sin;
 
 public class Stereographic
 {
-    /**
-     * z-coordinate of projection center
-     */
     protected double centerZ;
 
     public Stereographic( double centerZ )
@@ -20,10 +17,9 @@ public class Stereographic
     {
         final double stretch = 1.0 - centerZ * sin( lat );
         final double d = cos( lat );
-        if ( stretch == 0.0 || ( d == 0.0 && stretch < 1.0 ) )
-            return Double.POSITIVE_INFINITY;
-        else
-            return d / stretch;
+        return ( stretch == 0.0 || ( d == 0.0 && stretch < 1.0 ) )
+                ? Double.POSITIVE_INFINITY
+                : d / stretch;
     }
 
     public Cartesian project( Cartesian input, Cartesian output )
@@ -38,8 +34,8 @@ public class Stereographic
     public float[] project( Cartesian input, float[] output )
     {
         final double stretch = 1.0 - input.z / centerZ;
-        output[0] = (float)(input.x / stretch);
-        output[1] = (float)(input.y / stretch);
+        output[0] = (float)( input.x / stretch );
+        output[1] = (float)( input.y / stretch );
         return output;
     }
 

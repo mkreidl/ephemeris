@@ -40,9 +40,9 @@ import static org.junit.Assert.assertTrue;
  * Parses txt test data produced http://ephemeris.com/ephemeris.php
  */
 @RunWith( Parameterized.class )
-public class PositionTest
+public class EphemeridesTest
 {
-    private static final URL DIR_NASA = PositionTest.class.getResource( "/NASA_Ephemeris_Data/" );
+    private static final URL DIR_NASA = EphemeridesTest.class.getResource( "/NASA_Ephemeris_Data/" );
     private static final Map<SolarSystem.Body, Double> TOLERANCE = new LinkedHashMap<>();
 
     private final SolarSystem solarSystem = new SolarSystem();
@@ -172,7 +172,7 @@ public class PositionTest
         return datasets;
     }
 
-    public PositionTest( String testname, SolarSystem.Body body, Time time, EphemerisData expected )
+    public EphemeridesTest( String testname, SolarSystem.Body body, Time time, EphemerisData expected )
     {
         this.body = body;
         this.time = time;
@@ -186,7 +186,7 @@ public class PositionTest
             return;
         solarSystem.compute( time, MOON );
         solarSystem.compute( time, EARTH );
-        final Position actual = solarSystem.getEphemerides( MOON, new Position() );
+        final Ephemerides actual = solarSystem.getEphemerides( MOON, new Ephemerides() );
         // expected.phase has an accuracy to only 0.36, since input data (accuracy 1e-3) was multiplied with 360°
         System.out.println( Double.toString( actual.getPhase( new Angle() ).get( Angle.Unit.DEGREES ) ) );
         System.out.println( Double.toString( actual.getIlluminatedFraction() ) );
@@ -204,11 +204,11 @@ public class PositionTest
         final Equatorial.Sphe equatorial = new Equatorial.Sphe();
         solarSystem.compute( time, body );
         solarSystem.compute( time, EARTH );
-        final Position actual = solarSystem.getEphemerides( body, new Position() );
+        final Ephemerides actual = solarSystem.getEphemerides( body, new Ephemerides() );
         actual.setTimeLocation( time, new Spherical() );
 
-        actual.get( ecliptical, Position.CoordinatesCenter.GEOCENTRIC );
-        actual.get( equatorial, Position.CoordinatesCenter.GEOCENTRIC );
+        actual.get( ecliptical, Ephemerides.CoordinatesCenter.GEOCENTRIC );
+        actual.get( equatorial, Ephemerides.CoordinatesCenter.GEOCENTRIC );
 
         final Angle longitude = ecliptical.getLongitude( new Angle.Sexagesimal( Angle.Unit.DEGREES ) );
         final Angle latitude = ecliptical.getLatitude( new Angle.Sexagesimal( Angle.Unit.DEGREES ) );

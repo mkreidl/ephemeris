@@ -170,7 +170,7 @@ public class Moon extends OrbitalModel<Cartesian>
         orbElMoonSeries[0].node = 125.1228 * DEG;
         orbElMoonSeries[0].incl = 5.1454 * DEG;
         orbElMoonSeries[0].periapsis = 318.0634 * DEG;
-        orbElMoonSeries[0].axis = 60.2666 * Body.EARTH.RADIUS_EQUATORIAL;
+        orbElMoonSeries[0].axis = 60.2666 * Body.EARTH.RADIUS_EQUATORIAL_M;
         orbElMoonSeries[0].exc = 0.054900;
         orbElMoonSeries[0].meanAnom = 115.3654 * DEG;
 
@@ -178,7 +178,7 @@ public class Moon extends OrbitalModel<Cartesian>
         orbElMoonSeries[1].node = -0.0529538083 * DEG;
         orbElMoonSeries[1].incl = 0.0 * DEG;
         orbElMoonSeries[1].periapsis = 0.1643573223 * DEG;
-        orbElMoonSeries[1].axis = 0.0 * Body.EARTH.RADIUS_EQUATORIAL;
+        orbElMoonSeries[1].axis = 0.0 * Body.EARTH.RADIUS_EQUATORIAL_M;
         orbElMoonSeries[1].exc = 0.0;
         orbElMoonSeries[1].meanAnom = 13.0649929509 * DEG;
 

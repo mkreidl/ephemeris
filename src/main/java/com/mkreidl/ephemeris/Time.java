@@ -15,13 +15,16 @@ public class Time
     public static final double TDT_OFFSET = 1.5; // Terrestrial dynamical Time
     public static final double TDT_EPOCH_DAY_NUMBER = STD_EPOCH_DAY_NUMBER - TDT_OFFSET;
 
+
     public static final long MILLIS_PER_HOUR = 3600000;
     public static final long MILLIS_PER_DAY = MILLIS_PER_HOUR * 24;
     public static final long DAYS_PER_CENTURY = 36525;
     public static final long DAYS_PER_MILLENNIUM = 365250;
+    public static final long MILLIS_PER_CENTURY = MILLIS_PER_DAY * DAYS_PER_CENTURY;
 
     public static final double SIDEREAL_PER_SOLAR = 1.00273790935;
     public static final double SOLAR_PER_SIDEREAL = 1.0 / SIDEREAL_PER_SOLAR;
+    public static final double MILLIS_PER_SIDEREAL_DAY = MILLIS_PER_DAY * SOLAR_PER_SIDEREAL;
 
     private static final double[] GMST_COEFF_DAYS =
             {
@@ -80,21 +83,35 @@ public class Time
      *
      * @return Greenwich Mean Sidereal Time in hours [h]
      */
+    public double getHourAngleOfVernalEquinox()
+    {
+        return getSiderealTimeDayFraction() * 2 * Math.PI;
+    }
+
+    /**
+     * Calculate the Mean Sidereal Time for Greenwich at given date
+     *
+     * @return Greenwich Mean Sidereal Time in hours [h]
+     */
     public double getMeanSiderealTime()
     {
+        return getSiderealTimeDayFraction() * 24;
+    }
+
+    private double getSiderealTimeDayFraction()
+    {
         final double midnightUT = midnightAtGreenwichSameDate();
-        final double julianCenturyUT0 = ( midnightUT - J2000.millisSinceEpoch ) / MILLIS_PER_DAY / DAYS_PER_CENTURY;
+        final double julianCenturyUT0 = ( midnightUT - J2000.millisSinceEpoch ) / MILLIS_PER_CENTURY;
 
         double daysBase = 0.0;
         for ( double c : GMST_COEFF_DAYS )
             daysBase = daysBase * julianCenturyUT0 + c;
 
-        final double dayFraction = ( millisSinceEpoch - midnightUT ) * SIDEREAL_PER_SOLAR / MILLIS_PER_DAY;
+        final double dayFraction = ( millisSinceEpoch - midnightUT ) / MILLIS_PER_SIDEREAL_DAY;
         double siderealTime = ( ( daysBase + dayFraction ) % 1 );
         if ( siderealTime < 0.0 )
             siderealTime += 1.0;
-
-        return siderealTime * 24;
+        return siderealTime;
     }
 
     public Angle getMeanSiderealTime( Angle siderealTime )
@@ -119,34 +136,6 @@ public class Time
         return ( hours %= 24 ) < 0 ? hours + 24 : hours;
     }
 
-    public enum TimeDirection
-    {
-        PAST, FUTURE
-    }
-
-    /**
-     * Adjust the coordinates in time at which an earth meridiane passes a
-     * celestial meridiane.
-     * The meridianes in question are given as hour angles [h] with
-     * positive values eastward. Thereby, 0h for the earth meridiane means
-     * Greenwich, 0h for the celestial meridiane means the vernal equinox.
-     *
-     * @param hourAngle      Hour angle relative to Greenwich [h]; the earth
-     *                       meridiane in question [h]
-     * @param rightAscension Right Ascension in [h]
-     * @param when
-     */
-    public void adjustToTimeOfPassage( double hourAngle, double rightAscension, TimeDirection when )
-    {
-        double siderealHoursDelta = ( rightAscension - hourAngle - getMeanSiderealTime() ) % 24.0;
-        if ( siderealHoursDelta > 0.0 && when == TimeDirection.PAST )
-            siderealHoursDelta -= 24.0;
-        if ( siderealHoursDelta < 0.0 && when == TimeDirection.FUTURE )
-            siderealHoursDelta += 24.0;
-        final double siderealMillisDelta = siderealHoursDelta * MILLIS_PER_HOUR;
-        addSiderealMillis( siderealMillisDelta );
-    }
-
     private double midnightAtGreenwichSameDate()
     {
         final Instant instant = Instant.ofEpochMilli( millisSinceEpoch );
@@ -156,9 +145,9 @@ public class Time
         return Instant.from( midnightAtGreenwich ).toEpochMilli();
     }
 
-    private void addSiderealMillis( double millis )
+    public void addMillis( long millis )
     {
-        this.millisSinceEpoch += (long)( millis * SOLAR_PER_SIDEREAL );
+        millisSinceEpoch += millis;
     }
 
 }

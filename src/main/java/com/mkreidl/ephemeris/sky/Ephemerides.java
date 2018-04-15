@@ -11,7 +11,7 @@ import com.mkreidl.ephemeris.sky.coordinates.Equatorial;
 import com.mkreidl.ephemeris.sky.coordinates.Horizontal;
 
 
-public class Position
+public class Ephemerides
 {
     public enum CoordinatesCenter
     {
@@ -96,7 +96,7 @@ public class Position
         final double localSiderealTime = time.getMeanSiderealTime( angle, angle ).get( Angle.Unit.RADIANS );
         // current equatorial coordinates of zenith are used to compute current horizontal positions (in Planets)
         toposEquatorialSpherical.set(
-                SolarSystem.Body.EARTH.RADIUS_MEAN, localSiderealTime, geographicLocation.lat );
+                SolarSystem.Body.EARTH.RADIUS_MEAN_M, localSiderealTime, geographicLocation.lat );
         toposEquatorialSpherical.transform( toposEquatorial );
         // The following stores the current observer position in geocentric ecliptical coordinates
         toposEcliptical.set( toposEquatorial ).rotate( Coordinates.Axis.X, -currentEcliptic );
