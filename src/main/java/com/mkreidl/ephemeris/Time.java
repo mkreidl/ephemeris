@@ -1,10 +1,9 @@
 package com.mkreidl.ephemeris;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import com.mkreidl.ephemeris.geometry.Angle;
-
-import org.threeten.bp.Instant;
-import org.threeten.bp.ZoneId;
-import org.threeten.bp.ZonedDateTime;
 
 public class Time
 {

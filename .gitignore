@@ -19,3 +19,4 @@ settings.gradle
 
 src/tools/BrightestStarsCatalogue_B50_1991/src/catalog*
 
+/bin/

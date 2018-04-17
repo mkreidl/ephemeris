@@ -47,15 +47,15 @@ public interface Horizontal
         }
 
         /**
-         * Calculate azimut with N=0deg, E=90deg, S=180deg, W=270deg
+         * Calculate azimuth with N=0deg, E=90deg, S=180deg, W=270deg
          *
          * @param angle
          * @return
          */
         public Angle getAzimuth( Angle angle )
         {
-            final double azimut = Math.PI - lon;
-            return angle.set( azimut < 0 ? azimut + 2 * Math.PI : azimut, Angle.Unit.RADIANS );
+            final double azimuth = Math.PI - lon;
+            return angle.set( azimuth < 0 ? azimuth + 2 * Math.PI : azimuth, Angle.Unit.RADIANS );
         }
 
         public Angle getHeight( Angle angle )

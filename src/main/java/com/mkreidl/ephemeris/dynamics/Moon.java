@@ -18,7 +18,7 @@ import static java.lang.Math.sin;
  *         Paul Schlyter, <a>http://www.stjarnhimlen.se/</a>
  *         <p>
  *         Kepler's equation is solved using Newton's method to obtain
- *         Moon's coordinates in the cartesian reference frame.
+ *         Moon's coordinates in the Cartesian reference frame.
  */
 public class Moon extends OrbitalModel<Cartesian>
 {

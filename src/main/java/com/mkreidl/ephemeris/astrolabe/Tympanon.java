@@ -106,7 +106,7 @@ public class Tympanon extends AbstractPart
         rotation.apply( _nadir, nadir );
     }
 
-    public Circle azimut( Angle longitude, Circle projection )
+    public Circle azimuth( Angle longitude, Circle projection )
     {
         horizontal.set( 1.0, longitude.get( Angle.Unit.RADIANS ), 0.0 );
         horizontal.toEquatorial( astrolabe.geographicLocation, equatorial );
