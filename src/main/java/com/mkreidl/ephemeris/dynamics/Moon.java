@@ -1,15 +1,14 @@
 package com.mkreidl.ephemeris.dynamics;
 
+import static com.mkreidl.ephemeris.geometry.Angle.DEG;
+import static java.lang.Math.cos;
+import static java.lang.Math.sin;
 import com.mkreidl.ephemeris.Distance;
 import com.mkreidl.ephemeris.Time;
 import com.mkreidl.ephemeris.geometry.Cartesian;
 import com.mkreidl.ephemeris.geometry.ClassicalOrbitalElements;
 import com.mkreidl.ephemeris.geometry.Spherical;
-
-import static com.mkreidl.ephemeris.geometry.Angle.DEG;
-import static com.mkreidl.ephemeris.sky.SolarSystem.Body;
-import static java.lang.Math.cos;
-import static java.lang.Math.sin;
+import com.mkreidl.ephemeris.sky.SolarSystem.Body;
 
 /**
  * @author mkreidl
@@ -22,6 +21,17 @@ import static java.lang.Math.sin;
  */
 public class Moon extends OrbitalModel<Cartesian>
 {
+  
+    @Override
+    public Type getType() {
+      return Type.GEOCENTRIC;
+    }
+  
+    @Override
+    public Distance getDistanceUnit() {
+      return Distance.m;
+    }
+
     @Override
     public void compute( Time time, Cartesian position, Cartesian velocity )
     {
@@ -39,12 +49,6 @@ public class Moon extends OrbitalModel<Cartesian>
             // Adjust the velocity to result in 1 rotation per 29 days (unit of velocity [m/s])
             velocity.scale( 2 * Math.PI / ( 29 * Time.SECONDS_PER_DAY ) );
         }
-    }
-
-    @Override
-    public Type getType()
-    {
-        return Type.GEOCENTRIC;
     }
 
     public ClassicalOrbitalElements getOrbitalElements( ClassicalOrbitalElements output )
@@ -101,9 +105,7 @@ public class Moon extends OrbitalModel<Cartesian>
 
     private final ClassicalOrbitalElements orbitalElements = new ClassicalOrbitalElements();
     private final Spherical posSpherical = new Spherical();
-    private final Spherical velSpherical = new Spherical();
     private final Cartesian posCartesian = new Cartesian();
-    private final Cartesian velCartesian = new Cartesian();
 
     private double D()
     {

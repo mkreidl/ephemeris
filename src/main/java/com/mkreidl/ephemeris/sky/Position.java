@@ -93,7 +93,7 @@ public class Position
     {
         this.currentEcliptic = SolarSystem.getEcliptic( time );
         angle.setRadians( geographicLocation.lon );
-        final double localSiderealTime = time.getMeanSiderealTime( angle, angle ).get( Angle.Unit.RADIANS );
+        final double localSiderealTime = time.getMeanSiderealTime( angle, angle ).getRadians();
         // current equatorial coordinates of zenith are used to compute current horizontal positions (in Planets)
         toposEquatorialSpherical.set(
                 SolarSystem.Body.EARTH.RADIUS_MEAN_M, localSiderealTime, geographicLocation.lat );

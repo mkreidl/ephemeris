@@ -92,7 +92,6 @@ public class SolarSystem
     public SolarSystem()
     {
         sortedByDistance.remove( Body.EARTH );
-
         for ( Body body : Body.values() )
         {
             positions.put( body, new Ecliptical.Cart() );
@@ -163,8 +162,8 @@ public class SolarSystem
         synchronized ( positions )
         {
             model.compute( time, positions.get( body ), velocities.get( body ) );
-            positions.get( body ).scale( model.getUnit().toMeters() );
-            velocities.get( body ).scale( model.getUnit().toMeters() );
+            positions.get( body ).scale( model.getDistanceUnit().toMeters() );
+            velocities.get( body ).scale( model.getDistanceUnit().toMeters() );
         }
     }
 

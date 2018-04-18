@@ -1,17 +1,10 @@
 package com.mkreidl.ephemeris.dynamics.VSOP87;
 
-import com.mkreidl.ephemeris.Distance;
 import com.mkreidl.ephemeris.Time;
 import com.mkreidl.ephemeris.dynamics.OrbitalModel;
 import com.mkreidl.ephemeris.geometry.Cartesian;
 import com.mkreidl.ephemeris.geometry.Coordinates;
 import com.mkreidl.ephemeris.geometry.Spherical;
-
-import static com.mkreidl.ephemeris.Time.DAYS_PER_MILLENNIUM;
-import static com.mkreidl.ephemeris.Time.J2000;
-import static java.lang.Math.cos;
-import static java.lang.Math.sin;
-
 
 public abstract class Model<T extends Coordinates<T>> extends OrbitalModel<T>
 {
@@ -55,17 +48,11 @@ public abstract class Model<T extends Coordinates<T>> extends OrbitalModel<T>
         }
     }
 
-    @Override
-    public Distance getUnit()
-    {
-        return Distance.AU;
-    }
-
     protected void compute( Time time, boolean computeVelocity )
     {
         if ( time.getTime() != timeCached || computeVelocity && timeCachedVel != timeCached )
         {
-            final double t = time.julianDayNumberSince( J2000 ) / DAYS_PER_MILLENNIUM;
+            final double t = time.julianDayNumberSince( Time.J2000 ) / Time.DAYS_PER_MILLENNIUM;
             for ( int dim = 0; dim < DIMENSION; dim++ )
             {
                 double pos = 0.0;
@@ -94,7 +81,7 @@ public abstract class Model<T extends Coordinates<T>> extends OrbitalModel<T>
     {
         double result = 0.0;
         for ( double[] triple : coeff[dim][n] )
-            result += triple[0] * cos( triple[1] + triple[2] * time );
+            result += triple[0] * Math.cos( triple[1] + triple[2] * time );
         return result;
     }
 
@@ -102,7 +89,7 @@ public abstract class Model<T extends Coordinates<T>> extends OrbitalModel<T>
     {
         double result = 0.0;
         for ( double[] triple : coeff[dim][n] )
-            result -= triple[0] * triple[2] * sin( triple[1] + triple[2] * time );
+            result -= triple[0] * triple[2] * Math.sin( triple[1] + triple[2] * time );
         return result;
     }
 

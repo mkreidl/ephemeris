@@ -65,7 +65,7 @@ public class Zodiac
         SGR( 9, "Sagittarius", "Sgr" ),
         CAP( 10, "Capricornus", "Cap" ),
         AQR( 11, "Aquarius", "Aqr" ),
-        PIS( 12, "Pisces", "Pis" );
+        PSC( 12, "Pisces", "Psc" );
 
         Sign( int ordinal, String name, String shortName )
         {
