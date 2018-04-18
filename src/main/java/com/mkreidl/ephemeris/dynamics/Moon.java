@@ -13,12 +13,12 @@ import static java.lang.Math.sin;
 
 /**
  * @author mkreidl
- *         <p>
- *         Orbital elements taken from:
- *         Paul Schlyter, <a>http://www.stjarnhimlen.se/</a>
- *         <p>
- *         Kepler's equation is solved using Newton's method to obtain
- *         Moon's coordinates in the Cartesian reference frame.
+ * <p>
+ * Orbital elements taken from:
+ * Paul Schlyter, <a>http://www.stjarnhimlen.se/</a>
+ * <p>
+ * Kepler's equation is solved using Newton's method to obtain
+ * Moon's coordinates in the Cartesian reference frame.
  */
 public class Moon extends OrbitalModel<Cartesian>
 {
@@ -33,6 +33,7 @@ public class Moon extends OrbitalModel<Cartesian>
             // This is a dummy which sets the velocity in a qualitative way
             // to ensure that the Moon is not retrograde
             velocity.x = -position.y;
+            //noinspection SuspiciousNameCombination
             velocity.y = position.x;
             velocity.z = 0;
             // Adjust the velocity to result in 1 rotation per 29 days (unit of velocity [m/s])

@@ -78,10 +78,10 @@ public class HorizontalCoordinatesTest
         {
             final double azimuthExpected = azimuth.get( planet ).get( Angle.Unit.DEGREES );
             final double heightExpected = height.get( planet ).get( Angle.Unit.DEGREES );
-            final Ephemerides ephemerides = solarSystem.getEphemerides( planet, new Ephemerides() );
+            final Position position = solarSystem.getEphemerides( planet, new Position() );
 
-            ephemerides.setTimeLocation( time, geographicLocation );
-            ephemerides.get( horizontal, Ephemerides.CoordinatesCenter.GEOCENTRIC );
+            position.setTimeLocation( time, geographicLocation );
+            position.get( horizontal, Position.CoordinatesCenter.GEOCENTRIC );
 
             System.out.println( "===================" );
             System.out.println( planet.toString() + " -- height" );

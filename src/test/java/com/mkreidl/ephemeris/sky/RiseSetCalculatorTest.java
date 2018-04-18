@@ -18,7 +18,7 @@ public class RiseSetCalculatorTest
     public static final double MUNICH_LAT = 68.3;
     private static final double OPTICAL_HORIZON_DEG = 34.0 / 60;
 
-    private final Ephemerides ephemerides = new Ephemerides();
+    private final Position position = new Position();
     private final SolarSystem solarSystem = new SolarSystem();
     private final Time time = new Time();
 
@@ -26,9 +26,9 @@ public class RiseSetCalculatorTest
     {
         solarSystem.compute( time, SolarSystem.Body.EARTH );
         solarSystem.compute( time, SolarSystem.Body.SUN );
-        solarSystem.getEphemerides( SolarSystem.Body.SUN, ephemerides );
-        ephemerides.setTimeLocation( time, geographicLocation );
-        ephemerides.get( position, Ephemerides.CoordinatesCenter.TOPOCENTRIC );
+        solarSystem.getEphemerides( SolarSystem.Body.SUN, this.position );
+        this.position.setTimeLocation( time, geographicLocation );
+        this.position.get( position, Position.CoordinatesCenter.TOPOCENTRIC );
     };
 
     @Test

@@ -29,6 +29,7 @@ import static com.mkreidl.ephemeris.sky.SolarSystem.Body.MARS;
 import static com.mkreidl.ephemeris.sky.SolarSystem.Body.MERCURY;
 import static com.mkreidl.ephemeris.sky.SolarSystem.Body.MOON;
 import static com.mkreidl.ephemeris.sky.SolarSystem.Body.NEPTUNE;
+import static com.mkreidl.ephemeris.sky.SolarSystem.Body.PLUTO;
 import static com.mkreidl.ephemeris.sky.SolarSystem.Body.SATURN;
 import static com.mkreidl.ephemeris.sky.SolarSystem.Body.SUN;
 import static com.mkreidl.ephemeris.sky.SolarSystem.Body.URANUS;
@@ -40,9 +41,9 @@ import static org.junit.Assert.assertTrue;
  * Parses txt test data produced http://ephemeris.com/ephemeris.php
  */
 @RunWith( Parameterized.class )
-public class EphemeridesTest
+public class SolarSystemTest
 {
-    private static final URL DIR_NASA = EphemeridesTest.class.getResource( "/NASA_Ephemeris_Data/" );
+    private static final URL DIR_NASA = SolarSystemTest.class.getResource( "/NASA_Ephemeris_Data/" );
     private static final Map<SolarSystem.Body, Double> TOLERANCE = new LinkedHashMap<>();
 
     private final SolarSystem solarSystem = new SolarSystem();
@@ -52,10 +53,10 @@ public class EphemeridesTest
 
     static class EphemerisData
     {
-        Angle.Sexagesimal longitude = new Angle.Sexagesimal( Angle.Unit.DEGREES );
-        Angle.Sexagesimal latitude = new Angle.Sexagesimal( Angle.Unit.DEGREES );
-        Angle.Sexagesimal declination = new Angle.Sexagesimal( Angle.Unit.DEGREES );
-        Angle.Sexagesimal rightAscension = new Angle.Sexagesimal( Angle.Unit.HOURS );
+        final Angle.Sexagesimal longitude = new Angle.Sexagesimal( Angle.Unit.DEGREES );
+        final Angle.Sexagesimal latitude = new Angle.Sexagesimal( Angle.Unit.DEGREES );
+        final Angle.Sexagesimal declination = new Angle.Sexagesimal( Angle.Unit.DEGREES );
+        final Angle.Sexagesimal rightAscension = new Angle.Sexagesimal( Angle.Unit.HOURS );
         boolean retrograde = false;
         double phase = Double.POSITIVE_INFINITY;  // signifies an invalid value
     }
@@ -71,14 +72,15 @@ public class EphemeridesTest
         TOLERANCE.put( SATURN, 0.5 / 60 );
         TOLERANCE.put( URANUS, 0.5 / 60 );
         TOLERANCE.put( NEPTUNE, 0.5 / 60 );
+        TOLERANCE.put( PLUTO, 0.5 / 60 );
     }
 
     private static EphemerisData parseNASAEphemeris( String LonLatRADecl )
     {
         final EphemerisData position = new EphemerisData();
-        Pattern lonPattern = Pattern.compile( "\\s*(\\d{2})\\s(\\w{3})\\s(\\d{2})'(\\d{2})\"(.)" );
-        Pattern latPattern = Pattern.compile( "\\s*([+-]?)\\s*(\\d{1,2}).*(\\d{2})'(\\d{2})\"" );
-        Pattern rasPattern = Pattern.compile( "\\s*(\\d\\d):(\\d\\d):(\\d\\d)\\s*" );
+        final Pattern lonPattern = Pattern.compile( "\\s*(\\d{2})\\s(\\w{3})\\s(\\d{2})'(\\d{2})\"(.)" );
+        final Pattern latPattern = Pattern.compile( "\\s*([+-]?)\\s*(\\d{1,2}).*(\\d{2})'(\\d{2})\"" );
+        final Pattern rasPattern = Pattern.compile( "\\s*(\\d\\d):(\\d\\d):(\\d\\d)\\s*" );
 
         Matcher m = lonPattern.matcher( LonLatRADecl.substring( 15, 29 ) );
         m.find();
@@ -172,7 +174,7 @@ public class EphemeridesTest
         return datasets;
     }
 
-    public EphemeridesTest( String testname, SolarSystem.Body body, Time time, EphemerisData expected )
+    public SolarSystemTest( String testname, SolarSystem.Body body, Time time, EphemerisData expected )
     {
         this.body = body;
         this.time = time;
@@ -186,7 +188,7 @@ public class EphemeridesTest
             return;
         solarSystem.compute( time, MOON );
         solarSystem.compute( time, EARTH );
-        final Ephemerides actual = solarSystem.getEphemerides( MOON, new Ephemerides() );
+        final Position actual = solarSystem.getEphemerides( MOON, new Position() );
         // expected.phase has an accuracy to only 0.36, since input data (accuracy 1e-3) was multiplied with 360°
         System.out.println( Double.toString( actual.getPhase( new Angle() ).get( Angle.Unit.DEGREES ) ) );
         System.out.println( Double.toString( actual.getIlluminatedFraction() ) );
@@ -204,11 +206,11 @@ public class EphemeridesTest
         final Equatorial.Sphe equatorial = new Equatorial.Sphe();
         solarSystem.compute( time, body );
         solarSystem.compute( time, EARTH );
-        final Ephemerides actual = solarSystem.getEphemerides( body, new Ephemerides() );
+        final Position actual = solarSystem.getEphemerides( body, new Position() );
         actual.setTimeLocation( time, new Spherical() );
 
-        actual.get( ecliptical, Ephemerides.CoordinatesCenter.GEOCENTRIC );
-        actual.get( equatorial, Ephemerides.CoordinatesCenter.GEOCENTRIC );
+        actual.get( ecliptical, Position.CoordinatesCenter.GEOCENTRIC );
+        actual.get( equatorial, Position.CoordinatesCenter.GEOCENTRIC );
 
         final Angle longitude = ecliptical.getLongitude( new Angle.Sexagesimal( Angle.Unit.DEGREES ) );
         final Angle latitude = ecliptical.getLatitude( new Angle.Sexagesimal( Angle.Unit.DEGREES ) );

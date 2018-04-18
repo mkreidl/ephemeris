@@ -11,7 +11,7 @@ import com.mkreidl.ephemeris.sky.coordinates.Equatorial;
 import com.mkreidl.ephemeris.sky.coordinates.Horizontal;
 
 
-public class Ephemerides
+public class Position
 {
     public enum CoordinatesCenter
     {

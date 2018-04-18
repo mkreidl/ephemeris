@@ -3,6 +3,7 @@ package com.mkreidl.ephemeris.sky;
 import com.mkreidl.ephemeris.Time;
 import com.mkreidl.ephemeris.dynamics.Moon;
 import com.mkreidl.ephemeris.dynamics.OrbitalModel;
+import com.mkreidl.ephemeris.dynamics.Pluto;
 import com.mkreidl.ephemeris.dynamics.Sun;
 import com.mkreidl.ephemeris.dynamics.VSOP87.C.Earth;
 import com.mkreidl.ephemeris.dynamics.VSOP87.C.Jupiter;
@@ -64,7 +65,8 @@ public class SolarSystem
         JUPITER( 0.0, 0.0, 7.149268e7 ),
         SATURN( 0.0, 0.0, 6.026714e7 ),
         URANUS( 0.0, 0.0, 2.5559e7 ),
-        NEPTUNE( 0.0, 0.0, 2.4764e7 ),;
+        NEPTUNE( 0.0, 0.0, 2.4764e7 ),
+        PLUTO( 1.303e22, 2.374e6 / 2, 2.374e6 / 2 );
 
         public final double MASS;
         public final double RADIUS_EQUATORIAL_M;
@@ -106,6 +108,7 @@ public class SolarSystem
         models.put( Body.URANUS, new Uranus() );
         models.put( Body.NEPTUNE, new Neptune() );
         models.put( Body.MOON, new Moon() );
+        models.put( Body.PLUTO, new Pluto() );
     }
 
     public List<Body> getSortedByDistanceDescending()
@@ -128,30 +131,30 @@ public class SolarSystem
     }
 
     /**
-     * Calculate ephemerides of objects in the solar system
+     * Calculate position of objects in the solar system
      *
      * @param body
-     * @param ephemerides
+     * @param position
      * @return
      */
-    public Ephemerides getEphemerides( final Body body, final Ephemerides ephemerides )
+    public Position getEphemerides( final Body body, final Position position )
     {
         synchronized ( positions )
         {
             switch ( models.get( body ).getType() )
             {
                 case HELIOCENTRIC:
-                    ephemerides.setHeliocentricPosition( positions.get( body ), positions.get( Body.EARTH ) );
-                    ephemerides.setHeliocentricVelocity( velocities.get( body ), velocities.get( Body.EARTH ) );
+                    position.setHeliocentricPosition( positions.get( body ), positions.get( Body.EARTH ) );
+                    position.setHeliocentricVelocity( velocities.get( body ), velocities.get( Body.EARTH ) );
                     break;
                 case GEOCENTRIC:
-                    ephemerides.setGeocentricPosition( positions.get( body ), positions.get( Body.EARTH ) );
-                    ephemerides.setGeocentricVelocity( velocities.get( body ), velocities.get( Body.EARTH ) );
+                    position.setGeocentricPosition( positions.get( body ), positions.get( Body.EARTH ) );
+                    position.setGeocentricVelocity( velocities.get( body ), velocities.get( Body.EARTH ) );
                     break;
             }
         }
-        ephemerides.correctAberration();
-        return ephemerides;
+        position.correctAberration();
+        return position;
     }
 
     public void compute( final Time time, final Body body )
