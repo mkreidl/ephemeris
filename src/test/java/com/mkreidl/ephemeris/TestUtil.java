@@ -30,9 +30,9 @@ public class TestUtil
 {
     private static final ZoneId UTC = ZoneId.of( "UTC" );
 
-    private static final SimpleDateFormat NASA_DATE_PARSER =
+    public static final SimpleDateFormat NASA_DATE_PARSER =
             new SimpleDateFormat( "yyyy.MM.dd HH:mm:ss", Locale.ENGLISH );
-    private static final SimpleDateFormat VSOP_DATE_PARSER =
+    public static final SimpleDateFormat VSOP_DATE_PARSER =
             new SimpleDateFormat( "dd/MM/yyyy HH", Locale.ENGLISH );
 
     private static final DateTimeFormatter NASA_DATE_FORMATTER
