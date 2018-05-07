@@ -37,15 +37,15 @@ public class MoonRiseSetTest extends PlanetRiseSetTest
             {SYDNEY, "2018-05-09 00:00 +1000", RiseSetCalculator.LookupDirection.FORWARD, RiseSetCalculator.EventType.SET, "2018-05-09 13:35 +1000"},
     };
 
-    public MoonRiseSetTest( Spherical geographicLocation, String startTime, RiseSetCalculator.LookupDirection searchDirection, EventType eventType, String eventTime )
-    {
-        super( geographicLocation, startTime, searchDirection, eventType, eventTime );
-    }
-
     @Parameters( name = "{0} {1} {2} {3} {4}" )
     public static Iterable<Object[]> data()
     {
         return Arrays.asList( EVENTS );
+    }
+
+    public MoonRiseSetTest( Spherical geographicLocation, String startTime, RiseSetCalculator.LookupDirection searchDirection, EventType eventType, String eventTime )
+    {
+        super( geographicLocation, startTime, searchDirection, eventType, eventTime );
     }
 
     @Override

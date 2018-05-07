@@ -69,15 +69,15 @@ public class SunRiseSetTest extends PlanetRiseSetTest
             {SYDNEY, "2018-05-02 00:00 +1000", RiseSetCalculator.LookupDirection.BACKWARD, RiseSetCalculator.EventType.SET, "2018-05-01 17:15 +1000"},
     };
 
-    public SunRiseSetTest( Spherical geographicLocation, String startTime, RiseSetCalculator.LookupDirection searchDirection, EventType eventType, String eventTime )
-    {
-        super( geographicLocation, startTime, searchDirection, eventType, eventTime );
-    }
-
     @Parameters( name = "{0} {1} {2} {3} {4}" )
     public static Iterable<Object[]> data()
     {
         return Arrays.asList( EVENTS );
+    }
+
+    public SunRiseSetTest( Spherical geographicLocation, String startTime, RiseSetCalculator.LookupDirection searchDirection, EventType eventType, String eventTime )
+    {
+        super( geographicLocation, startTime, searchDirection, eventType, eventTime );
     }
 
     @Override
