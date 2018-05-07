@@ -1,16 +1,15 @@
 package com.mkreidl.ephemeris.sky;
 
-import org.junit.Test;
-
 import com.mkreidl.ephemeris.Time;
-import com.mkreidl.ephemeris.sky.SolarSystem;
+
+import org.junit.Test;
 
 public class PerformanceTest
 {
     private final SolarSystem solarSystem = new SolarSystem();
     private int runs = 0;
 
-    @Test(timeout = 1000)
+    @Test( timeout = 1000 )
     public void testPerformance()
     {
         System.out.println( "PERFORMANCE TEST" );

@@ -37,6 +37,8 @@ public class HorizontalCoordinatesTest
 
     private final EnumMap<SolarSystem.Body, Angle> height = new EnumMap<>( SolarSystem.Body.class );
     private final EnumMap<SolarSystem.Body, Angle> azimuth = new EnumMap<>( SolarSystem.Body.class );
+    private final Equatorial.Cart locationCart = new Equatorial.Cart();
+    private final Equatorial.Sphe locationSphe = new Equatorial.Sphe();
 
     {
         //height.put( SolarSystem.Body.MOON, new Angle( -46.5, Angle.Unit.DEGREES ) );
@@ -94,9 +96,6 @@ public class HorizontalCoordinatesTest
             assertEquals( heightExpected, horizontal.getHeight( angle ).get( Angle.Unit.DEGREES ), 0.1 );
         }
     }
-
-    private final Equatorial.Cart locationCart = new Equatorial.Cart();
-    private final Equatorial.Sphe locationSphe = new Equatorial.Sphe();
 
     @Before
     public void initializeZenit()

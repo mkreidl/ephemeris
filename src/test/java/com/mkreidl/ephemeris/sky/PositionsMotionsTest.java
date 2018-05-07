@@ -37,17 +37,17 @@ public class PositionsMotionsTest
     private final Ecliptical.Sphe ecliptical = new Ecliptical.Sphe();
     private final Equatorial.Sphe equatorial = new Equatorial.Sphe();
 
-    @Parameters( name = "{0}" )
-    public static Iterable<Object[]> data()
-    {
-        return TestUtil.solarSystemData( Arrays.asList( SolarSystem.Body.values() ) );
-    }
-
     public PositionsMotionsTest( String testname, SolarSystem.Body body, Time time, EphemerisData expected )
     {
         this.body = body;
         this.time = time;
         this.expected = expected;
+    }
+
+    @Parameters( name = "{0}" )
+    public static Iterable<Object[]> data()
+    {
+        return TestUtil.solarSystemData( Arrays.asList( SolarSystem.Body.values() ) );
     }
 
     @Test

@@ -14,11 +14,19 @@ import java.util.GregorianCalendar;
 import static com.mkreidl.ephemeris.geometry.Angle.DEG;
 import static org.junit.Assert.assertEquals;
 
-@RunWith(Parameterized.class)
+@RunWith( Parameterized.class )
 public class EclipticTest
 {
     private final Time julianDate = new Time();
     private double ecliptic, tolerance;
+
+    public EclipticTest( int year, double ecliptic, double tolerance )
+    {
+        final GregorianCalendar cal = new GregorianCalendar( year, Calendar.JANUARY, 1, 12, 0, 0 );
+        julianDate.setTime( cal.getTime().getTime() );
+        this.ecliptic = ecliptic;
+        this.tolerance = tolerance;
+    }
 
     @Parameters
     public static Iterable<Object[]> data()
@@ -41,14 +49,6 @@ public class EclipticTest
                                 3000, 23.31, 1e-3
                         },
                 } );
-    }
-
-    public EclipticTest( int year, double ecliptic, double tolerance )
-    {
-        final GregorianCalendar cal = new GregorianCalendar( year, Calendar.JANUARY, 1, 12, 0, 0 );
-        julianDate.setTime( cal.getTime().getTime() );
-        this.ecliptic = ecliptic;
-        this.tolerance = tolerance;
     }
 
     @Test

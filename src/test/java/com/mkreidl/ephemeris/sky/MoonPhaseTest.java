@@ -10,7 +10,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import java.util.Arrays;
+import java.util.Collections;
 
 import static com.mkreidl.ephemeris.sky.SolarSystem.Body.EARTH;
 import static com.mkreidl.ephemeris.sky.SolarSystem.Body.MOON;
@@ -23,17 +23,17 @@ public class MoonPhaseTest
     private final SolarSystem.Body body;
     private final EphemerisData expected;
 
-    @Parameters( name = "{0}" )
-    public static Iterable<Object[]> data()
-    {
-        return TestUtil.solarSystemData( Arrays.asList( SolarSystem.Body.MOON ) );
-    }
-
     public MoonPhaseTest( String testname, SolarSystem.Body body, Time time, EphemerisData expected )
     {
         this.body = body;
         this.time = time;
         this.expected = expected;
+    }
+
+    @Parameters( name = "{0}" )
+    public static Iterable<Object[]> data()
+    {
+        return TestUtil.solarSystemData( Collections.singletonList( SolarSystem.Body.MOON ) );
     }
 
     @Test
