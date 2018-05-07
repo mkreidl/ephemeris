@@ -9,22 +9,26 @@ import com.mkreidl.ephemeris.sky.coordinates.Equatorial;
 
 public abstract class RiseSetCalculator {
 
+  protected static final double OPTICAL_HORIZON_DEG = 34.0 / 60;
+
   private static final int MAX_ITERATION = 1000;
 
   public enum EventType {
     RISE, SET
   }
 
-  private final Equatorial.Cart topocentric = new Equatorial.Cart();
-  private final Spherical geographicLocation = new Spherical(SolarSystem.Body.EARTH.RADIUS_MEAN_M, 0, 0);
-  private final Circle horizon = new Circle();
-  private final Time time = new Time();
+  protected final Equatorial.Cart topocentric = new Equatorial.Cart();
+  protected final Spherical geographicLocation = new Spherical(SolarSystem.Body.EARTH.RADIUS_MEAN_M, 0, 0);
+  protected final Time time = new Time();
 
   private EventType mode = EventType.SET;
   private long direction = (long) Time.MILLIS_PER_SIDEREAL_DAY;
   private double oldCos = Double.NaN;
+  private final Circle horizon = new Circle();
 
-  public abstract void computeTopocentricPosition(Time time, Spherical geographicLocation, Equatorial.Cart topocentric);
+  public abstract void computeTopocentricPosition();
+
+  public abstract double shiftHorizonDeg();
 
   public void setEventType(EventType mode) {
     this.mode = mode;
@@ -34,24 +38,60 @@ public abstract class RiseSetCalculator {
     this.direction = direction * (long) Time.MILLIS_PER_SIDEREAL_DAY;
   }
 
-  public void setGeographicLocation(double lonDeg, double latDeg, double deltaHorizonDeg) {
-    geographicLocation.lon = Math.toRadians(lonDeg);
-    geographicLocation.lat = Math.toRadians(latDeg);
-    final Stereographic projection = new Stereographic(latDeg >= 0 ? 1 : -1);
-    projection.project(geographicLocation, Math.toRadians(90 - deltaHorizonDeg), horizon);
+  public void setGeographicLocation(Spherical geographicLocation) {
+    this.geographicLocation.lon = geographicLocation.lon;
+    this.geographicLocation.lat = geographicLocation.lat;
   }
 
   public long computeSingleStep(long millisSinceEpoch) {
     time.setTime(millisSinceEpoch);
-    computeTopocentricPosition(time, geographicLocation, topocentric);
     final double cosHourAngleAtSet = computeCosHourAngleAtSet();
     if (cosHourAngleAtSet > 1 || cosHourAngleAtSet < -1) {
+      throw new IllegalStateException("At the given time the horizon does not cross the declination coordinate line of the object in question.");
     } else
-      time.addMillis(computeDeltaT(Math.acos(cosHourAngleAtSet)));
+      time.addMillis(computeIncrementMeetsHorizonAt(cosHourAngleAtSet));
     return time.getTime();
   }
 
+  private static final double RAD_TO_SIDEREAL_MILLIS = Time.MILLIS_PER_SIDEREAL_DAY / (2 * Math.PI);
+
+  public long computeIterative(long millisSinceEpoch, long precisionMs) {
+    time.setTime(millisSinceEpoch);
+    long deltaMs = computeDeltaT(true);
+    time.addMillis(deltaMs);
+    for (int n = 0; Math.abs(deltaMs) >= precisionMs && n < MAX_ITERATION; ++n) {
+      deltaMs = computeDeltaT(false);
+      time.addMillis(deltaMs);
+    }
+    return time.getTime();
+  }
+
+  private long computeDeltaT(boolean fixDirection) {
+    double cosHourAngleAtSet = computeCosHourAngleAtSet();
+    if (cosHourAngleAtSet > 1 || cosHourAngleAtSet < -1)
+      return computeIncrementDoesNotMeetHorizon(cosHourAngleAtSet);
+    else {
+      long deltaMs = computeIncrementMeetsHorizonAt(cosHourAngleAtSet);
+      while (fixDirection && deltaMs * direction < 0)
+        deltaMs += direction;
+      return deltaMs;
+    }
+  }
+
+  private long computeIncrementDoesNotMeetHorizon(double cosHourAngle) {
+    final boolean isSet = cosHourAngle > 1 && oldCos < -1 && direction < 0
+        || cosHourAngle < -1 && oldCos > 1 && direction > 0;
+    final boolean isRise = cosHourAngle > 1 && oldCos < -1 && direction > 0
+        || cosHourAngle < -1 && oldCos > 1 && direction < 0;
+    if (isRise && mode == EventType.RISE || isSet && mode == EventType.SET)
+      direction /= -2;
+    oldCos = cosHourAngle;
+    return direction;
+  }
+
   private double computeCosHourAngleAtSet() {
+    computeTopocentricPosition();
+    projectHorizon();
     final double zNorm = topocentric.z / topocentric.length();
     final double z = geographicLocation.lat > 0 ? zNorm : -zNorm;
     final double rOrb = Math.sqrt((1 + z) / (1 - z));
@@ -60,7 +100,12 @@ public abstract class RiseSetCalculator {
     return (rHor * rHor - dist * dist - rOrb * rOrb) / (2 * dist * rOrb);
   }
 
-  private long computeDeltaT(double cosHourAngleAtSet) {
+  private void projectHorizon() {
+    final Stereographic projection = new Stereographic(geographicLocation.lat >= 0 ? 1 : -1);
+    projection.project(geographicLocation, Math.toRadians(90 - shiftHorizonDeg()), horizon);
+  }
+
+  private long computeIncrementMeetsHorizonAt(double cosHourAngleAtSet) {
     final double dt;
     switch (mode) {
       case RISE:
@@ -72,7 +117,7 @@ public abstract class RiseSetCalculator {
       default:
         dt = 0;
     }
-    return (long) (dt * Time.MILLIS_PER_SIDEREAL_DAY / (2 * Math.PI));
+    return (long) (dt * RAD_TO_SIDEREAL_MILLIS);
   }
 
   private double computeCurrentHourAngle() {
@@ -80,35 +125,5 @@ public abstract class RiseSetCalculator {
     final double siderealTime = time.getHourAngleOfVernalEquinox() + geographicLocation.lon;
     final double rightAscension = Math.atan2(topocentric.y, topocentric.x);
     return Angle.standardize(siderealTime - rightAscension);
-  }
-
-  public long compute(long millisSinceEpoch, long precisionMs) {
-    time.setTime(millisSinceEpoch);
-    long deltaMs = Long.MAX_VALUE;
-    for (int n = 0; Math.abs(deltaMs) >= precisionMs && n < MAX_ITERATION; ++n) {
-      computeTopocentricPosition(time, geographicLocation, topocentric);
-      deltaMs = computeDeltaT();
-      time.addMillis(deltaMs);
-    }
-    return time.getTime();
-  }
-
-  private long computeDeltaT() {
-    final double cosHourAngleAtSet = computeCosHourAngleAtSet();
-    if (cosHourAngleAtSet > 1 || cosHourAngleAtSet < -1)
-      return computeIncrement(cosHourAngleAtSet);
-    else
-      return computeDeltaT(cosHourAngleAtSet);
-  }
-
-  private long computeIncrement(double cosHourAngle) {
-    final boolean isSet = cosHourAngle > 1 && oldCos < -1 && direction < 0
-        || cosHourAngle < -1 && oldCos > 1 && direction > 0;
-    final boolean isRise = cosHourAngle > 1 && oldCos < -1 && direction > 0
-        || cosHourAngle < -1 && oldCos > 1 && direction < 0;
-    if (isRise && mode == EventType.RISE || isSet && mode == EventType.SET)
-      direction /= -2;
-    oldCos = cosHourAngle;
-    return direction;
   }
 }
