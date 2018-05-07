@@ -9,7 +9,7 @@ import com.mkreidl.ephemeris.sky.RiseSetCalculator.EventType;
 import com.mkreidl.ephemeris.sky.SolarSystem.Body;
 
 @RunWith(Parameterized.class)
-public class SunRiseSetTest extends RiseSetTest {
+public class SunRiseSetTest extends PlanetRiseSetTest {
 
   public static final Object[][] EVENTS = {
       // https://www.timeanddate.com/sun/germany/munich
@@ -29,15 +29,15 @@ public class SunRiseSetTest extends RiseSetTest {
       { MUNICH, "2018-06-01 00:00 +0200", -1, RiseSetCalculator.EventType.SET, "2018-05-31 21:05 +0200" },
 
       // https://www.timeanddate.com/sun/norway/svolvaer
-      { SVOLVAER, "2017-12-01 00:00 +0200", +1, RiseSetCalculator.EventType.RISE, "2017-12-01 10:48 +0200" },
-      { SVOLVAER, "2017-12-01 00:00 +0200", +1, RiseSetCalculator.EventType.SET, "2017-12-01 12:53 +0200" },
-      { SVOLVAER, "2017-12-02 00:00 +0200", -1, RiseSetCalculator.EventType.RISE, "2017-12-01 10:48 +0200" },
-      { SVOLVAER, "2017-12-02 00:00 +0200", -1, RiseSetCalculator.EventType.SET, "2017-12-01 12:53 +0200" },
+      { SVOLVAER, "2017-12-01 00:00 +0100", +1, RiseSetCalculator.EventType.RISE, "2017-12-01 10:48 +0100" },
+      { SVOLVAER, "2017-12-01 00:00 +0100", +1, RiseSetCalculator.EventType.SET, "2017-12-01 12:53 +0100" },
+      { SVOLVAER, "2017-12-02 00:00 +0100", -1, RiseSetCalculator.EventType.RISE, "2017-12-01 10:48 +0100" },
+      { SVOLVAER, "2017-12-02 00:00 +0100", -1, RiseSetCalculator.EventType.SET, "2017-12-01 12:53 +0100" },
 
-      { SVOLVAER, "2017-12-07 00:00 +0200", -1, RiseSetCalculator.EventType.RISE, "2017-12-06 11:34 +0200" },
-      { SVOLVAER, "2017-12-07 00:00 +0200", -1, RiseSetCalculator.EventType.SET, "2017-12-06 12:11 +0200" },
-      { SVOLVAER, "2017-12-07 00:00 +0200", +1, RiseSetCalculator.EventType.RISE, "2018-01-05 11:59 +0200" },
-      { SVOLVAER, "2017-12-07 00:00 +0200", +1, RiseSetCalculator.EventType.SET, "2018-01-05 12:16 +0200" },
+      { SVOLVAER, "2017-12-07 00:00 +0100", -1, RiseSetCalculator.EventType.RISE, "2017-12-06 11:34 +0100" },
+      { SVOLVAER, "2017-12-07 00:00 +0100", -1, RiseSetCalculator.EventType.SET, "2017-12-06 12:11 +0100" },
+      { SVOLVAER, "2017-12-07 00:00 +0100", +1, RiseSetCalculator.EventType.RISE, "2018-01-05 11:59 +0100" },
+      { SVOLVAER, "2017-12-07 00:00 +0100", +1, RiseSetCalculator.EventType.SET, "2018-01-05 12:16 +0100" },
 
       { SVOLVAER, "2018-05-01 00:00 +0200", +1, RiseSetCalculator.EventType.RISE, "2018-05-01 03:57 +0200" },
       { SVOLVAER, "2018-05-01 00:00 +0200", +1, RiseSetCalculator.EventType.SET, "2018-05-01 22:04 +0200" },
@@ -53,6 +53,18 @@ public class SunRiseSetTest extends RiseSetTest {
       { SVOLVAER, "2018-07-19 01:00 +0200", -1, RiseSetCalculator.EventType.SET, "2018-07-19 00:53 +0200" },
       { SVOLVAER, "2018-07-19 01:00 +0200", +1, RiseSetCalculator.EventType.RISE, "2018-07-19 01:23 +0200" },
       { SVOLVAER, "2018-07-19 01:00 +0200", +1, RiseSetCalculator.EventType.SET, "2018-07-20 00:34 +0200" },
+      
+      // https://www.timeanddate.com/sun/canada/vancouver
+      { VANCOUVER, "2018-05-01 00:00 -0700", +1, RiseSetCalculator.EventType.RISE, "2018-05-01 05:51 -0700" },
+      { VANCOUVER, "2018-05-01 00:00 -0700", +1, RiseSetCalculator.EventType.SET, "2018-05-01 20:29 -0700" },
+      { VANCOUVER, "2018-05-02 00:00 -0700", -1, RiseSetCalculator.EventType.RISE, "2018-05-01 05:51 -0700" },
+      { VANCOUVER, "2018-05-02 00:00 -0700", -1, RiseSetCalculator.EventType.SET, "2018-05-01 20:29 -0700" },
+      
+      // https://www.timeanddate.com/sun/australia/sydney
+      { SYDNEY, "2018-05-01 00:00 +1000", +1, RiseSetCalculator.EventType.RISE, "2018-05-01 06:29 +1000" },
+      { SYDNEY, "2018-05-01 00:00 +1000", +1, RiseSetCalculator.EventType.SET, "2018-05-01 17:15 +1000" },
+      { SYDNEY, "2018-05-02 00:00 +1000", -1, RiseSetCalculator.EventType.RISE, "2018-05-01 06:29 +1000" },
+      { SYDNEY, "2018-05-02 00:00 +1000", -1, RiseSetCalculator.EventType.SET, "2018-05-01 17:15 +1000" },
   };
 
   @Parameters(name = "{0} {1} {2} {3} {4}")

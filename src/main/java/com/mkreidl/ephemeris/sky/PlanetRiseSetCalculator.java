@@ -18,7 +18,7 @@ class PlanetRiseSetCalculator extends RiseSetCalculator {
   }
 
   @Override
-  public void computeTopocentricPosition() {
+  protected void computeTopocentricPosition() {
     solarSystem.compute(time, SolarSystem.Body.EARTH);
     solarSystem.compute(time, body);
     solarSystem.getEphemerides(body, position);
@@ -27,7 +27,7 @@ class PlanetRiseSetCalculator extends RiseSetCalculator {
   }
 
   @Override
-  public double shiftHorizonDeg() {
+  protected double shiftHorizonDeg() {
     switch (body) {
       case SUN:
       case MOON:
@@ -36,5 +36,10 @@ class PlanetRiseSetCalculator extends RiseSetCalculator {
       default:
         return -OPTICAL_HORIZON_DEG;
     }
+  }
+
+  @Override
+  public long compute(long startTimeMs, long precisionMs) {
+    return computeIterative(startTimeMs, precisionMs);
   }
 }

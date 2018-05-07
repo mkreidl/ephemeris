@@ -21,7 +21,7 @@ public class Stars
     private final PrecessionMatrix precession = new PrecessionMatrix();
     private final Matrix rotation = new Matrix();
     private final Matrix transformation = new Matrix();
-    private final Cartesian[] positions = new Cartesian[StarsCatalog.SIZE];
+    private final Equatorial.Cart[] positions = new Equatorial.Cart[StarsCatalog.SIZE];
     private int numberOfThreads = 8;
     private int numCalcPerThread = StarsCatalog.SIZE / numberOfThreads + 1;
     private Thread[] threads = new Thread[numberOfThreads];
@@ -61,7 +61,7 @@ public class Stars
         threads = new Thread[numberOfThreads];
     }
 
-    public synchronized void compute( int starIndex, Time time, Cartesian outputPosition )
+    public synchronized void compute( int starIndex, Time time, Equatorial.Cart outputPosition )
     {
         final double yearsSince2000 = yearsSince2000( time );
         setupTransformationToDate( time, transformation );
@@ -77,12 +77,12 @@ public class Stars
         computeAll( time, positions );
     }
 
-    public synchronized void getPosition( int index, Cartesian position )
+    public synchronized void getPosition( int index, Equatorial.Cart position )
     {
         position.set( positions[index] );
     }
 
-    public synchronized void computeAll( Time time, final Cartesian[] outputPositions )
+    public synchronized void computeAll( Time time, final Equatorial.Cart[] outputPositions )
     {
         final double yearsSince2000 = yearsSince2000( time );
         setupTransformationToDate( time, transformation );

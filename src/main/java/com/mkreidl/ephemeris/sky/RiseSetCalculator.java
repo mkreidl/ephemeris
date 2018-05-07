@@ -22,20 +22,22 @@ public abstract class RiseSetCalculator {
   protected final Time time = new Time();
 
   private EventType mode = EventType.SET;
-  private long direction = (long) Time.MILLIS_PER_SIDEREAL_DAY;
+  private double direction = 2 * Math.PI;
   private double oldCos = Double.NaN;
   private final Circle horizon = new Circle();
 
-  public abstract void computeTopocentricPosition();
+  public abstract long compute(long startTimeMs, long precisionMs);
 
-  public abstract double shiftHorizonDeg();
+  protected abstract void computeTopocentricPosition();
+
+  protected abstract double shiftHorizonDeg();
 
   public void setEventType(EventType mode) {
     this.mode = mode;
   }
 
   public void setSearchDirection(long direction) {
-    this.direction = direction * (long) Time.MILLIS_PER_SIDEREAL_DAY;
+    this.direction = direction * 2 * Math.PI;
   }
 
   public void setGeographicLocation(Spherical geographicLocation) {
@@ -48,8 +50,9 @@ public abstract class RiseSetCalculator {
     final double cosHourAngleAtSet = computeCosHourAngleAtSet();
     if (cosHourAngleAtSet > 1 || cosHourAngleAtSet < -1) {
       throw new IllegalStateException("At the given time the horizon does not cross the declination coordinate line of the object in question.");
-    } else
-      time.addMillis(computeIncrementMeetsHorizonAt(cosHourAngleAtSet));
+    } else {
+      time.addMillis(computeIncrementMeetsHorizonAt(cosHourAngleAtSet, true));
+    }
     return time.getTime();
   }
 
@@ -63,18 +66,17 @@ public abstract class RiseSetCalculator {
       deltaMs = computeDeltaT(false);
       time.addMillis(deltaMs);
     }
+    if (Math.abs(deltaMs) >= precisionMs)
+      throw new IllegalStateException("Unable to determine a rise/set event.");
     return time.getTime();
   }
 
-  private long computeDeltaT(boolean fixDirection) {
+  private long computeDeltaT(boolean fixSearchDirection) {
     double cosHourAngleAtSet = computeCosHourAngleAtSet();
     if (cosHourAngleAtSet > 1 || cosHourAngleAtSet < -1)
       return computeIncrementDoesNotMeetHorizon(cosHourAngleAtSet);
     else {
-      long deltaMs = computeIncrementMeetsHorizonAt(cosHourAngleAtSet);
-      while (fixDirection && deltaMs * direction < 0)
-        deltaMs += direction;
-      return deltaMs;
+      return computeIncrementMeetsHorizonAt(cosHourAngleAtSet, fixSearchDirection);
     }
   }
 
@@ -86,7 +88,7 @@ public abstract class RiseSetCalculator {
     if (isRise && mode == EventType.RISE || isSet && mode == EventType.SET)
       direction /= -2;
     oldCos = cosHourAngle;
-    return direction;
+    return (long) (direction * RAD_TO_SIDEREAL_MILLIS);
   }
 
   private double computeCosHourAngleAtSet() {
@@ -105,8 +107,8 @@ public abstract class RiseSetCalculator {
     projection.project(geographicLocation, Math.toRadians(90 - shiftHorizonDeg()), horizon);
   }
 
-  private long computeIncrementMeetsHorizonAt(double cosHourAngleAtSet) {
-    final double dt;
+  private long computeIncrementMeetsHorizonAt(double cosHourAngleAtSet, boolean fixDirection) {
+    double dt;
     switch (mode) {
       case RISE:
         dt = -Math.acos(cosHourAngleAtSet) - computeCurrentHourAngle();
@@ -117,6 +119,8 @@ public abstract class RiseSetCalculator {
       default:
         dt = 0;
     }
+    while (fixDirection && dt * direction < 0)
+      dt += direction;
     return (long) (dt * RAD_TO_SIDEREAL_MILLIS);
   }
 

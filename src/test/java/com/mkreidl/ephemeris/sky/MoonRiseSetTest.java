@@ -9,7 +9,7 @@ import com.mkreidl.ephemeris.sky.RiseSetCalculator.EventType;
 import com.mkreidl.ephemeris.sky.SolarSystem.Body;
 
 @RunWith(Parameterized.class)
-public class MoonRiseSetTest extends RiseSetTest {
+public class MoonRiseSetTest extends PlanetRiseSetTest {
 
   public static final Object[][] EVENTS = {
       // https://www.timeanddate.com/sun/germany/munich
@@ -27,6 +27,12 @@ public class MoonRiseSetTest extends RiseSetTest {
       { MUNICH, "2018-05-18 00:00 +0200", -1, RiseSetCalculator.EventType.SET, "2018-05-17 23:06 +0200" },
       { MUNICH, "2018-05-18 00:00 +0200", +1, RiseSetCalculator.EventType.RISE, "2018-05-18 08:14 +0200" },
       { MUNICH, "2018-05-18 00:00 +0200", +1, RiseSetCalculator.EventType.SET, "2018-05-19 00:09 +0200" },
+      
+      // https://www.timeanddate.com/sun/australia/sydney
+      { SYDNEY, "2018-05-09 00:00 +1000", -1, RiseSetCalculator.EventType.RISE, "2018-05-08 23:54 +1000" },
+      { SYDNEY, "2018-05-09 00:00 +1000", -1, RiseSetCalculator.EventType.SET, "2018-05-08 12:58 +1000" },
+      { SYDNEY, "2018-05-09 00:00 +1000", +1, RiseSetCalculator.EventType.RISE, "2018-05-10 00:49 +1000" },
+      { SYDNEY, "2018-05-09 00:00 +1000", +1, RiseSetCalculator.EventType.SET, "2018-05-09 13:35 +1000" },
   };
 
   @Parameters(name = "{0} {1} {2} {3} {4}")
