@@ -49,6 +49,12 @@ public abstract class RiseSetCalculator
         this.searchIncrement = 2 * Math.PI * ( lookupDirection == LookupDirection.FORWARD ? 1 : -1 );
     }
 
+    public void setGeographicLocation( double lon, double lat )
+    {
+        geographicLocation.lon = lon;
+        geographicLocation.lat = lat;
+    }
+
     public void setGeographicLocation( Spherical geographicLocation )
     {
         this.geographicLocation.lon = geographicLocation.lon;

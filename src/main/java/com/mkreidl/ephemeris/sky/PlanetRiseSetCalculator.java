@@ -2,7 +2,7 @@ package com.mkreidl.ephemeris.sky;
 
 import com.mkreidl.ephemeris.Distance;
 
-class PlanetRiseSetCalculator extends RiseSetCalculator {
+public class PlanetRiseSetCalculator extends RiseSetCalculator {
 
   private final SolarSystem solarSystem;
   private final SolarSystem.Body body;
