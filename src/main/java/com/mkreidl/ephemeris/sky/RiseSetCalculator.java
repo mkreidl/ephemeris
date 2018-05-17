@@ -9,6 +9,7 @@ import com.mkreidl.ephemeris.sky.coordinates.Equatorial;
 
 public abstract class RiseSetCalculator
 {
+    private static final long PRECISION = 30000;
     private static final int MAX_ITERATION = 1000;
     private static final double RAD_TO_SIDEREAL_MILLIS = Time.MILLIS_PER_SIDEREAL_DAY / ( 2 * Math.PI );
 
@@ -16,7 +17,13 @@ public abstract class RiseSetCalculator
 
     public enum EventType
     {
-        RISE, SET
+        RISE( -1 ), SET( 1 );
+        private final int signum;
+
+        EventType( int signum )
+        {
+            this.signum = signum;
+        }
     }
 
     public enum LookupDirection
@@ -24,16 +31,18 @@ public abstract class RiseSetCalculator
         FORWARD, BACKWARD
     }
 
-    protected final Equatorial.Cart topocentric = new Equatorial.Cart();
+    protected final Equatorial.Sphe topocentric = new Equatorial.Sphe();
     protected final Spherical geographicLocation = new Spherical( SolarSystem.Body.EARTH.RADIUS_MEAN_M, 0, 0 );
     protected final Time time = new Time();
     private final Circle horizon = new Circle();
 
+    private LookupDirection lookupDirection;
     private EventType mode = EventType.SET;
-    private double searchIncrement = 2 * Math.PI;
     private double oldCos = Double.NaN;
+    private long searchIncrement = Time.MILLIS_PER_SIDEREAL_DAY;
+    private long timeMillis, timeMillisStart;
 
-    public abstract long compute( long startTimeMs, long precisionMs );
+    public abstract Long compute( long startTimeMs );
 
     protected abstract void computeTopocentricPosition();
 
@@ -46,7 +55,8 @@ public abstract class RiseSetCalculator
 
     public void setSearchDirection( LookupDirection lookupDirection )
     {
-        this.searchIncrement = 2 * Math.PI * ( lookupDirection == LookupDirection.FORWARD ? 1 : -1 );
+        this.lookupDirection = lookupDirection;
+        searchIncrement = Time.MILLIS_PER_SIDEREAL_DAY * ( lookupDirection == LookupDirection.FORWARD ? 1 : -1 );
     }
 
     public void setGeographicLocation( double lon, double lat )
@@ -61,64 +71,58 @@ public abstract class RiseSetCalculator
         this.geographicLocation.lat = geographicLocation.lat;
     }
 
-    public long computeSingleStep( long millisSinceEpoch )
+    public Long computeIterative( long timeMillisStart )
     {
-        time.setTime( millisSinceEpoch );
-        final double cosHourAngleAtSet = computeCosHourAngleAtSet();
-        if ( cosHourAngleAtSet > 1 || cosHourAngleAtSet < -1 )
-            throw new IllegalStateException(
-                    "At the given time the horizon does not cross the declination coordinate line of the object in question." );
-        else
-            time.addMillis( computeIncrementMeetsHorizonAt( cosHourAngleAtSet, true ) );
-        return time.getTime();
-    }
-
-    public long computeIterative( long millisSinceEpoch, long precisionMs )
-    {
-        time.setTime( millisSinceEpoch );
-        long deltaMs = computeDeltaT( true );
-        time.addMillis( deltaMs );
-        for ( int n = 0; Math.abs( deltaMs ) >= precisionMs && n < MAX_ITERATION; ++n )
+        this.timeMillisStart = timeMillisStart;
+        this.timeMillis = timeMillisStart;
+        time.setTime( timeMillisStart );
+        while ( doesNotMeetHorizon() )
         {
-            deltaMs = computeDeltaT( false );
-            time.addMillis( deltaMs );
+            timeMillis += searchIncrement;
+            time.setTime( timeMillis );
         }
-        if ( Math.abs( deltaMs ) >= precisionMs )
-            throw new IllegalStateException( "Unable to determine a rise/set event." );
-        return time.getTime();
+        return computeIterativeMeetsHorizon();
     }
 
-    private long computeDeltaT( boolean fixSearchDirection )
+    private Long computeIterativeMeetsHorizon()
     {
-        double cosHourAngleAtSet = computeCosHourAngleAtSet();
-        if ( cosHourAngleAtSet > 1 || cosHourAngleAtSet < -1 )
-            return computeIncrementDoesNotMeetHorizon( cosHourAngleAtSet );
-        else
-            return computeIncrementMeetsHorizonAt( cosHourAngleAtSet, fixSearchDirection );
+        for ( int n = 0; n < MAX_ITERATION; ++n )
+        {
+            final long timeMillisPrevious = timeMillis;
+            computeIncrement();
+            time.setTime( timeMillis );
+            if ( Math.abs( timeMillis - timeMillisPrevious ) < PRECISION )
+                return time.getTime();
+        }
+        return null;
     }
 
-    private long computeIncrementDoesNotMeetHorizon( double cosHourAngle )
+    private boolean doesNotMeetHorizon()
     {
-        final boolean isSet = cosHourAngle > 1 && oldCos < -1 && searchIncrement < 0
-                || cosHourAngle < -1 && oldCos > 1 && searchIncrement > 0;
-        final boolean isRise = cosHourAngle > 1 && oldCos < -1 && searchIncrement > 0
-                || cosHourAngle < -1 && oldCos > 1 && searchIncrement < 0;
-        if ( isRise && mode == EventType.RISE || isSet && mode == EventType.SET )
-            searchIncrement /= -2;
-        oldCos = cosHourAngle;
-        return (long)( searchIncrement * RAD_TO_SIDEREAL_MILLIS );
+        computeTopocentricPosition();
+        return completelyAboveHorizon() || completelyBelowHorizon();
     }
 
-    private double computeCosHourAngleAtSet()
+    protected boolean completelyAboveHorizon()
+    {
+        return Math.abs( Math.PI - geographicLocation.lat - topocentric.lat ) <= 0.5 * Math.PI;
+    }
+
+    protected boolean completelyBelowHorizon()
+    {
+        return Math.abs( geographicLocation.lat - topocentric.lat ) >= 0.5 * Math.PI;
+    }
+
+    private void computeIncrement()
     {
         computeTopocentricPosition();
         projectHorizon();
-        final double zNorm = topocentric.z / topocentric.length();
-        final double z = geographicLocation.lat > 0 ? zNorm : -zNorm;
-        final double rOrb = Math.sqrt( ( 1 + z ) / ( 1 - z ) );
-        final double dist = horizon.distFromOrigin();
-        final double rHor = horizon.r;
-        return ( rHor * rHor - dist * dist - rOrb * rOrb ) / ( 2 * dist * rOrb );
+        final double alpha = mode.signum * hourAngleAtSet() - currentHourAngle();
+        timeMillis += (long)( alpha * RAD_TO_SIDEREAL_MILLIS );
+        if ( lookupDirection == LookupDirection.FORWARD && timeMillis < timeMillisStart )
+            timeMillis += Time.MILLIS_PER_SIDEREAL_DAY;
+        if ( lookupDirection == LookupDirection.BACKWARD && timeMillis > timeMillisStart )
+            timeMillis -= Time.MILLIS_PER_SIDEREAL_DAY;
     }
 
     private void projectHorizon()
@@ -127,30 +131,19 @@ public abstract class RiseSetCalculator
         projection.project( geographicLocation, Math.toRadians( 90 - shiftHorizonDeg() ), horizon );
     }
 
-    private long computeIncrementMeetsHorizonAt( double cosHourAngleAtSet, boolean fixDirection )
+    private double hourAngleAtSet()
     {
-        double dt;
-        switch ( mode )
-        {
-            case RISE:
-                dt = -Math.acos( cosHourAngleAtSet ) - computeCurrentHourAngle();
-                break;
-            case SET:
-                dt = Math.acos( cosHourAngleAtSet ) - computeCurrentHourAngle();
-                break;
-            default:
-                dt = 0;
-        }
-        while ( fixDirection && dt * searchIncrement < 0 )
-            dt += searchIncrement;
-        return (long)( dt * RAD_TO_SIDEREAL_MILLIS );
+        final double z = Math.sin( geographicLocation.lat > 0 ? topocentric.lat : -topocentric.lat );
+        final double rOrb = Math.sqrt( ( 1 + z ) / ( 1 - z ) );
+        final double dist = horizon.distFromOrigin();
+        final double rHor = horizon.r;
+        return Math.acos( ( rHor * rHor - dist * dist - rOrb * rOrb ) / ( 2 * dist * rOrb ) );
     }
 
-    private double computeCurrentHourAngle()
+    private double currentHourAngle()
     {
         // Right ascension is the sidereal time at (upper) meridian transit (hourAngle == 0)
         final double siderealTime = time.getHourAngleOfVernalEquinox() + geographicLocation.lon;
-        final double rightAscension = Math.atan2( topocentric.y, topocentric.x );
-        return Angle.standardize( siderealTime - rightAscension );
+        return Angle.standardize( siderealTime - topocentric.lon );
     }
 }

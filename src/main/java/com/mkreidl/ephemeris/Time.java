@@ -24,7 +24,7 @@ public class Time
 
     public static final double SIDEREAL_PER_SOLAR = 1.00273790935;
     public static final double SOLAR_PER_SIDEREAL = 1.0 / SIDEREAL_PER_SOLAR;
-    public static final double MILLIS_PER_SIDEREAL_DAY = MILLIS_PER_DAY * SOLAR_PER_SIDEREAL;
+    public static final long MILLIS_PER_SIDEREAL_DAY = (long)(MILLIS_PER_DAY * SOLAR_PER_SIDEREAL);
 
     private static final double[] GMST_COEFF_DAYS =
             {

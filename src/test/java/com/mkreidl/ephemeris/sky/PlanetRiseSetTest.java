@@ -17,6 +17,8 @@ public abstract class PlanetRiseSetTest
     static final Spherical SVOLVAER = new Spherical( 1.0, Math.toRadians( 14.561583 ), Math.toRadians( 68.234764 ) );
     static final Spherical SYDNEY = new Spherical( 1.0, Math.toRadians( 151.2 ), Math.toRadians( -33.85 ) );
     static final Spherical VANCOUVER = new Spherical( 1.0, Math.toRadians( -123.12244 ), Math.toRadians( 49.28098 ) );
+    static final Spherical FAR_NORTH = new Spherical( 1.0, Math.toRadians( 11.498888 ), Math.toRadians( 77.170555 ) );
+
     private static final long PRECISION_MS = 15000;
     private final RiseSetCalculator.EventType eventType;
     private final Spherical geographicLocation;
@@ -45,7 +47,7 @@ public abstract class PlanetRiseSetTest
         calculator.setGeographicLocation( geographicLocation );
         calculator.setEventType( eventType );
         calculator.setSearchDirection( searchDirection );
-        final long eventTimeCalculated = calculator.compute( startTimeMs, PRECISION_MS );
+        final long eventTimeCalculated = calculator.compute( startTimeMs );
         final long eventTimeExpected = dateFormat.parse( eventTime ).getTime();
         assertTrue(
                 String.format( "Expected: %s; Actual: %s", dateFormat.format( new Date( eventTimeExpected ) ), dateFormat.format( new Date( eventTimeCalculated + 30000 ) ) ),
