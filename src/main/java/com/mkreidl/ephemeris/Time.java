@@ -8,7 +8,7 @@ import org.threeten.bp.ZonedDateTime;
 
 public class Time
 {
-    public static final Time J2000 = new Time( 946728000000L );
+    public static final Time J2000 = new Time( 946_728_000_000L );
     public static final double STD_EPOCH_DAY_NUMBER = 2451545.0;
     public static final double DAYS_PER_YEAR = 365.25;
 
@@ -16,10 +16,10 @@ public class Time
     public static final double TDT_EPOCH_DAY_NUMBER = STD_EPOCH_DAY_NUMBER - TDT_OFFSET;
 
 
-    public static final long MILLIS_PER_HOUR = 3600000;
+    public static final long MILLIS_PER_HOUR = 3_600_000;
     public static final long MILLIS_PER_DAY = MILLIS_PER_HOUR * 24;
-    public static final long DAYS_PER_CENTURY = 36525;
-    public static final long DAYS_PER_MILLENNIUM = 365250;
+    public static final long DAYS_PER_CENTURY = 36_525;
+    public static final long DAYS_PER_MILLENNIUM = 365_250;
     public static final long MILLIS_PER_CENTURY = MILLIS_PER_DAY * DAYS_PER_CENTURY;
 
     public static final double SIDEREAL_PER_SOLAR = 1.00273790935;

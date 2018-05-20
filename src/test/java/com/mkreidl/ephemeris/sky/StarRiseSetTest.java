@@ -10,6 +10,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class StarRiseSetTest
@@ -17,40 +18,22 @@ public class StarRiseSetTest
     private static final Spherical MUNICH = new Spherical( 1.0, Math.toRadians( 11.576 ), Math.toRadians( 48.137 ) );
     private final DateFormat dateFormat = new SimpleDateFormat( "yyyy-MM-dd HH:mm Z" );
 
-    @Test( expected = IllegalStateException.class )
+    @Test
     public void testPolarisRise()
     {
         final StarRiseSetCalculator polaris = StarRiseSetCalculator.of( "Polaris" );
         polaris.setGeographicLocation( MUNICH );
         polaris.setEventType( EventType.RISE );
-        polaris.compute( 0 );
+        assertFalse( polaris.compute( 0 ) );
     }
 
-    @Test( expected = IllegalStateException.class )
+    @Test
     public void testPolarisSet()
     {
         final StarRiseSetCalculator polaris = StarRiseSetCalculator.of( "Polaris" );
         polaris.setGeographicLocation( MUNICH );
         polaris.setEventType( EventType.SET );
-        polaris.compute( 0 );
-    }
-
-    @Test( expected = IllegalStateException.class )
-    public void testPolarisRiseIterative()
-    {
-        final StarRiseSetCalculator polaris = StarRiseSetCalculator.of( "Polaris" );
-        polaris.setGeographicLocation( MUNICH );
-        polaris.setEventType( EventType.RISE );
-        polaris.computeIterative( 0 );
-    }
-
-    @Test( expected = IllegalStateException.class )
-    public void testPolarisSetIterative()
-    {
-        final StarRiseSetCalculator polaris = StarRiseSetCalculator.of( "Polaris" );
-        polaris.setGeographicLocation( MUNICH );
-        polaris.setEventType( EventType.SET );
-        polaris.computeIterative( 0 );
+        assertFalse( polaris.compute( 0 ) );
     }
 
     @Test
@@ -62,7 +45,8 @@ public class StarRiseSetTest
         sirius.setGeographicLocation( MUNICH );
         sirius.setEventType( EventType.SET );
         sirius.setSearchDirection( RiseSetCalculator.LookupDirection.FORWARD );
-        final long eventTimeCalculated = sirius.compute( startTime );
+        assertTrue( sirius.compute( startTime ) );
+        final long eventTimeCalculated = sirius.getTime();
         assertTrue(
                 String.format( "Expected: %s; Actual: %s", dateFormat.format( new Date( eventTimeExpected ) ), dateFormat.format( new Date( eventTimeCalculated + 30000 ) ) ),
                 Math.abs( eventTimeCalculated - eventTimeExpected ) < 30000 );
@@ -77,7 +61,8 @@ public class StarRiseSetTest
         sirius.setGeographicLocation( MUNICH );
         sirius.setEventType( EventType.RISE );
         sirius.setSearchDirection( RiseSetCalculator.LookupDirection.FORWARD );
-        final long eventTimeCalculated = sirius.compute( startTime );
+        assertTrue( sirius.compute( startTime ) );
+        final long eventTimeCalculated = sirius.getTime();
         assertTrue(
                 String.format( "Expected: %s; Actual: %s", dateFormat.format( new Date( eventTimeExpected ) ), dateFormat.format( new Date( eventTimeCalculated + 30000 ) ) ),
                 Math.abs( eventTimeCalculated - eventTimeExpected ) < 30000 );

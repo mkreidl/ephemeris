@@ -28,22 +28,15 @@ public class StarRiseSetCalculator extends RiseSetCalculator
     }
 
     @Override
-    protected void computeTopocentricPosition()
+    public boolean compute( long startTimeMs )
     {
+        super.setStartTime( startTimeMs );
         stars.compute( starIndex, time, cart );
         cart.transform( topocentric );
-    }
-
-    @Override
-    protected double shiftHorizonDeg()
-    {
-        return -OPTICAL_HORIZON_DEG;
-    }
-
-    @Override
-    public Long compute( long startTimeMs )
-    {
-        return 0l;// computeSingleStep();
+        final boolean isCrossingHorizon = isCrossingHorizon();
+        if ( isCrossingHorizon() )
+            adjustTimeToCrossingHorizon();
+        return isCrossingHorizon;
     }
 
 }
