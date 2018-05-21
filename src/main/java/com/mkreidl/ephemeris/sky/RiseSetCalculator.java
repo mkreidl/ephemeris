@@ -25,7 +25,7 @@ public abstract class RiseSetCalculator
         FORWARD, BACKWARD
     }
 
-    private static final double OPTICAL_HORIZON_DEG = 34.0 / 60;
+    static final double OPTICAL_HORIZON_DEG = -34.0 / 60;
     private static final double RAD_TO_SIDEREAL_MILLIS = Time.MILLIS_PER_SIDEREAL_DAY / ( 2 * Math.PI );
 
     protected final Equatorial.Sphe topocentric = new Equatorial.Sphe();
@@ -33,7 +33,8 @@ public abstract class RiseSetCalculator
     protected final Time time = new Time();
     protected EventType mode = EventType.SET;
 
-    LookupDirection lookupDirection;
+    LookupDirection lookupDirection = LookupDirection.FORWARD;
+    double virtualHorizonDeg = OPTICAL_HORIZON_DEG;
 
     private final Circle horizon = new Circle();
     private Stereographic projection;
@@ -44,6 +45,19 @@ public abstract class RiseSetCalculator
     public long getTime()
     {
         return time.getTime();
+    }
+
+    private double computeHourAngle()
+    {
+        // Right ascension is the sidereal time at (upper) meridian transit (hourAngle == 0)
+        final double siderealTime = time.getHourAngleOfVernalEquinox() + geographicLocation.lon;
+        return Angle.standardize( siderealTime - topocentric.lon );
+    }
+
+    private double getOrbitRadius()
+    {
+        final double z = Math.sin( geographicLocation.lat > 0 ? topocentric.lat : -topocentric.lat );
+        return Math.sqrt( ( 1 + z ) / ( 1 - z ) );
     }
 
     public void setEventType( EventType mode )
@@ -74,11 +88,6 @@ public abstract class RiseSetCalculator
         time.setTime( startTimeMs );
     }
 
-    protected double virtualHorizonDeg()
-    {
-        return -OPTICAL_HORIZON_DEG;
-    }
-
     boolean isCrossingHorizon()
     {
         return !completelyAboveHorizon() && !completelyBelowHorizon();
@@ -86,17 +95,22 @@ public abstract class RiseSetCalculator
 
     private boolean completelyAboveHorizon()
     {
-        return Math.abs( Math.toDegrees( geographicLocation.lat + topocentric.lat ) ) >= 90 + virtualHorizonDeg();
+        return Math.abs( Math.toDegrees( geographicLocation.lat + topocentric.lat ) ) >= 90 + virtualHorizonDeg;
     }
 
     private boolean completelyBelowHorizon()
     {
-        return Math.abs( Math.toDegrees( geographicLocation.lat - topocentric.lat ) ) >= 90 - virtualHorizonDeg();
+        return Math.abs( Math.toDegrees( geographicLocation.lat - topocentric.lat ) ) >= 90 - virtualHorizonDeg;
+    }
+
+    void updateHorizon()
+    {
+        projection.project( geographicLocation, Math.toRadians( 90 - virtualHorizonDeg ), horizon );
     }
 
     boolean adjustTimeToCrossingHorizon()
     {
-        final double alpha = mode.signum * hourAngleAtSet() - currentHourAngle();
+        final double alpha = mode.signum * computeHourAngleAtSet() - computeHourAngle();
         time.addMillis( (long)( alpha * RAD_TO_SIDEREAL_MILLIS ) );
         if ( lookupDirection == LookupDirection.FORWARD && time.getTime() < startTimeMs )
             time.addMillis( Time.MILLIS_PER_SIDEREAL_DAY );
@@ -105,20 +119,11 @@ public abstract class RiseSetCalculator
         return !Double.isNaN( alpha ) && !Double.isInfinite( alpha );
     }
 
-    private double hourAngleAtSet()
+    private double computeHourAngleAtSet()
     {
-        projection.project( geographicLocation, Math.toRadians( 90 - virtualHorizonDeg() ), horizon );
-        final double z = Math.sin( geographicLocation.lat > 0 ? topocentric.lat : -topocentric.lat );
-        final double rOrb = Math.sqrt( ( 1 + z ) / ( 1 - z ) );
         final double dist = horizon.distFromOrigin();
         final double rHor = horizon.r;
+        final double rOrb = getOrbitRadius();
         return Math.acos( ( rHor * rHor - dist * dist - rOrb * rOrb ) / ( 2 * dist * rOrb ) );
-    }
-
-    private double currentHourAngle()
-    {
-        // Right ascension is the sidereal time at (upper) meridian transit (hourAngle == 0)
-        final double siderealTime = time.getHourAngleOfVernalEquinox() + geographicLocation.lon;
-        return Angle.standardize( siderealTime - topocentric.lon );
     }
 }

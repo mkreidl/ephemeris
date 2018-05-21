@@ -6,7 +6,7 @@ public class StarRiseSetCalculator extends RiseSetCalculator
 {
     private final Stars stars = new Stars();
     private final Equatorial.Cart cart = new Equatorial.Cart();
-    private int starIndex;
+    private final int starIndex;
 
     public static StarRiseSetCalculator of( int starIndex )
     {
@@ -28,13 +28,20 @@ public class StarRiseSetCalculator extends RiseSetCalculator
     }
 
     @Override
+    public void setGeographicLocation( double lon, double lat )
+    {
+        super.setGeographicLocation( lon, lat );
+        updateHorizon();
+    }
+
+    @Override
     public boolean compute( long startTimeMs )
     {
         super.setStartTime( startTimeMs );
         stars.compute( starIndex, time, cart );
         cart.transform( topocentric );
         final boolean isCrossingHorizon = isCrossingHorizon();
-        if ( isCrossingHorizon() )
+        if ( isCrossingHorizon )
             adjustTimeToCrossingHorizon();
         return isCrossingHorizon;
     }

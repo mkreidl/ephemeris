@@ -30,13 +30,6 @@ public class PlanetRiseSetCalculator extends RiseSetCalculator
     }
 
     @Override
-    protected double virtualHorizonDeg()
-    {
-        final double apparentRadius = body.RADIUS_MEAN_M / topocentric.distance( Distance.m );
-        return super.virtualHorizonDeg() - Math.toDegrees( apparentRadius );
-    }
-
-    @Override
     public boolean compute( long timeMillisStart )
     {
         super.setStartTime( timeMillisStart );
@@ -54,6 +47,13 @@ public class PlanetRiseSetCalculator extends RiseSetCalculator
                 return true;
         }
         return false;
+    }
+
+    @Override
+    boolean adjustTimeToCrossingHorizon()
+    {
+        updateHorizon();
+        return super.adjustTimeToCrossingHorizon();
     }
 
     private long searchOrbitCrossingHorizon()
@@ -84,7 +84,9 @@ public class PlanetRiseSetCalculator extends RiseSetCalculator
         solarSystem.getEphemerides( body, position );
         position.setTimeLocation( time, geographicLocation );
         position.get( topocentric, Position.CoordinatesCenter.TOPOCENTRIC );
-        isVisibleNow = topocentric.lat >= virtualHorizonDeg();
+        final double apparentRadius = body.RADIUS_MEAN_M / topocentric.distance( Distance.m );
+        virtualHorizonDeg = OPTICAL_HORIZON_DEG - Math.toDegrees( apparentRadius );
+        isVisibleNow = topocentric.lat >= virtualHorizonDeg;
         isCrossingHorizon = isCrossingHorizon();
     }
 
