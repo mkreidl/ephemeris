@@ -14,14 +14,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 @RunWith(Parameterized.class)
-public class VSOP87CoordinateTransformationTest extends VSOP87Test
+public class VSOP87CoordinateTransformationTest
 {
-    private Map<VSOP87File.Version, Map<String, DataSet>> datasets;
+    private Map<VSOP87File.Version, Map<String, VSOP87Test.DataSet>> datasets;
 
     private void testTransformation( VSOP87File.Version first, VSOP87File.Version second, double d1, double d2, double d3 )
     {
-        final Map<String, DataSet> datasetsFirst = datasets.get( first );
-        final Map<String, DataSet> datasetsSecond = datasets.get( second );
+        final Map<String, VSOP87Test.DataSet> datasetsFirst = datasets.get( first );
+        final Map<String, VSOP87Test.DataSet> datasetsSecond = datasets.get( second );
 
         final VSOP87OrbitalElements orbitalElements = new VSOP87OrbitalElements();
         final Cartesian origCartesian = new Cartesian();
@@ -31,8 +31,8 @@ public class VSOP87CoordinateTransformationTest extends VSOP87Test
 
         for ( String dateString : datasetsFirst.keySet() )
         {
-            final DataSet dataSetFirst = datasetsFirst.get( dateString );
-            final DataSet dataSetSecond = datasetsSecond.get( dateString );
+            final VSOP87Test.DataSet dataSetFirst = datasetsFirst.get( dateString );
+            final VSOP87Test.DataSet dataSetSecond = datasetsSecond.get( dateString );
 
             if ( dataSetSecond == null )
             {
@@ -125,7 +125,7 @@ public class VSOP87CoordinateTransformationTest extends VSOP87Test
     }
 
     public VSOP87CoordinateTransformationTest(
-    		VSOP87File.Planet planet, Map<VSOP87File.Version, Map<String, DataSet>> datasets )
+    		VSOP87File.Planet planet, Map<VSOP87File.Version, Map<String, VSOP87Test.DataSet>> datasets )
     {
         this.datasets = datasets;
     }
@@ -134,8 +134,8 @@ public class VSOP87CoordinateTransformationTest extends VSOP87Test
     public static Iterable<Object[]> data()
     {
     	java.util.List<Object[]> parameters = new java.util.LinkedList<>();
-        for ( VSOP87File.Planet planet : VSOP87CoordinateTransformationTest.fullData.keySet() )
-            parameters.add( new Object[] { planet, fullData.get( planet ) } );
+        for ( VSOP87File.Planet planet : VSOP87Test.fullData.keySet() )
+            parameters.add( new Object[] { planet, VSOP87Test.fullData.get( planet ) } );
         return parameters;
     }
 }

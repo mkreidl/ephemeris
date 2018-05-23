@@ -23,7 +23,7 @@ public abstract class Model<T extends Coordinates<T>> extends OrbitalModel<T>
     public static final String URANUS = "URANUS";
     public static final String NEPTUNE = "NEPTUNE";
 
-    public static XYZ getModelC( String planet )
+    public static XYZ getVersionC( String planet )
     {
         switch ( planet )
         {
@@ -48,6 +48,31 @@ public abstract class Model<T extends Coordinates<T>> extends OrbitalModel<T>
         }
     }
 
+    public static LBR getVersionD( String planet )
+    {
+        switch ( planet )
+        {
+            case MERCURY:
+                return new com.mkreidl.ephemeris.dynamics.VSOP87.D.Mercury();
+            case VENUS:
+                return new com.mkreidl.ephemeris.dynamics.VSOP87.D.Venus();
+            case EARTH:
+                return new com.mkreidl.ephemeris.dynamics.VSOP87.D.Earth();
+            case MARS:
+                return new com.mkreidl.ephemeris.dynamics.VSOP87.D.Mars();
+            case JUPITER:
+                return new com.mkreidl.ephemeris.dynamics.VSOP87.D.Jupiter();
+            case SATURN:
+                return new com.mkreidl.ephemeris.dynamics.VSOP87.D.Saturn();
+            case URANUS:
+                return new com.mkreidl.ephemeris.dynamics.VSOP87.D.Uranus();
+            case NEPTUNE:
+                return new com.mkreidl.ephemeris.dynamics.VSOP87.D.Neptune();
+            default:
+                throw new RuntimeException( "Model not implemented: " + planet );
+        }
+    }
+
     protected void compute( Time time, boolean computeVelocity )
     {
         if ( time.getTime() != timeCached || computeVelocity && timeCachedVel != timeCached )
@@ -57,7 +82,7 @@ public abstract class Model<T extends Coordinates<T>> extends OrbitalModel<T>
             {
                 double pos = 0.0;
                 double vel = 0.0;
-                for ( int n = 5; n > 0; --n )
+                for ( int n = coeff[dim].length - 1; n > 0; --n )
                 {
                     final double c = cosSeries( dim, n, t );
                     pos = pos * t + c;

@@ -1,6 +1,6 @@
 package com.mkreidl.ephemeris.dynamics.VSOP87.C;
 
-import com.mkreidl.ephemeris.dynamics.VSOP87.*;
+import com.mkreidl.ephemeris.dynamics.VSOP87.Model;
 
 public class Uranus extends Model.XYZ
 {

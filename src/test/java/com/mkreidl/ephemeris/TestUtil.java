@@ -23,7 +23,6 @@ import java.util.regex.Pattern;
 import org.junit.runners.Parameterized.Parameters;
 import com.mkreidl.ephemeris.geometry.Angle;
 import com.mkreidl.ephemeris.sky.SolarSystem;
-import com.mkreidl.ephemeris.sky.PositionsMotionsTest;
 import com.mkreidl.ephemeris.sky.Zodiac;
 
 public class TestUtil
@@ -39,7 +38,7 @@ public class TestUtil
             = DateTimeFormatter.ofPattern( "yyyy.MM.dd HH:mm:ss", Locale.ENGLISH );
     private static final DateTimeFormatter VSOP_DATE_FORMATTER
             = DateTimeFormatter.ofPattern( "dd/MM/yyyy HH'h'", Locale.ENGLISH );
-    private static final URL DIR_NASA = PositionsMotionsTest.class.getResource( "/NASA_Ephemeris_Data/" );
+    private static final URL DIR_NASA = TestUtil.class.getResource( "/NASA_Ephemeris_Data/" );
 
     public static class EphemerisData
     {
