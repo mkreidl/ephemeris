@@ -4,7 +4,7 @@ import com.mkreidl.ephemeris.Distance;
 import com.mkreidl.ephemeris.Time;
 import com.mkreidl.ephemeris.solarsystem.Body;
 import com.mkreidl.ephemeris.Position;
-import com.mkreidl.ephemeris.solarsystem.SolarSystemVSOP87;
+import com.mkreidl.ephemeris.solarsystem.SolarSystemVSOP87C;
 import com.mkreidl.ephemeris.sky.coordinates.Equatorial;
 
 import org.junit.Test;
@@ -19,7 +19,7 @@ public class TopocentricTest
     private final Equatorial.Cart topoCart = new Equatorial.Cart();
     private final Equatorial.Sphe topoSphe = new Equatorial.Sphe();
 
-    private final SolarSystemVSOP87 solarSystem = new SolarSystemVSOP87();
+    private final SolarSystemVSOP87C solarSystem = new SolarSystemVSOP87C();
     private final EnumMap<Body, Position> ephemerides = new EnumMap<>( Body.class );
     private final Spherical expected = new Spherical();
     private final Spherical actual = new Spherical();

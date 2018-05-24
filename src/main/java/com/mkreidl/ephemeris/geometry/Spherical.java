@@ -1,5 +1,7 @@
 package com.mkreidl.ephemeris.geometry;
 
+import com.mkreidl.ephemeris.Time;
+
 public class Spherical extends Coordinates<Spherical>
 {
     public double dst = 0.0;
@@ -73,6 +75,19 @@ public class Spherical extends Coordinates<Spherical>
         output.x = dst * Math.cos( lat ) * Math.cos( lon );
         output.y = dst * Math.cos( lat ) * Math.sin( lon );
         output.z = dst * Math.sin( lat );
+        return output;
+    }
+
+    public Cartesian transformVelocity( Spherical position, Cartesian output )
+    {
+        final double r = position.dst;
+        final double sl = Math.sin( position.lon );
+        final double sb = Math.sin( position.lat );
+        final double cl = Math.cos( position.lon );
+        final double cb = Math.cos( position.lat );
+        output.x = ( dst * cl * cb - r * ( lon * sl * cb + lat * cl * sb ) ) / Time.SECONDS_PER_DAY;
+        output.y = ( dst * sl * cb + r * ( lon * cl * cb - lat * sl * sb ) ) / Time.SECONDS_PER_DAY;
+        output.z = ( dst * sb + r * lat * cb ) / Time.SECONDS_PER_DAY;
         return output;
     }
 

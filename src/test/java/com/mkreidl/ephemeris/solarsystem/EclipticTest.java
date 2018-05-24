@@ -1,7 +1,6 @@
 package com.mkreidl.ephemeris.solarsystem;
 
 import com.mkreidl.ephemeris.Time;
-import com.mkreidl.ephemeris.solarsystem.SolarSystemVSOP87;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,7 +54,7 @@ public class EclipticTest
     @Test
     public void testEcliptic()
     {
-        assertEquals( this.ecliptic * DEG, SolarSystemVSOP87.getEcliptic( julianDate ), this.tolerance );
+        assertEquals( this.ecliptic * DEG, SolarSystemVSOP87C.getEcliptic( julianDate ), this.tolerance );
     }
 
 }

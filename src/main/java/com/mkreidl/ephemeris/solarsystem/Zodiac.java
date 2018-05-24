@@ -10,7 +10,7 @@ public class Zodiac
 {
     public double obliquity;
     public final Spherical pole = new Spherical(
-            1.0, -Math.PI / 2, Math.PI / 2 - SolarSystemVSOP87.getEcliptic( new Time() ) );
+            1.0, -Math.PI / 2, Math.PI / 2 - SolarSystemVSOP87C.getEcliptic( new Time() ) );
 
     public static Sign getSign( Angle lon )
     {
@@ -37,7 +37,7 @@ public class Zodiac
 
     public double compute( Time time )
     {
-        obliquity = SolarSystemVSOP87.getEcliptic( time );
+        obliquity = SolarSystemVSOP87C.getEcliptic( time );
         pole.lat = Math.PI / 2 - obliquity;
         return obliquity;
     }

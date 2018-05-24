@@ -1,12 +1,13 @@
 package com.mkreidl.ephemeris.astrolabe;
 
 import com.mkreidl.ephemeris.Distance;
+import com.mkreidl.ephemeris.Position;
 import com.mkreidl.ephemeris.geometry.Cartesian;
 import com.mkreidl.ephemeris.geometry.Circle;
-import com.mkreidl.ephemeris.solarsystem.Body;
-import com.mkreidl.ephemeris.Position;
-import com.mkreidl.ephemeris.solarsystem.SolarSystemVSOP87;
 import com.mkreidl.ephemeris.sky.coordinates.Equatorial;
+import com.mkreidl.ephemeris.solarsystem.Body;
+import com.mkreidl.ephemeris.solarsystem.SolarSystem;
+import com.mkreidl.ephemeris.solarsystem.SolarSystemMeeus;
 
 import java.util.EnumMap;
 import java.util.List;
@@ -18,7 +19,7 @@ public class Planets extends AbstractPart
     private final Cartesian onUnitSphere = new Cartesian();
     private final Equatorial.Sphe topocentric = new Equatorial.Sphe();
     private final Position position = new Position();
-    private final SolarSystemVSOP87 solarSystem = new SolarSystemVSOP87();
+    private final SolarSystem solarSystem = new SolarSystemMeeus();
 
     private final Map<Body, String> planetNames = new EnumMap<>( Body.class );
     private final Map<Body, Circle> apparentDisks = new EnumMap<>( Body.class );

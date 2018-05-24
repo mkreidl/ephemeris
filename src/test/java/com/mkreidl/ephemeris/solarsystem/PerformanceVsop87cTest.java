@@ -1,13 +1,12 @@
 package com.mkreidl.ephemeris.solarsystem;
 
 import com.mkreidl.ephemeris.Time;
-import com.mkreidl.ephemeris.solarsystem.SolarSystemVSOP87;
 
 import org.junit.Test;
 
-public class PerformanceTest
+public class PerformanceVsop87cTest
 {
-    private final SolarSystemVSOP87 solarSystem = new SolarSystemVSOP87();
+    private final SolarSystem solarSystem = new SolarSystemVSOP87C();
     private int runs = 0;
 
     @Test( timeout = 1000 )
@@ -27,5 +26,4 @@ public class PerformanceTest
             ++runs;
         }
     }
-
 }

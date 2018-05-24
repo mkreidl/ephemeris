@@ -2,13 +2,11 @@ package com.mkreidl.ephemeris.geometry;
 
 import com.mkreidl.ephemeris.TestUtil;
 import com.mkreidl.ephemeris.Time;
-import com.mkreidl.ephemeris.geometry.Angle;
-import com.mkreidl.ephemeris.geometry.Spherical;
 import com.mkreidl.ephemeris.sky.coordinates.Equatorial;
 import com.mkreidl.ephemeris.sky.coordinates.Horizontal;
 import com.mkreidl.ephemeris.solarsystem.Body;
 import com.mkreidl.ephemeris.Position;
-import com.mkreidl.ephemeris.solarsystem.SolarSystemVSOP87;
+import com.mkreidl.ephemeris.solarsystem.SolarSystemVSOP87C;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -36,7 +34,7 @@ public class HorizontalCoordinatesTest
     );
 
     private final Time time = TestUtil.getAstronomicalTime( "2016.11.10 08:00:00" );
-    private final SolarSystemVSOP87 solarSystem = new SolarSystemVSOP87();
+    private final SolarSystemVSOP87C solarSystem = new SolarSystemVSOP87C();
 
     private final EnumMap<Body, Angle> height = new EnumMap<>( Body.class );
     private final EnumMap<Body, Angle> azimuth = new EnumMap<>( Body.class );

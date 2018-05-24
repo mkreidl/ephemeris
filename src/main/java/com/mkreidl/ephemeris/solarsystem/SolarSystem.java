@@ -2,14 +2,6 @@ package com.mkreidl.ephemeris.solarsystem;
 
 import com.mkreidl.ephemeris.Position;
 import com.mkreidl.ephemeris.Time;
-import com.mkreidl.ephemeris.solarsystem.vsop87c.Earth;
-import com.mkreidl.ephemeris.solarsystem.vsop87c.Jupiter;
-import com.mkreidl.ephemeris.solarsystem.vsop87c.Mars;
-import com.mkreidl.ephemeris.solarsystem.vsop87c.Mercury;
-import com.mkreidl.ephemeris.solarsystem.vsop87c.Neptune;
-import com.mkreidl.ephemeris.solarsystem.vsop87c.Saturn;
-import com.mkreidl.ephemeris.solarsystem.vsop87c.Uranus;
-import com.mkreidl.ephemeris.solarsystem.vsop87c.Venus;
 import com.mkreidl.ephemeris.geometry.Cartesian;
 import com.mkreidl.ephemeris.geometry.Coordinates;
 import com.mkreidl.ephemeris.geometry.Matrix;
@@ -22,9 +14,26 @@ import java.util.EnumMap;
 import java.util.LinkedList;
 import java.util.List;
 
-
-public class SolarSystemVSOP87
+public abstract class SolarSystem
 {
+    protected final EnumMap<Body, Ecliptical.Cart> positions = new EnumMap<>( Body.class );
+    protected final EnumMap<Body, Ecliptical.Cart> velocities = new EnumMap<>( Body.class );
+    final EnumMap<Body, OrbitalModel> models = new EnumMap<>( Body.class );
+    final List<Body> sortedByDistance = new ArrayList<>( Arrays.asList( Body.values() ) );
+    private final LinkedList<Thread> threadList = new LinkedList<>();
+    private final Cartesian cartesian = new Cartesian();
+    private final EnumMap<Body, Double> distances = new EnumMap<>( Body.class );
+
+    SolarSystem()
+    {
+        sortedByDistance.remove( Body.EARTH );
+        for ( Body body : Body.values() )
+        {
+            positions.put( body, new Ecliptical.Cart() );
+            velocities.put( body, new Ecliptical.Cart() );
+        }
+    }
+
     /**
      * Calculate the ecliptic of the ecliptic.
      * <p>
@@ -49,36 +58,6 @@ public class SolarSystemVSOP87
     {
         output.setRotation( -getEcliptic( time ), Coordinates.Axis.X );
         return output;
-    }
-
-    private final EnumMap<Body, Ecliptical.Cart> positions = new EnumMap<>( Body.class );
-    private final EnumMap<Body, Ecliptical.Cart> velocities = new EnumMap<>( Body.class );
-    private final EnumMap<Body, OrbitalModel> models = new EnumMap<>( Body.class );
-
-    private final LinkedList<Thread> threadList = new LinkedList<>();
-    private final Cartesian cartesian = new Cartesian();
-    private final EnumMap<Body, Double> distances = new EnumMap<>( Body.class );
-    private final List<Body> sortedByDistance = new ArrayList<>( Arrays.asList( Body.values() ) );
-
-    public SolarSystemVSOP87()
-    {
-        sortedByDistance.remove( Body.EARTH );
-        for ( Body body : Body.values() )
-        {
-            positions.put( body, new Ecliptical.Cart() );
-            velocities.put( body, new Ecliptical.Cart() );
-        }
-        models.put( Body.SUN, new ModelSun() );
-        models.put( Body.MERCURY, new Mercury() );
-        models.put( Body.VENUS, new Venus() );
-        models.put( Body.EARTH, new Earth() );
-        models.put( Body.MARS, new Mars() );
-        models.put( Body.JUPITER, new Jupiter() );
-        models.put( Body.SATURN, new Saturn() );
-        models.put( Body.URANUS, new Uranus() );
-        models.put( Body.NEPTUNE, new Neptune() );
-        models.put( Body.MOON, new ModelMoon() );
-        models.put( Body.PLUTO, new ModelPluto() );
     }
 
     public List<Body> getSortedByDistanceDescending()

@@ -22,7 +22,6 @@ public class ModelMoonTest
     private final ClassicalOrbitalElements orbitalEl = new ClassicalOrbitalElements();
     private final Cartesian posCartesian = new Cartesian();
     private final Spherical posSpherical = new Spherical();
-
     private final Spherical refSpherical = new Spherical(
             60.793 * Body.EARTH.RADIUS_EQUATORIAL_M, 306.94 * DEG, -0.55 * DEG
     );
@@ -30,7 +29,7 @@ public class ModelMoonTest
     @Test
     public void testCalculate()
     {
-        modelMoon.compute( time, posCartesian );
+        modelMoon.compute( time, posCartesian, null );
         modelMoon.getOrbitalElements( orbitalEl );
         modelMoon.getPosition( posSpherical );
 

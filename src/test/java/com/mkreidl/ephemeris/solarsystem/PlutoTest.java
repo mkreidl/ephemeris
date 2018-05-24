@@ -1,12 +1,10 @@
 package com.mkreidl.ephemeris.solarsystem;
 
+import com.mkreidl.ephemeris.Position;
 import com.mkreidl.ephemeris.Time;
 import com.mkreidl.ephemeris.geometry.Spherical;
 import com.mkreidl.ephemeris.sky.coordinates.Ecliptical;
 import com.mkreidl.ephemeris.sky.coordinates.Equatorial;
-import com.mkreidl.ephemeris.solarsystem.Body;
-import com.mkreidl.ephemeris.Position;
-import com.mkreidl.ephemeris.solarsystem.SolarSystemVSOP87;
 
 import org.junit.Test;
 
@@ -15,7 +13,7 @@ import static com.mkreidl.ephemeris.solarsystem.Body.EARTH;
 public class PlutoTest
 {
 
-    private final SolarSystemVSOP87 solarSystem = new SolarSystemVSOP87();
+    private final SolarSystem solarSystem = new SolarSystemMeeus();
     private final Time time = new Time();
 
     private final Ecliptical.Sphe ecliptical = new Ecliptical.Sphe();

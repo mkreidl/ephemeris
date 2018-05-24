@@ -17,13 +17,13 @@ import com.mkreidl.ephemeris.Time;
 import com.mkreidl.ephemeris.geometry.VSOP87File;
 import com.mkreidl.ephemeris.geometry.VSOP87File.Planet;
 
-public abstract class VSOP87Test
+public abstract class Vsop87AbstractTest
 {
     protected final VSOP87File.Planet planet;
     protected final Time time;
     protected final double julianDate;
 
-    public VSOP87Test(Planet planet, String timeStr, DataSet dataSet)
+    public Vsop87AbstractTest( Planet planet, String timeStr, DataSet dataSet)
     {
         this.planet = planet;
         this.time = dataSet.time;
@@ -77,7 +77,7 @@ public abstract class VSOP87Test
 
         try
         {
-            URL url = VSOP87Test.class.getResource( DATASETS );
+            URL url = Vsop87AbstractTest.class.getResource( DATASETS );
             lineReader = new BufferedReader( new FileReader( url.getPath() ) );
         } catch ( IOException e )
         {

@@ -8,9 +8,7 @@ import com.mkreidl.ephemeris.geometry.Angle;
 import com.mkreidl.ephemeris.geometry.Spherical;
 import com.mkreidl.ephemeris.sky.coordinates.Ecliptical;
 import com.mkreidl.ephemeris.sky.coordinates.Equatorial;
-import com.mkreidl.ephemeris.solarsystem.Body;
 import com.mkreidl.ephemeris.Position;
-import com.mkreidl.ephemeris.solarsystem.SolarSystemVSOP87;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,7 +30,7 @@ public class PositionsMotionsTest
     private static final double TOL_PLANET = 0.58 * Angle.MIN;
     private static final double TOL_MOON = 4 * Angle.MIN;
 
-    private final SolarSystemVSOP87 solarSystem = new SolarSystemVSOP87();
+    private final SolarSystemVSOP87C solarSystem = new SolarSystemVSOP87C();
     private final Time time;
     private final Body body;
     private final EphemerisData expected;

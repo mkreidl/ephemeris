@@ -1,17 +1,17 @@
 package com.mkreidl.ephemeris.sky;
 
 import com.mkreidl.ephemeris.Distance;
+import com.mkreidl.ephemeris.Position;
 import com.mkreidl.ephemeris.Time;
 import com.mkreidl.ephemeris.solarsystem.Body;
-import com.mkreidl.ephemeris.Position;
-import com.mkreidl.ephemeris.solarsystem.SolarSystemMeeus;
+import com.mkreidl.ephemeris.solarsystem.SolarSystem;
 
 public class PlanetRiseSetCalculator extends RiseSetCalculator
 {
     private static final long PRECISION = 30000;
     private static final int MAX_ITERATION = 5;
 
-    private final SolarSystemMeeus solarSystem;
+    private final SolarSystem solarSystem;
     private final Body body;
     private final Position position = new Position();
 
@@ -21,12 +21,12 @@ public class PlanetRiseSetCalculator extends RiseSetCalculator
     private Boolean isVisibleNow;
     private boolean isCrossingHorizon;
 
-    public static RiseSetCalculator of( SolarSystemMeeus solarSystem, Body body )
+    public static RiseSetCalculator of( SolarSystem solarSystem, Body body )
     {
         return new PlanetRiseSetCalculator( solarSystem, body );
     }
 
-    private PlanetRiseSetCalculator( SolarSystemMeeus solarSystem, Body body )
+    private PlanetRiseSetCalculator( SolarSystem solarSystem, Body body )
     {
         this.solarSystem = solarSystem;
         this.body = body;

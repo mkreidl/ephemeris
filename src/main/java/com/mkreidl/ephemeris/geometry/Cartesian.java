@@ -1,6 +1,8 @@
 package com.mkreidl.ephemeris.geometry;
 
-import static java.lang.Math.*;
+import static java.lang.Math.asin;
+import static java.lang.Math.atan2;
+import static java.lang.Math.sqrt;
 
 public class Cartesian extends Coordinates<Cartesian>
 {
@@ -11,7 +13,9 @@ public class Cartesian extends Coordinates<Cartesian>
     public static final Cartesian ORIGIN = new Cartesian( 0, 0, 0 );
     public static final Matrix rotation = new Matrix();
 
-    public Cartesian() { }
+    public Cartesian()
+    {
+    }
 
     public Cartesian( Cartesian other )
     {
@@ -85,6 +89,12 @@ public class Cartesian extends Coordinates<Cartesian>
         return output.standardize();
     }
 
+    public Spherical transformVelocity( Cartesian cartesianPos, Spherical velocity )
+    {
+        // TODO implement
+        return velocity;
+    }
+
     public Cartesian add( Cartesian summand )
     {
         this.x += summand.x;
@@ -111,5 +121,4 @@ public class Cartesian extends Coordinates<Cartesian>
     {
         return "Cartesian [ x=" + x + ", y=" + y + ", z=" + z + " ]";
     }
-
 }

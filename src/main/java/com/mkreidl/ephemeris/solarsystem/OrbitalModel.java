@@ -25,16 +25,4 @@ public abstract class OrbitalModel
     public abstract void compute( Time time, Cartesian position, Cartesian velocity );
 
     public abstract void compute( Time time, Spherical position, Spherical velocity );
-
-    public Cartesian compute( Time time, Cartesian position )
-    {
-        compute( time, position, null );
-        return position;
-    }
-
-    public Spherical compute( Time time, Spherical position )
-    {
-        compute( time, position, null );
-        return position;
-    }
 }

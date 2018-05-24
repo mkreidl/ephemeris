@@ -1,7 +1,5 @@
 package com.mkreidl.ephemeris;
 
-import com.mkreidl.ephemeris.Distance;
-import com.mkreidl.ephemeris.Time;
 import com.mkreidl.ephemeris.geometry.Angle;
 import com.mkreidl.ephemeris.geometry.Cartesian;
 import com.mkreidl.ephemeris.geometry.Coordinates;
@@ -10,7 +8,7 @@ import com.mkreidl.ephemeris.sky.coordinates.Ecliptical;
 import com.mkreidl.ephemeris.sky.coordinates.Equatorial;
 import com.mkreidl.ephemeris.sky.coordinates.Horizontal;
 import com.mkreidl.ephemeris.solarsystem.Body;
-import com.mkreidl.ephemeris.solarsystem.SolarSystemVSOP87;
+import com.mkreidl.ephemeris.solarsystem.SolarSystemVSOP87C;
 
 
 public class Position
@@ -93,7 +91,7 @@ public class Position
 
     public void setTimeLocation( Time time, Spherical geographicLocation )
     {
-        this.currentEcliptic = SolarSystemVSOP87.getEcliptic( time );
+        this.currentEcliptic = SolarSystemVSOP87C.getEcliptic( time );
         angle.setRadians( geographicLocation.lon );
         final double localSiderealTime = time.getMeanSiderealTime( angle, angle ).getRadians();
         // current equatorial coordinates of zenith are used to compute current horizontal positions (in Planets)

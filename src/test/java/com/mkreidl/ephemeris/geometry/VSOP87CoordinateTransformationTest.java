@@ -1,7 +1,7 @@
 package com.mkreidl.ephemeris.geometry;
 
 import com.mkreidl.ephemeris.solarsystem.PrecessionMatrix;
-import com.mkreidl.ephemeris.solarsystem.VSOP87Test;
+import com.mkreidl.ephemeris.solarsystem.Vsop87AbstractTest;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,12 +16,12 @@ import static org.junit.Assert.fail;
 @RunWith(Parameterized.class)
 public class VSOP87CoordinateTransformationTest
 {
-    private Map<VSOP87File.Version, Map<String, VSOP87Test.DataSet>> datasets;
+    private Map<VSOP87File.Version, Map<String, Vsop87AbstractTest.DataSet>> datasets;
 
     private void testTransformation( VSOP87File.Version first, VSOP87File.Version second, double d1, double d2, double d3 )
     {
-        final Map<String, VSOP87Test.DataSet> datasetsFirst = datasets.get( first );
-        final Map<String, VSOP87Test.DataSet> datasetsSecond = datasets.get( second );
+        final Map<String, Vsop87AbstractTest.DataSet> datasetsFirst = datasets.get( first );
+        final Map<String, Vsop87AbstractTest.DataSet> datasetsSecond = datasets.get( second );
 
         final VSOP87OrbitalElements orbitalElements = new VSOP87OrbitalElements();
         final Cartesian origCartesian = new Cartesian();
@@ -31,8 +31,8 @@ public class VSOP87CoordinateTransformationTest
 
         for ( String dateString : datasetsFirst.keySet() )
         {
-            final VSOP87Test.DataSet dataSetFirst = datasetsFirst.get( dateString );
-            final VSOP87Test.DataSet dataSetSecond = datasetsSecond.get( dateString );
+            final Vsop87AbstractTest.DataSet dataSetFirst = datasetsFirst.get( dateString );
+            final Vsop87AbstractTest.DataSet dataSetSecond = datasetsSecond.get( dateString );
 
             if ( dataSetSecond == null )
             {
@@ -125,7 +125,7 @@ public class VSOP87CoordinateTransformationTest
     }
 
     public VSOP87CoordinateTransformationTest(
-    		VSOP87File.Planet planet, Map<VSOP87File.Version, Map<String, VSOP87Test.DataSet>> datasets )
+    		VSOP87File.Planet planet, Map<VSOP87File.Version, Map<String, Vsop87AbstractTest.DataSet>> datasets )
     {
         this.datasets = datasets;
     }
@@ -134,8 +134,8 @@ public class VSOP87CoordinateTransformationTest
     public static Iterable<Object[]> data()
     {
     	java.util.List<Object[]> parameters = new java.util.LinkedList<>();
-        for ( VSOP87File.Planet planet : VSOP87Test.fullData.keySet() )
-            parameters.add( new Object[] { planet, VSOP87Test.fullData.get( planet ) } );
+        for ( VSOP87File.Planet planet : Vsop87AbstractTest.fullData.keySet() )
+            parameters.add( new Object[] { planet, Vsop87AbstractTest.fullData.get( planet ) } );
         return parameters;
     }
 }

@@ -21,81 +21,6 @@ public abstract class AbstractModelVsop87 extends OrbitalModel
     public static final String URANUS = "URANUS";
     public static final String NEPTUNE = "NEPTUNE";
 
-    public static XYZ getVersionC( String planet )
-    {
-        switch ( planet )
-        {
-            case MERCURY:
-                return new com.mkreidl.ephemeris.solarsystem.vsop87c.Mercury();
-            case VENUS:
-                return new com.mkreidl.ephemeris.solarsystem.vsop87c.Venus();
-            case EARTH:
-                return new com.mkreidl.ephemeris.solarsystem.vsop87c.Earth();
-            case MARS:
-                return new com.mkreidl.ephemeris.solarsystem.vsop87c.Mars();
-            case JUPITER:
-                return new com.mkreidl.ephemeris.solarsystem.vsop87c.Jupiter();
-            case SATURN:
-                return new com.mkreidl.ephemeris.solarsystem.vsop87c.Saturn();
-            case URANUS:
-                return new com.mkreidl.ephemeris.solarsystem.vsop87c.Uranus();
-            case NEPTUNE:
-                return new com.mkreidl.ephemeris.solarsystem.vsop87c.Neptune();
-            default:
-                throw new RuntimeException( "Model not implemented: " + planet );
-        }
-    }
-
-    public static LBR getVersionD( String planet )
-    {
-        switch ( planet )
-        {
-            case MERCURY:
-                return new com.mkreidl.ephemeris.solarsystem.vsop87d.Mercury();
-            case VENUS:
-                return new com.mkreidl.ephemeris.solarsystem.vsop87d.Venus();
-            case EARTH:
-                return new com.mkreidl.ephemeris.solarsystem.vsop87d.Earth();
-            case MARS:
-                return new com.mkreidl.ephemeris.solarsystem.vsop87d.Mars();
-            case JUPITER:
-                return new com.mkreidl.ephemeris.solarsystem.vsop87d.Jupiter();
-            case SATURN:
-                return new com.mkreidl.ephemeris.solarsystem.vsop87d.Saturn();
-            case URANUS:
-                return new com.mkreidl.ephemeris.solarsystem.vsop87d.Uranus();
-            case NEPTUNE:
-                return new com.mkreidl.ephemeris.solarsystem.vsop87d.Neptune();
-            default:
-                throw new RuntimeException( "Model not implemented: " + planet );
-        }
-    }
-
-    public static LBR getVersionDsimplified( String planet )
-    {
-        switch ( planet )
-        {
-            case MERCURY:
-                return new com.mkreidl.ephemeris.solarsystem.meeus.Mercury();
-            case VENUS:
-                return new com.mkreidl.ephemeris.solarsystem.meeus.Venus();
-            case EARTH:
-                return new com.mkreidl.ephemeris.solarsystem.meeus.Earth();
-            case MARS:
-                return new com.mkreidl.ephemeris.solarsystem.meeus.Mars();
-            case JUPITER:
-                return new com.mkreidl.ephemeris.solarsystem.meeus.Jupiter();
-            case SATURN:
-                return new com.mkreidl.ephemeris.solarsystem.meeus.Saturn();
-            case URANUS:
-                return new com.mkreidl.ephemeris.solarsystem.meeus.Uranus();
-            case NEPTUNE:
-                return new com.mkreidl.ephemeris.solarsystem.meeus.Neptune();
-            default:
-                throw new RuntimeException( "Model not implemented: " + planet );
-        }
-    }
-
     protected void compute( Time time, boolean computeVelocity )
     {
         if ( time.getTime() != timeCached || computeVelocity && timeCachedVel != timeCached )
@@ -143,8 +68,8 @@ public abstract class AbstractModelVsop87 extends OrbitalModel
 
     public abstract static class XYZ extends AbstractModelVsop87
     {
-        private final Cartesian pos = new Cartesian();
-        private final Cartesian vel = new Cartesian();
+        private final Cartesian cartesianPos = new Cartesian();
+        private final Cartesian cartesianVel = new Cartesian();
 
         @Override
         public void compute( Time time, Cartesian position, Cartesian velocity )
@@ -157,16 +82,17 @@ public abstract class AbstractModelVsop87 extends OrbitalModel
 
         public void compute( Time time, Spherical position, Spherical velocity )
         {
-            compute( time, pos, vel );
-            pos.transform( position );
-            vel.transform( velocity );  // FIXME chain rule for diff!!!
+            compute( time, cartesianPos, velocity != null ? cartesianVel : null );
+            cartesianPos.transform( position );
+            if ( velocity != null )
+                cartesianVel.transformVelocity( cartesianPos, velocity );
         }
     }
 
     public abstract static class LBR extends AbstractModelVsop87
     {
-        private final Spherical pos = new Spherical();
-        private final Spherical vel = new Spherical();
+        private final Spherical sphericalPos = new Spherical();
+        private final Spherical sphericalVel = new Spherical();
 
         /**
          * Calculate position and velocity in spherical coordinates
@@ -187,9 +113,10 @@ public abstract class AbstractModelVsop87 extends OrbitalModel
 
         public void compute( Time time, Cartesian position, Cartesian velocity )
         {
-            compute( time, pos, vel );
-            pos.transform( position );
-            vel.transform( velocity );  // FIXME chain rule for diff!!!
+            compute( time, sphericalPos, velocity != null ? sphericalVel : null );
+            sphericalPos.transform( position );
+            if ( velocity != null )
+                sphericalVel.transformVelocity( sphericalPos, velocity );
         }
     }
 }

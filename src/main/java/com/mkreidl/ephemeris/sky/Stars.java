@@ -1,7 +1,7 @@
 package com.mkreidl.ephemeris.sky;
 
 import com.mkreidl.ephemeris.Time;
-import com.mkreidl.ephemeris.solarsystem.SolarSystemVSOP87;
+import com.mkreidl.ephemeris.solarsystem.SolarSystemVSOP87C;
 import com.mkreidl.ephemeris.solarsystem.PrecessionMatrix;
 import com.mkreidl.ephemeris.geometry.Cartesian;
 import com.mkreidl.ephemeris.geometry.Coordinates;
@@ -29,7 +29,7 @@ public class Stars
 
     static
     {
-        final Matrix equ2ecl = SolarSystemVSOP87.getEqu2EclMatrix( Time.J2000, new Matrix() );
+        final Matrix equ2ecl = SolarSystemVSOP87C.getEqu2EclMatrix( Time.J2000, new Matrix() );
         final Matrix jacobian = new Matrix();
         final Cartesian tmp = new Cartesian();
         final Equatorial.Cart velEquatorial = new Equatorial.Cart();
@@ -108,7 +108,7 @@ public class Stars
     private void setupTransformationToDate( Time time, Matrix transformation )
     {
         precession.compute( time );
-        rotation.setRotation( SolarSystemVSOP87.getEcliptic( time ), Coordinates.Axis.X );
+        rotation.setRotation( SolarSystemVSOP87C.getEcliptic( time ), Coordinates.Axis.X );
         transformation.setProduct( rotation, precession );
     }
 
