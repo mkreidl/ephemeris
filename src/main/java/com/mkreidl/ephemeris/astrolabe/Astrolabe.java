@@ -4,7 +4,7 @@ import com.mkreidl.ephemeris.Time;
 import com.mkreidl.ephemeris.geometry.Angle;
 import com.mkreidl.ephemeris.geometry.Spherical;
 import com.mkreidl.ephemeris.geometry.Stereographic;
-import com.mkreidl.ephemeris.sky.SolarSystem;
+import com.mkreidl.ephemeris.solarsystem.Body;
 import com.mkreidl.ephemeris.sky.StarsCatalog;
 import com.mkreidl.ephemeris.sky.coordinates.Equatorial;
 
@@ -71,7 +71,7 @@ public class Astrolabe extends Stereographic
         if ( force || planets.isTimedOut( planetsTimeout ) )
             planets.synchronize();
         if ( !force && planets.isTimedOut( moonTimeout ) )
-            planets.synchronize( SolarSystem.Body.MOON );
+            planets.synchronize( Body.MOON );
         return tympanonWasTimedOut;
     }
 
@@ -115,7 +115,7 @@ public class Astrolabe extends Stereographic
     {
         try
         {
-            return new Planet( SolarSystem.Body.valueOf( name ) );
+            return new Planet( Body.valueOf( name ) );
         }
         catch ( IllegalArgumentException unused )
         {
@@ -123,7 +123,7 @@ public class Astrolabe extends Stereographic
         }
     }
 
-    public CelestialObject createPlanet( SolarSystem.Body body )
+    public CelestialObject createPlanet( Body body )
     {
         return body != null ? new Planet( body ) : NO_OBJECT;
     }
@@ -191,7 +191,7 @@ public class Astrolabe extends Stereographic
             return false;
         }
 
-        public SolarSystem.Body asPlanet()
+        public Body asPlanet()
         {
             return null;
         }
@@ -230,9 +230,9 @@ public class Astrolabe extends Stereographic
 
     public class Planet extends CelestialObject
     {
-        private final SolarSystem.Body body;
+        private final Body body;
 
-        Planet( SolarSystem.Body body )
+        Planet( Body body )
         {
             this.body = body;
         }
@@ -258,7 +258,7 @@ public class Astrolabe extends Stereographic
         }
 
         @Override
-        public SolarSystem.Body asPlanet()
+        public Body asPlanet()
         {
             return body;
         }

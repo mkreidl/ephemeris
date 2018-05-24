@@ -1,7 +1,7 @@
 package com.mkreidl.ephemeris.geometry;
 
-import com.mkreidl.ephemeris.dynamics.VSOP87.PrecessionMatrix;
-import com.mkreidl.ephemeris.dynamics.VSOP87Test;
+import com.mkreidl.ephemeris.solarsystem.PrecessionMatrix;
+import com.mkreidl.ephemeris.solarsystem.VSOP87Test;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -1,6 +1,6 @@
 package com.mkreidl.ephemeris;
 
-import static com.mkreidl.ephemeris.sky.SolarSystem.Body.MOON;
+import static com.mkreidl.ephemeris.solarsystem.Body.MOON;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -22,8 +22,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.junit.runners.Parameterized.Parameters;
 import com.mkreidl.ephemeris.geometry.Angle;
-import com.mkreidl.ephemeris.sky.SolarSystem;
-import com.mkreidl.ephemeris.sky.Zodiac;
+import com.mkreidl.ephemeris.solarsystem.Body;
+import com.mkreidl.ephemeris.solarsystem.Zodiac;
 
 public class TestUtil
 {
@@ -91,7 +91,7 @@ public class TestUtil
     }
 
     @Parameters( name = "{0}" )
-    public static Iterable<Object[]> solarSystemData(Collection<SolarSystem.Body> bodies)
+    public static Iterable<Object[]> solarSystemData(Collection<Body> bodies)
     {
         final LinkedList<Object[]> datasets = new LinkedList<>();
         final File[] files = new File( DIR_NASA.getFile() ).listFiles();
@@ -131,7 +131,7 @@ public class TestUtil
                     {
                         final EphemerisData ephemeris = parseNASAEphemeris( line );
                         final String objectName = line.substring( 0, 15 ).trim();
-                        final SolarSystem.Body body = SolarSystem.Body.valueOf( objectName.toUpperCase() );
+                        final Body body = Body.valueOf( objectName.toUpperCase() );
                         if ( body == MOON )
                             ephemeris.phase = ( moonPhase - 0.5 ) * 360;
                         if ( bodies.contains(body) )

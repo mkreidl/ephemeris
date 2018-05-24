@@ -2,8 +2,9 @@ package com.mkreidl.ephemeris.geometry;
 
 import com.mkreidl.ephemeris.Distance;
 import com.mkreidl.ephemeris.Time;
-import com.mkreidl.ephemeris.sky.Position;
-import com.mkreidl.ephemeris.sky.SolarSystem;
+import com.mkreidl.ephemeris.solarsystem.Body;
+import com.mkreidl.ephemeris.Position;
+import com.mkreidl.ephemeris.solarsystem.SolarSystemVSOP87;
 import com.mkreidl.ephemeris.sky.coordinates.Equatorial;
 
 import org.junit.Test;
@@ -18,13 +19,13 @@ public class TopocentricTest
     private final Equatorial.Cart topoCart = new Equatorial.Cart();
     private final Equatorial.Sphe topoSphe = new Equatorial.Sphe();
 
-    private final SolarSystem solarSystem = new SolarSystem();
-    private final EnumMap<SolarSystem.Body, Position> ephemerides = new EnumMap<>( SolarSystem.Body.class );
+    private final SolarSystemVSOP87 solarSystem = new SolarSystemVSOP87();
+    private final EnumMap<Body, Position> ephemerides = new EnumMap<>( Body.class );
     private final Spherical expected = new Spherical();
     private final Spherical actual = new Spherical();
 
     private final Spherical geographicLocation = new Spherical(
-            SolarSystem.Body.EARTH.RADIUS_MEAN_M, 11.5 * Angle.DEG, 48.0 * Angle.DEG
+            Body.EARTH.RADIUS_MEAN_M, 11.5 * Angle.DEG, 48.0 * Angle.DEG
     );
     private final Stereographic camera = new Stereographic( 1.0 );
 
@@ -36,7 +37,7 @@ public class TopocentricTest
     {
         solarSystem.compute( Time.J2000 );
 
-        for ( SolarSystem.Body object : SolarSystem.Body.values() )
+        for ( Body object : Body.values() )
         {
             final Position ephem = new Position();
             ephemerides.put( object, ephem );
@@ -44,7 +45,7 @@ public class TopocentricTest
             ephem.setTimeLocation( Time.J2000, geographicLocation );
         }
 
-        for ( SolarSystem.Body object : SolarSystem.Body.values() )
+        for ( Body object : Body.values() )
         {
             ephemerides.get( object ).get( topoCart, Position.CoordinatesCenter.TOPOCENTRIC );
             topoCart.transform( expected );

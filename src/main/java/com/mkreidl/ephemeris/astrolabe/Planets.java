@@ -3,8 +3,9 @@ package com.mkreidl.ephemeris.astrolabe;
 import com.mkreidl.ephemeris.Distance;
 import com.mkreidl.ephemeris.geometry.Cartesian;
 import com.mkreidl.ephemeris.geometry.Circle;
-import com.mkreidl.ephemeris.sky.Position;
-import com.mkreidl.ephemeris.sky.SolarSystem;
+import com.mkreidl.ephemeris.solarsystem.Body;
+import com.mkreidl.ephemeris.Position;
+import com.mkreidl.ephemeris.solarsystem.SolarSystemVSOP87;
 import com.mkreidl.ephemeris.sky.coordinates.Equatorial;
 
 import java.util.EnumMap;
@@ -17,18 +18,18 @@ public class Planets extends AbstractPart
     private final Cartesian onUnitSphere = new Cartesian();
     private final Equatorial.Sphe topocentric = new Equatorial.Sphe();
     private final Position position = new Position();
-    private final SolarSystem solarSystem = new SolarSystem();
+    private final SolarSystemVSOP87 solarSystem = new SolarSystemVSOP87();
 
-    private final Map<SolarSystem.Body, String> planetNames = new EnumMap<>( SolarSystem.Body.class );
-    private final Map<SolarSystem.Body, Circle> apparentDisks = new EnumMap<>( SolarSystem.Body.class );
-    private final Map<SolarSystem.Body, Cartesian> projectedPositions = new EnumMap<>( SolarSystem.Body.class );
+    private final Map<Body, String> planetNames = new EnumMap<>( Body.class );
+    private final Map<Body, Circle> apparentDisks = new EnumMap<>( Body.class );
+    private final Map<Body, Cartesian> projectedPositions = new EnumMap<>( Body.class );
 
-    public List<SolarSystem.Body> sortedByDistance;
+    public List<Body> sortedByDistance;
 
     Planets( Astrolabe astrolabe )
     {
         super( astrolabe );
-        for ( SolarSystem.Body body : SolarSystem.Body.values() )
+        for ( Body body : Body.values() )
         {
             projectedPositions.put( body, new Cartesian() );
             apparentDisks.put( body, new Circle() );
@@ -36,22 +37,22 @@ public class Planets extends AbstractPart
         }
     }
 
-    public void setPlanetNames( Map<SolarSystem.Body, String> planetNames )
+    public void setPlanetNames( Map<Body, String> planetNames )
     {
         this.planetNames.putAll( planetNames );
     }
 
-    public String getName( SolarSystem.Body planet )
+    public String getName( Body planet )
     {
         return planetNames.get( planet );
     }
 
-    public Circle getApparentDisk( SolarSystem.Body object )
+    public Circle getApparentDisk( Body object )
     {
         return apparentDisks.get( object );
     }
 
-    Cartesian getPosition( SolarSystem.Body object )
+    Cartesian getPosition( Body object )
     {
         return projectedPositions.get( object );
     }
@@ -72,20 +73,20 @@ public class Planets extends AbstractPart
     protected void onRecomputeProjection()
     {
         onChangeViewParameters();
-        for ( SolarSystem.Body object : SolarSystem.Body.values() )
+        for ( Body object : Body.values() )
             recompute( object );
         sortedByDistance = solarSystem.getSortedByDistanceDescending();
         //CHECK? onRecomputeListener.onRecomputeProjection();
     }
 
-    void synchronize( SolarSystem.Body body )
+    void synchronize( Body body )
     {
         solarSystem.compute( astrolabe.time, body );
         recompute( body );
         onRecomputeListener.onRecompute();
     }
 
-    private void recompute( SolarSystem.Body object )
+    private void recompute( Body object )
     {
         solarSystem.getEphemerides( object, position );
         position.get( topocentric, Position.CoordinatesCenter.TOPOCENTRIC ).transform( onUnitSphere ).normalize();
@@ -94,7 +95,7 @@ public class Planets extends AbstractPart
         astrolabe.project( topocentric, apparentRadius, apparentDisks.get( object ) );
     }
 
-    public List<SolarSystem.Body> getSortedByDistance()
+    public List<Body> getSortedByDistance()
     {
         return sortedByDistance;
     }

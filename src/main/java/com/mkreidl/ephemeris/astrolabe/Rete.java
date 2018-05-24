@@ -8,7 +8,7 @@ import com.mkreidl.ephemeris.geometry.Matrix;
 import com.mkreidl.ephemeris.sky.Constellations;
 import com.mkreidl.ephemeris.sky.Stars;
 import com.mkreidl.ephemeris.sky.StarsCatalog;
-import com.mkreidl.ephemeris.sky.Zodiac;
+import com.mkreidl.ephemeris.solarsystem.Zodiac;
 import com.mkreidl.ephemeris.sky.coordinates.Ecliptical;
 import com.mkreidl.ephemeris.sky.coordinates.Equatorial;
 

@@ -19,7 +19,7 @@ public abstract class PlanetRiseSetTest
     static final Spherical VANCOUVER = new Spherical( 1.0, Math.toRadians( -123.12244 ), Math.toRadians( 49.28098 ) );
     static final Spherical FAR_NORTH = new Spherical( 1.0, Math.toRadians( 11.498888 ), Math.toRadians( 77.170555 ) ); // 11d29m56s 77d10m14s
 
-    private static final long PRECISION_MS = 30000;
+    private static final long PRECISION_MS = 45000;
     private final RiseSetCalculator.EventType eventType;
     private final Spherical geographicLocation;
     private final String eventTime;
@@ -27,6 +27,7 @@ public abstract class PlanetRiseSetTest
     private final RiseSetCalculator.LookupDirection searchDirection;
 
     private final DateFormat dateFormat = new SimpleDateFormat( "yyyy-MM-dd HH:mm Z" );
+    private final DateFormat dateFormatSec = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss Z" );
 
     PlanetRiseSetTest( Spherical geographicLocation, String startTime, RiseSetCalculator.LookupDirection searchDirection, RiseSetCalculator.EventType eventType, String eventTime )
     {
@@ -51,7 +52,8 @@ public abstract class PlanetRiseSetTest
         final long eventTimeCalculated = calculator.getTime();
         final long eventTimeExpected = dateFormat.parse( eventTime ).getTime();
         assertTrue(
-                String.format( "Expected: %s; Actual: %s", dateFormat.format( new Date( eventTimeExpected ) ), dateFormat.format( new Date( eventTimeCalculated + 30000 ) ) ),
+                String.format( "Expected: %s; Actual: %s", dateFormatSec.format( new Date( eventTimeExpected ) ),
+                        dateFormatSec.format( new Date( eventTimeCalculated ) ) ),
                 Math.abs( eventTimeCalculated - eventTimeExpected ) < PRECISION_MS );
     }
 }
