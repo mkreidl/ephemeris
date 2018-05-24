@@ -73,6 +73,31 @@ public abstract class Model<T extends Coordinates<T>> extends OrbitalModel<T>
         }
     }
 
+    public static LBR getVersionDsimplified( String planet )
+    {
+        switch ( planet )
+        {
+            case MERCURY:
+                return new com.mkreidl.ephemeris.dynamics.VSOP87.DMeeus.Mercury();
+            case VENUS:
+                return new com.mkreidl.ephemeris.dynamics.VSOP87.DMeeus.Venus();
+            case EARTH:
+                return new com.mkreidl.ephemeris.dynamics.VSOP87.DMeeus.Earth();
+            case MARS:
+                return new com.mkreidl.ephemeris.dynamics.VSOP87.DMeeus.Mars();
+            case JUPITER:
+                return new com.mkreidl.ephemeris.dynamics.VSOP87.DMeeus.Jupiter();
+            case SATURN:
+                return new com.mkreidl.ephemeris.dynamics.VSOP87.DMeeus.Saturn();
+            case URANUS:
+                return new com.mkreidl.ephemeris.dynamics.VSOP87.DMeeus.Uranus();
+            case NEPTUNE:
+                return new com.mkreidl.ephemeris.dynamics.VSOP87.DMeeus.Neptune();
+            default:
+                throw new RuntimeException( "Model not implemented: " + planet );
+        }
+    }
+
     protected void compute( Time time, boolean computeVelocity )
     {
         if ( time.getTime() != timeCached || computeVelocity && timeCachedVel != timeCached )

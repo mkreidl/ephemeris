@@ -34,12 +34,6 @@ public class VSOP87CTest extends VSOP87Test
     }
 
     @Test
-    public void testJulianDate()
-    {
-        Assert.assertEquals( julianDate, time.julianDayNumber(), 1e-15 );
-    }
-
-    @Test
     public void testModel()
     {
         final Model.XYZ model;

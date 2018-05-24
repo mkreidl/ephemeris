@@ -1,6 +1,8 @@
 package com.mkreidl.ephemeris.dynamics;
 
-import static org.junit.Assert.assertEquals;
+import com.mkreidl.ephemeris.dynamics.VSOP87.Model;
+import com.mkreidl.ephemeris.geometry.Spherical;
+import com.mkreidl.ephemeris.geometry.VSOP87File;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -8,17 +10,15 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import com.mkreidl.ephemeris.dynamics.VSOP87.Model;
-import com.mkreidl.ephemeris.geometry.Spherical;
-import com.mkreidl.ephemeris.geometry.VSOP87File;
+import static org.junit.Assert.assertEquals;
 
-@RunWith(Parameterized.class)
-public class VSOP87DTest extends VSOP87Test
+@RunWith( Parameterized.class )
+public class VSOP87DMeeusTest extends VSOP87Test
 {
-    @Parameters(name = "{0} -- {1}")
+    @Parameters( name = "{0} -- {1}" )
     public static Iterable<Object[]> data()
     {
-        return data(VSOP87File.Version.D);
+        return data( VSOP87File.Version.D );
     }
 
     private final Spherical expectedPos = new Spherical();
@@ -26,9 +26,9 @@ public class VSOP87DTest extends VSOP87Test
     private final Spherical expectedVel = new Spherical();
     private final Spherical actualVel = new Spherical();
 
-    public VSOP87DTest( VSOP87File.Planet planet, String timeStr, DataSet dataSet )
+    public VSOP87DMeeusTest( VSOP87File.Planet planet, String timeStr, DataSet dataSet )
     {
-        super(planet, timeStr, dataSet);
+        super( planet, timeStr, dataSet );
         expectedPos.set( dataSet.coordinates[2], dataSet.coordinates[0], dataSet.coordinates[1] );
         expectedVel.set( dataSet.coordinates[5], dataSet.coordinates[3], dataSet.coordinates[4] );
     }
@@ -40,28 +40,28 @@ public class VSOP87DTest extends VSOP87Test
         switch ( planet )
         {
             case MER:
-                model = Model.getVersionD( Model.MERCURY );
+                model = Model.getVersionDsimplified( Model.MERCURY );
                 break;
             case VEN:
-                model = Model.getVersionD( Model.VENUS );
+                model = Model.getVersionDsimplified( Model.VENUS );
                 break;
             case EAR:
-                model = Model.getVersionD( Model.EARTH );
+                model = Model.getVersionDsimplified( Model.EARTH );
                 break;
             case MAR:
-                model = Model.getVersionD( Model.MARS );
+                model = Model.getVersionDsimplified( Model.MARS );
                 break;
             case JUP:
-                model = Model.getVersionD( Model.JUPITER );
+                model = Model.getVersionDsimplified( Model.JUPITER );
                 break;
             case SAT:
-                model = Model.getVersionD( Model.SATURN );
+                model = Model.getVersionDsimplified( Model.SATURN );
                 break;
             case URA:
-                model = Model.getVersionD( Model.URANUS );
+                model = Model.getVersionDsimplified( Model.URANUS );
                 break;
             case NEP:
-                model = Model.getVersionD( Model.NEPTUNE );
+                model = Model.getVersionDsimplified( Model.NEPTUNE );
                 break;
             default:
                 model = null;
@@ -70,11 +70,11 @@ public class VSOP87DTest extends VSOP87Test
         actualVel.dst *= 86400;  // Reference values from VSOP test files are given in [dist] per DAY
         actualVel.lon *= 86400;  // Reference values from VSOP test files are given in [dist] per DAY
         actualVel.lat *= 86400;  // Reference values from VSOP test files are given in [dist] per DAY
-        assertEquals( expectedPos.dst, actualPos.dst, 1e-10 );
-        assertEquals( expectedPos.lon, actualPos.lon, 1e-09 );
-        assertEquals( expectedPos.lat, actualPos.lat, 1e-10 );
-        assertEquals( expectedVel.dst, actualVel.dst, 1e-8 );
-        assertEquals( expectedVel.lon, actualVel.lon, 1e-8 );
-        assertEquals( expectedVel.lat, actualVel.lat, 1e-8 );
+        assertEquals( expectedPos.dst, actualPos.dst, 1.2e-4 );  // 1.2e-4 AU = 18 km
+        assertEquals( expectedPos.lon, actualPos.lon, 1e-5 );  // 1e-5 rad = 2 arcsec
+        assertEquals( expectedPos.lat, actualPos.lat, 1e-5 );
+        assertEquals( expectedVel.dst, actualVel.dst, 1e-6 );
+        assertEquals( expectedVel.lon, actualVel.lon, 1e-6 );
+        assertEquals( expectedVel.lat, actualVel.lat, 1e-6 );
     }
 }
