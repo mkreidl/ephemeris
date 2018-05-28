@@ -12,7 +12,7 @@ public abstract class RiseSetCalculator
 {
     public enum EventType
     {
-        RISE( -1 ), SET( 1 );
+        RISE( -1 ), TRANSIT(0), SET( 1 );
         private final int signum;
 
         EventType( int signum )
@@ -81,6 +81,7 @@ public abstract class RiseSetCalculator
         geographicLocation.lon = lon;
         geographicLocation.lat = lat;
         projection = new Stereographic( geographicLocation.lat >= 0 ? 1 : -1 );
+        updateHorizon();
     }
 
     void setStartTime( long startTimeMs )
@@ -89,9 +90,9 @@ public abstract class RiseSetCalculator
         time.setTime( startTimeMs );
     }
 
-    boolean isCrossingHorizon()
+    boolean isCrossing()
     {
-        return !completelyAboveHorizon() && !completelyBelowHorizon();
+        return mode == EventType.TRANSIT || !completelyAboveHorizon() && !completelyBelowHorizon();
     }
 
     private boolean completelyAboveHorizon()
@@ -109,9 +110,18 @@ public abstract class RiseSetCalculator
         projection.project( geographicLocation, Math.toRadians( 90 - virtualHorizonDeg ), horizon );
     }
 
-    boolean adjustTimeToCrossingHorizon()
+    boolean adjustTime()
     {
-        final double alpha = mode.signum * computeHourAngleAtSet() - computeHourAngle();
+        final double alpha;
+        switch(mode) {
+          case RISE:
+          case SET:
+            alpha = mode.signum * computeHourAngleAtSet() - computeHourAngle();
+            break;
+          default:
+            alpha = -computeHourAngle();
+            break;
+        }
         time.addMillis( (long)( alpha * RAD_TO_SIDEREAL_MILLIS ) );
         if ( lookupDirection == LookupDirection.FORWARD && time.getTime() < startTimeMs )
             time.addMillis( Time.MILLIS_PER_SIDEREAL_DAY );

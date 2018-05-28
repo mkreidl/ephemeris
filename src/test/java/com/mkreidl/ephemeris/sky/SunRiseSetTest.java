@@ -1,15 +1,13 @@
 package com.mkreidl.ephemeris.sky;
 
+import java.util.Arrays;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 import com.mkreidl.ephemeris.geometry.Spherical;
 import com.mkreidl.ephemeris.sky.RiseSetCalculator.EventType;
 import com.mkreidl.ephemeris.solarsystem.Body;
 import com.mkreidl.ephemeris.solarsystem.SolarSystemMeeus;
-
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
-
-import java.util.Arrays;
 
 @RunWith( Parameterized.class )
 public class SunRiseSetTest extends PlanetRiseSetTest
@@ -54,7 +52,7 @@ public class SunRiseSetTest extends PlanetRiseSetTest
 
             {SVOLVAER, "2018-07-19 01:00 +0200", RiseSetCalculator.LookupDirection.BACKWARD, RiseSetCalculator.EventType.RISE, "2018-05-25 01:14 +0200"},
             {SVOLVAER, "2018-07-19 01:00 +0200", RiseSetCalculator.LookupDirection.BACKWARD, RiseSetCalculator.EventType.SET, "2018-07-19 00:53 +0200"},
-            {SVOLVAER, "2018-07-19 01:00 +0200", RiseSetCalculator.LookupDirection.FORWARD, RiseSetCalculator.EventType.RISE, "2018-07-19 01:23 +0200"},
+            {SVOLVAER, "2018-07-19 01:00 +0200", RiseSetCalculator.LookupDirection.FORWARD, RiseSetCalculator.EventType.RISE, "2018-07-19 01:24 +0200"},
             {SVOLVAER, "2018-07-19 01:00 +0200", RiseSetCalculator.LookupDirection.FORWARD, RiseSetCalculator.EventType.SET, "2018-07-20 00:34 +0200"},
 
             // https://www.timeanddate.com/sun/canada/vancouver
@@ -193,8 +191,8 @@ public class SunRiseSetTest extends PlanetRiseSetTest
     }
 
     @Override
-    protected RiseSetCalculator getCalculator()
+    protected PlanetRiseSetCalculator getCalculator()
     {
-        return PlanetRiseSetCalculator.of( new SolarSystemMeeus(), Body.SUN );
+        return SunMoonRiseSetCalculator.of( new SolarSystemMeeus(), Body.SUN );
     }
 }

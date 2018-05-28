@@ -28,22 +28,15 @@ public class StarRiseSetCalculator extends RiseSetCalculator
     }
 
     @Override
-    public void setGeographicLocation( double lon, double lat )
-    {
-        super.setGeographicLocation( lon, lat );
-        updateHorizon();
-    }
-
-    @Override
     public boolean compute( long startTimeMs )
     {
         super.setStartTime( startTimeMs );
         stars.compute( starIndex, time, cart );
         cart.transform( topocentric );
-        final boolean isCrossingHorizon = isCrossingHorizon();
-        if ( isCrossingHorizon )
-            adjustTimeToCrossingHorizon();
-        return isCrossingHorizon;
+        final boolean isCrossing = isCrossing();
+        if ( isCrossing )
+            adjustTime();
+        return isCrossing;
     }
 
 }

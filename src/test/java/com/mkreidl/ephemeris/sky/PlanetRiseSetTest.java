@@ -13,13 +13,13 @@ import static org.junit.Assert.assertTrue;
 
 public abstract class PlanetRiseSetTest
 {
-    static final Spherical MUNICH = new Spherical( 1.0, Math.toRadians( 11.576 ), Math.toRadians( 48.137 ) );
+  static final Spherical MUNICH = new Spherical( 1.0, Math.toRadians( 11.58198 ), Math.toRadians( 48.13513 ) );
     static final Spherical SVOLVAER = new Spherical( 1.0, Math.toRadians( 14.561583 ), Math.toRadians( 68.234764 ) );
     static final Spherical SYDNEY = new Spherical( 1.0, Math.toRadians( 151.2 ), Math.toRadians( -33.85 ) );
     static final Spherical VANCOUVER = new Spherical( 1.0, Math.toRadians( -123.12244 ), Math.toRadians( 49.28098 ) );
     static final Spherical FAR_NORTH = new Spherical( 1.0, Math.toRadians( 11.498888 ), Math.toRadians( 77.170555 ) ); // 11d29m56s 77d10m14s
 
-    private static final long PRECISION_MS = 45000;
+    private static final long PRECISION_MS = 30000;
     private final RiseSetCalculator.EventType eventType;
     private final Spherical geographicLocation;
     private final String eventTime;

@@ -8,7 +8,6 @@ import com.mkreidl.ephemeris.solarsystem.SolarSystem;
 
 public class PlanetRiseSetCalculator extends RiseSetCalculator
 {
-    private static final long PRECISION = 30000;
     private static final int MAX_ITERATION = 5;
 
     private final SolarSystem solarSystem;
@@ -19,17 +18,23 @@ public class PlanetRiseSetCalculator extends RiseSetCalculator
 
     private Boolean wasVisibleBefore;
     private Boolean isVisibleNow;
-    private boolean isCrossingHorizon;
+    private boolean isCrossing;
+    private long precisionMs = 5000;
 
-    public static RiseSetCalculator of( SolarSystem solarSystem, Body body )
+    public static PlanetRiseSetCalculator of( SolarSystem solarSystem, Body body )
     {
         return new PlanetRiseSetCalculator( solarSystem, body );
     }
 
-    private PlanetRiseSetCalculator( SolarSystem solarSystem, Body body )
+    protected PlanetRiseSetCalculator( SolarSystem solarSystem, Body body )
     {
         this.solarSystem = solarSystem;
         this.body = body;
+    }
+    
+    public void setPrecision( long precisionMs )
+    {
+      this.precisionMs = precisionMs;
     }
 
     @Override
@@ -41,28 +46,21 @@ public class PlanetRiseSetCalculator extends RiseSetCalculator
         {
             timeMillisPrevious = time.getTime();
             computeTopocentricPosition();
-            if ( !isCrossingHorizon || !adjustTimeToCrossingHorizon() )
+            if ( !isCrossing || !adjustTime() )
                 if ( mode == EventType.RISE && hasAppeared() || mode == EventType.SET && hasVanished() )
                     time.setTime( ( time.getTime() + timeMillisPrevious ) / 2 );
                 else
                     return compute( searchOrbitCrossingHorizon() );
-            if ( Math.abs( time.getTime() - timeMillisPrevious ) < PRECISION )
+            if ( Math.abs( time.getTime() - timeMillisPrevious ) < precisionMs )
                 return true;
         }
         return false;
     }
 
-    @Override
-    boolean adjustTimeToCrossingHorizon()
-    {
-        updateHorizon();
-        return super.adjustTimeToCrossingHorizon();
-    }
-
     private long searchOrbitCrossingHorizon()
     {
         long searchIncrement = 30 * Time.MILLIS_PER_SIDEREAL_DAY * ( lookupDirection == LookupDirection.FORWARD ? 1 : -1 );
-        while ( !isCrossingHorizon )
+        while ( !isCrossing )
         {
             timeMillisPrevious = time.getTime();
             time.addMillis( searchIncrement );
@@ -70,7 +68,7 @@ public class PlanetRiseSetCalculator extends RiseSetCalculator
         }
         while ( Math.abs( searchIncrement ) > Time.MILLIS_PER_HOUR )
         {
-            if ( !isCrossingHorizon )
+            if ( !isCrossing )
                 timeMillisPrevious = time.getTime();
             searchIncrement /= 2;
             time.setTime( timeMillisPrevious + searchIncrement );
@@ -90,7 +88,7 @@ public class PlanetRiseSetCalculator extends RiseSetCalculator
         final double apparentRadius = body.RADIUS_MEAN_M / topocentric.distance( Distance.m );
         virtualHorizonDeg = OPTICAL_HORIZON_DEG - Math.toDegrees( apparentRadius );
         isVisibleNow = topocentric.lat >= virtualHorizonDeg;
-        isCrossingHorizon = isCrossingHorizon();
+        isCrossing = isCrossing();
     }
 
     private boolean hasAppeared()
