@@ -4,9 +4,10 @@ import com.mkreidl.ephemeris.Time;
 import com.mkreidl.ephemeris.geometry.Angle;
 import com.mkreidl.ephemeris.geometry.Spherical;
 import com.mkreidl.ephemeris.geometry.Stereographic;
-import com.mkreidl.ephemeris.solarsystem.Body;
+import com.mkreidl.ephemeris.sky.CelestialObject;
 import com.mkreidl.ephemeris.sky.StarsCatalog;
 import com.mkreidl.ephemeris.sky.coordinates.Equatorial;
+import com.mkreidl.ephemeris.solarsystem.Body;
 
 
 public class Astrolabe extends Stereographic
@@ -115,22 +116,13 @@ public class Astrolabe extends Stereographic
     {
         try
         {
-            return new Planet( Body.valueOf( name ) );
+            final Body planet = Body.valueOf( name );
+            return CelestialObject.createPlanet( planet, planets.getName( planet ) );
         }
         catch ( IllegalArgumentException unused )
         {
-            return createStar( StarsCatalog.findIndexByName( name ) );
+            return CelestialObject.createStar( StarsCatalog.findIndexByName( name ) );
         }
-    }
-
-    public CelestialObject createPlanet( Body body )
-    {
-        return body != null ? new Planet( body ) : NO_OBJECT;
-    }
-
-    public CelestialObject createStar( int index )
-    {
-        return index > -1 && index < StarsCatalog.SIZE ? new Star( index ) : NO_OBJECT;
     }
 
     private void changeObserverLocation()
@@ -140,204 +132,37 @@ public class Astrolabe extends Stereographic
         planets.changeObserverLocation();
     }
 
-    public static final Astrolabe.CelestialObject NO_OBJECT = new Astrolabe.CelestialObject()
-    {
-        @Override
-        public float[] getProjectedXY( float[] xy )
-        {
-            xy[0] = xy[1] = 0;
-            return xy;
-        }
-
-        @Override
-        public double getDistanceFromPole()
-        {
-            return 0;
-        }
-
-        @Override
-        public String toString()
-        {
-            return "";
-        }
-
-        @Override
-        public boolean isVoid()
-        {
-            return true;
-        }
-    };
-
-    public Angle getMeanSiderealTime( Angle angle )
+    public void getMeanSiderealTime( Angle angle )
     {
         angle.setRadians( geographicLocation.lon );
-        return time.getMeanSiderealTime( angle, angle );
+        time.getMeanSiderealTime( angle, angle );
     }
 
-    public abstract static class CelestialObject
+    public float[] getProjectedXY( CelestialObject object, float[] xy )
     {
-        public boolean isPlanet()
+        if ( object.isPlanet() )
         {
-            return this instanceof Planet;
+            xy[0] = (float)planets.getApparentDisk( object.asPlanet() ).x;
+            xy[1] = (float)planets.getApparentDisk( object.asPlanet() ).y;
         }
-
-        public boolean isStar()
+        else
         {
-            return this instanceof Star;
+            xy[0] = rete.projectedPos[2 * object.getIndex()];
+            xy[1] = rete.projectedPos[2 * object.getIndex() + 1];
         }
-
-        public boolean isVoid()
-        {
-            return false;
-        }
-
-        public Body asPlanet()
-        {
-            return null;
-        }
-
-        public int getIndex()
-        {
-            return -1;
-        }
-
-        public String getScientificName()
-        {
-            return "";
-        }
-
-        public String getTrivialName()
-        {
-            return "";
-        }
-
-        public String getCatalogName()
-        {
-            return "";
-        }
-
-        public abstract float[] getProjectedXY( float[] xy );
-
-        public abstract double getDistanceFromPole();
-
-        public String getName()
-        {
-            return getTrivialName().isEmpty()
-                    ? ( getScientificName().isEmpty() ? getCatalogName()
-                    : getScientificName() ) : getTrivialName();
-        }
+        return xy;
     }
 
-    public class Planet extends CelestialObject
+    public double getDistanceFromPole( CelestialObject object )
     {
-        private final Body body;
-
-        Planet( Body body )
+        if ( object.isPlanet() )
+            return planets.getPosition( object.asPlanet() ).length();
+        else
         {
-            this.body = body;
-        }
-
-        @Override
-        public float[] getProjectedXY( float[] xy )
-        {
-            xy[0] = (float)planets.getApparentDisk( body ).x;
-            xy[1] = (float)planets.getApparentDisk( body ).y;
-            return xy;
-        }
-
-        @Override
-        public double getDistanceFromPole()
-        {
-            return planets.getPosition( body ).length();
-        }
-
-        @Override
-        public String toString()
-        {
-            return body.toString();
-        }
-
-        @Override
-        public Body asPlanet()
-        {
-            return body;
-        }
-
-        @Override
-        public String getScientificName()
-        {
-            final String name = planets.getName( body );
-            return name != null ? name : super.getScientificName();
-        }
-
-        @Override
-        public String getTrivialName()
-        {
-            return getScientificName();
-        }
-
-        @Override
-        public String getCatalogName()
-        {
-            return getScientificName();
-        }
-    }
-
-    public class Star extends CelestialObject
-    {
-        private final int index;
-
-        Star( int index )
-        {
-            this.index = index;
-        }
-
-        @Override
-        public float[] getProjectedXY( float[] xy )
-        {
-            xy[0] = rete.projectedPos[2 * index];
-            xy[1] = rete.projectedPos[2 * index + 1];
-            return xy;
-        }
-
-        @Override
-        public double getDistanceFromPole()
-        {
-            final double x = rete.projectedPos[2 * index];
-            final double y = rete.projectedPos[2 * index + 1];
+            final double x = rete.projectedPos[2 * object.getIndex()];
+            final double y = rete.projectedPos[2 * object.getIndex() + 1];
             return Math.sqrt( x * x + y * y );
         }
-
-        @Override
-        public String toString()
-        {
-            return "HR " + Integer.toString( StarsCatalog.BRIGHT_STAR_NUMBER[index] );
-        }
-
-        @Override
-        public int getIndex()
-        {
-            return index;
-        }
-
-        @Override
-        public String getScientificName()
-        {
-            final String name = StarsCatalog.FLAMSTEED_BAYER[index];
-            return name != null ? name : super.getScientificName();
-        }
-
-        @Override
-        public String getTrivialName()
-        {
-            final String name = StarsCatalog.IAU_NAME[index];
-            return name != null ? name : super.getTrivialName();
-        }
-
-        @Override
-        public String getCatalogName()
-        {
-            return "HR " + Integer.toString( StarsCatalog.BRIGHT_STAR_NUMBER[index] );
-        }
     }
+
 }

@@ -19,14 +19,14 @@ public class PlanetRiseSetCalculator extends RiseSetCalculator
     private Boolean wasVisibleBefore;
     private Boolean isVisibleNow;
     private boolean isCrossing;
-    private long precisionMs = 5000;
+    private long precisionMs = 1000;
 
     public static PlanetRiseSetCalculator of( SolarSystem solarSystem, Body body )
     {
         return new PlanetRiseSetCalculator( solarSystem, body );
     }
 
-    protected PlanetRiseSetCalculator( SolarSystem solarSystem, Body body )
+    PlanetRiseSetCalculator( SolarSystem solarSystem, Body body )
     {
         this.solarSystem = solarSystem;
         this.body = body;

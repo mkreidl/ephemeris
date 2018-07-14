@@ -25,7 +25,6 @@ public class TransitTest {
     final PlanetRiseSetCalculator calculator = PlanetRiseSetCalculator.of(new SolarSystemMeeus(), Body.SUN);
     calculator.setEventType(EventType.TRANSIT);
     calculator.setGeographicLocation(PlanetRiseSetTest.MUNICH);
-    calculator.setPrecision(1000);
 
     calculator.setSearchDirection(LookupDirection.BACKWARD);
     Assert.assertTrue(calculator.compute(start.getTime()));
