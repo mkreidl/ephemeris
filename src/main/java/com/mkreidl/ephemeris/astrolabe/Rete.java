@@ -63,7 +63,7 @@ public class Rete extends AbstractPart
     protected void onSynchronize()
     {
         zodiac.compute( astrolabe.time );
-        stars.computeAll( astrolabe.time, toDatePositionsEquatorial );
+        stars.compute( astrolabe.time, toDatePositionsEquatorial, -1 );
     }
 
     @Override
@@ -89,7 +89,7 @@ public class Rete extends AbstractPart
             );
             computeSignBoundary( sign );
         }
-        stars.projectAll( astrolabe, toDatePositionsEquatorial, projectedPos );
+        stars.project( astrolabe, toDatePositionsEquatorial, projectedPos );
     }
 
     public void setNumberOfThreads( int numberOfThreads )

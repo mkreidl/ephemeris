@@ -61,7 +61,7 @@ public class Planets extends AbstractPart
     @Override
     protected void onSynchronize()
     {
-        solarSystem.compute( astrolabe.time );
+        solarSystem.computeSync( astrolabe.time );
     }
 
     @Override

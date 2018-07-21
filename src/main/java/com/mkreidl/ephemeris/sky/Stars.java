@@ -1,18 +1,17 @@
 package com.mkreidl.ephemeris.sky;
 
 import com.mkreidl.ephemeris.Time;
-import com.mkreidl.ephemeris.solarsystem.SolarSystemVSOP87C;
-import com.mkreidl.ephemeris.solarsystem.PrecessionMatrix;
 import com.mkreidl.ephemeris.geometry.Cartesian;
 import com.mkreidl.ephemeris.geometry.Coordinates;
 import com.mkreidl.ephemeris.geometry.Matrix;
 import com.mkreidl.ephemeris.geometry.Stereographic;
 import com.mkreidl.ephemeris.sky.coordinates.Ecliptical;
 import com.mkreidl.ephemeris.sky.coordinates.Equatorial;
+import com.mkreidl.ephemeris.solarsystem.PrecessionMatrix;
+import com.mkreidl.ephemeris.solarsystem.SolarSystemVSOP87C;
 
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
-
 
 public class Stars
 {
@@ -62,7 +61,7 @@ public class Stars
         threads = new Thread[numberOfThreads];
     }
 
-    public synchronized void compute( int starIndex, Time time, Equatorial.Cart outputPosition )
+    public void compute( int starIndex, Time time, Equatorial.Cart outputPosition )
     {
         final double yearsSince2000 = yearsSince2000( time );
         setupTransformationToDate( time, transformation );
@@ -81,6 +80,32 @@ public class Stars
     public synchronized void getPosition( int index, Equatorial.Cart position )
     {
         position.set( positions[index] );
+    }
+
+    public void compute( Time time, final Equatorial.Cart[] outputPositions, int countStars )
+    {
+        setupTransformationToDate( time, transformation );
+        final double yearsSince2000 = yearsSince2000( time );
+        final int max = countStars < 0 ? StarsCatalog.SIZE : Math.max( countStars, StarsCatalog.SIZE );
+        for ( int i = 0; i < max; ++i )
+        {
+            // Calculate ecliptical cartesian coordinates to date
+            outputPositions[i].x = POS_J2000[i].x + VEL_J2000[i].x * yearsSince2000;
+            outputPositions[i].y = POS_J2000[i].y + VEL_J2000[i].y * yearsSince2000;
+            outputPositions[i].z = POS_J2000[i].z + VEL_J2000[i].z * yearsSince2000;
+            transformation.apply( outputPositions[i] ).normalize();
+        }
+    }
+
+    public void project( Stereographic projection, Equatorial.Cart[] equatorial, float[] output )
+    {
+        final Cartesian tmpCartesian = new Cartesian();
+        for ( int i = 0; i < StarsCatalog.SIZE; ++i )
+        {
+            projection.project( equatorial[i], tmpCartesian );
+            output[2 * i] = (float)tmpCartesian.x;
+            output[2 * i + 1] = (float)tmpCartesian.y;
+        }
     }
 
     public synchronized void computeAll( Time time, final Equatorial.Cart[] outputPositions )

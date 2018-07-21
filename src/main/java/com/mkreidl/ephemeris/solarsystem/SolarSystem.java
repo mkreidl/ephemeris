@@ -117,6 +117,24 @@ public abstract class SolarSystem
         }
     }
 
+    public void computeSync( final Time time )
+    {
+        final Cartesian earth = positions.get( Body.EARTH );
+        for ( final Body body : Body.values() )
+        {
+            final OrbitalModel model = models.get( body );
+            model.compute( time, positions.get( body ), velocities.get( body ) );
+            positions.get( body ).scale( model.getDistanceUnit().toMeters() );
+            velocities.get( body ).scale( model.getDistanceUnit().toMeters() );
+        }
+        for ( final Body body : Body.values() )
+        {
+            cartesian.set( positions.get( body ) ).sub( earth );
+            distances.put( body, cartesian.length() );
+        }
+        Collections.sort( sortedByDistance, ( o1, o2 ) -> Double.compare( distances.get( o2 ), distances.get( o1 ) ) );
+    }
+
     /**
      * Parallel computation of all the positions and velocities of objects in the solar
      * system at the given time

@@ -15,36 +15,36 @@ public class Stereographic
 
     public double project1D( double lat )
     {
-        final double stretch = 1.0 - centerZ * sin( lat );
+        final double scale = 1.0 - centerZ * sin( lat );
         final double d = cos( lat );
-        return ( stretch == 0.0 || ( d == 0.0 && stretch < 1.0 ) )
+        return ( scale == 0.0 || ( d == 0.0 && scale < 1.0 ) )
                 ? Double.POSITIVE_INFINITY
-                : d / stretch;
+                : d / scale;
     }
 
     public Cartesian project( Cartesian input, Cartesian output )
     {
-        final double stretch = 1.0 - input.z / centerZ;
-        output.x = input.x / stretch;
-        output.y = input.y / stretch;
+        final double scale = centerZ / ( centerZ - input.z );
+        output.x = input.x * scale;
+        output.y = input.y * scale;
         output.z = 0.0;
         return output;
     }
 
     public float[] project( Cartesian input, float[] output )
     {
-        final double stretch = 1.0 - input.z / centerZ;
-        output[0] = (float)( input.x / stretch );
-        output[1] = (float)( input.y / stretch );
+        final double scale = centerZ / ( centerZ - input.z );
+        output[0] = (float)( input.x * scale );
+        output[1] = (float)( input.y * scale );
         return output;
     }
 
     public Spherical project( Spherical input, Spherical output )
     {
-        final double stretch = 1.0 - input.dst * sin( input.lat ) / centerZ;
-        if ( stretch < 0.0 ) // TODO: This might be generalized
+        final double scale = centerZ / (1.0 - input.dst * sin( input.lat ) );
+        if ( scale < 0.0 ) // TODO: This might be generalized
             throw new IllegalArgumentException( "Projection in polar coordinates impossible" );
-        output.dst = input.dst * cos( input.lat ) / stretch;
+        output.dst = input.dst * cos( input.lat ) * scale;
         output.lat = 0.0;
         output.lon = input.lon;
         return output;
@@ -85,7 +85,7 @@ public class Stereographic
         final double north = project1D( poleOfCircle.lat + alpha );
         final double south = project1D( poleOfCircle.lat - alpha );
         final double dist;
-        projection.r = abs( north - south ) / 2;
+        projection.r = abs( north - south ) * 0.5;
         if ( Double.isInfinite( projection.r ) )
             if ( 1 + north == 1 || 1 + south == 1 )  // clear very small values: 1 + 1e-17 == 1 but 1e-17 != 0
             {
@@ -95,7 +95,7 @@ public class Stereographic
             else
                 dist = centerZ == 1.0 ? south : north;
         else
-            dist = ( north + south ) / 2;
+            dist = ( north + south ) * 0.5;
         projection.x = dist * cos( poleOfCircle.lon );
         projection.y = dist * sin( poleOfCircle.lon );
         return projection;
