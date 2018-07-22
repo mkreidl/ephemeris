@@ -83,9 +83,9 @@ public class Position
         posSun.add( tmpEclipticalCartesian );
     }
 
-    public void setTimeLocation( Time time, double lonDeg, double latDeg )
+    public void setTimeLocation( Time time, double lonRad, double latRad )
     {
-        toposEquatorialSpherical.set( 1, Math.toRadians( lonDeg ), Math.toRadians( latDeg ) );
+        toposEquatorialSpherical.set( 1, lonRad, latRad );
         setTimeLocation( time, toposEquatorialSpherical );
     }
 

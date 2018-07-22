@@ -86,7 +86,7 @@ public class Stars
     {
         setupTransformationToDate( time, transformation );
         final double yearsSince2000 = yearsSince2000( time );
-        final int max = countStars < 0 ? StarsCatalog.SIZE : Math.max( countStars, StarsCatalog.SIZE );
+        final int max = countStars < 0 ? StarsCatalog.SIZE : Math.min( countStars, StarsCatalog.SIZE );
         for ( int i = 0; i < max; ++i )
         {
             // Calculate ecliptical cartesian coordinates to date
