@@ -5,7 +5,6 @@ import com.mkreidl.ephemeris.geometry.*;
 
 import static com.mkreidl.ephemeris.Time.*;
 
-
 public class PrecessionMatrix extends Matrix
 {
     public PrecessionMatrix compute( final Time time )

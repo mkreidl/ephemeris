@@ -63,7 +63,7 @@ public class Stars
 
     public void compute( int starIndex, Time time, Equatorial.Cart outputPosition )
     {
-        final double yearsSince2000 = yearsSince2000( time );
+        final double yearsSince2000 = time.yearsSince2000();
         setupTransformationToDate( time, transformation );
         // Calculate ecliptical cartesian coordinates to date
         outputPosition.x = POS_J2000[starIndex].x + VEL_J2000[starIndex].x * yearsSince2000;
@@ -72,28 +72,30 @@ public class Stars
         transformation.apply( outputPosition ).normalize();
     }
 
-    public synchronized void computeAll( Time time )
+    public void compute( Time time, final Equatorial.Cart[] outputPositions, int startIncl, int endExcl )
     {
-        computeAll( time, positions );
-    }
-
-    public synchronized void getPosition( int index, Equatorial.Cart position )
-    {
-        position.set( positions[index] );
-    }
-
-    public void compute( Time time, final Equatorial.Cart[] outputPositions, int countStars )
-    {
-        setupTransformationToDate( time, transformation );
-        final double yearsSince2000 = yearsSince2000( time );
-        final int max = countStars < 0 ? StarsCatalog.SIZE : Math.min( countStars, StarsCatalog.SIZE );
-        for ( int i = 0; i < max; ++i )
+        final Matrix precession = new PrecessionMatrix();
+        setupTransformationToDate( time, precession );
+        final double yearsSince2000 = time.yearsSince2000();
+        for ( int i = startIncl; i < endExcl; ++i )
         {
             // Calculate ecliptical cartesian coordinates to date
             outputPositions[i].x = POS_J2000[i].x + VEL_J2000[i].x * yearsSince2000;
             outputPositions[i].y = POS_J2000[i].y + VEL_J2000[i].y * yearsSince2000;
             outputPositions[i].z = POS_J2000[i].z + VEL_J2000[i].z * yearsSince2000;
-            transformation.apply( outputPositions[i] ).normalize();
+            precession.apply( outputPositions[i] ).normalize();
+        }
+    }
+
+    public void compute( double yearsSince2000, Matrix rotY2000ToDate, final Equatorial.Cart[] outputPositions, int startIncl, int endExcl )
+    {
+        for ( int i = startIncl; i < endExcl; ++i )
+        {
+            // Calculate equatorial cartesian coordinates to date
+            outputPositions[i].x = POS_J2000[i].x + VEL_J2000[i].x * yearsSince2000;
+            outputPositions[i].y = POS_J2000[i].y + VEL_J2000[i].y * yearsSince2000;
+            outputPositions[i].z = POS_J2000[i].z + VEL_J2000[i].z * yearsSince2000;
+            rotY2000ToDate.apply( outputPositions[i] ).normalize();
         }
     }
 
@@ -108,56 +110,11 @@ public class Stars
         }
     }
 
-    public synchronized void computeAll( Time time, final Equatorial.Cart[] outputPositions )
-    {
-        final double yearsSince2000 = yearsSince2000( time );
-        setupTransformationToDate( time, transformation );
-        for ( int i = 0; i < numberOfThreads; ++i )
-        {
-            threads[i] = new StarCalculationThread(
-                    yearsSince2000, transformation, outputPositions,
-                    i * numCalcPerThread, ( i + 1 ) * numCalcPerThread
-            );
-            threads[i].start();
-        }
-        for ( Thread thread : threads )
-            try
-            {
-                thread.join();
-            }
-            catch ( InterruptedException unused )
-            {
-            }
-    }
-
     private void setupTransformationToDate( Time time, Matrix transformation )
     {
         precession.compute( time );
         rotation.setRotation( SolarSystemVSOP87C.getEcliptic( time ), Coordinates.Axis.X );
         transformation.setProduct( rotation, precession );
-    }
-
-    private double yearsSince2000( Time time )
-    {
-        return time.julianDayNumberSince( Time.J2000 ) / Time.DAYS_PER_YEAR;
-    }
-
-    public synchronized void projectAll( Stereographic projection, Equatorial.Cart[] equatorial, float[] output )
-    {
-        for ( int i = 0; i < numberOfThreads; ++i )
-        {
-            threads[i] = new StarsProjectionThread( projection, equatorial, output,
-                    i * numCalcPerThread, ( i + 1 ) * numCalcPerThread );
-            threads[i].start();
-        }
-        for ( Thread thread : threads )
-            try
-            {
-                thread.join();
-            }
-            catch ( InterruptedException unused )
-            {
-            }
     }
 
     private static class StarCalculationThread extends Thread

@@ -63,7 +63,7 @@ public class Rete extends AbstractPart
     protected void onSynchronize()
     {
         zodiac.compute( astrolabe.time );
-        stars.compute( astrolabe.time, toDatePositionsEquatorial, -1 );
+        stars.compute( astrolabe.time, toDatePositionsEquatorial, 0, StarsCatalog.SIZE );
     }
 
     @Override

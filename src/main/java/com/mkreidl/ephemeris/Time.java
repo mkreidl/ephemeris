@@ -73,6 +73,11 @@ public class Time
         return (double)( millisSinceEpoch - instant.millisSinceEpoch ) / MILLIS_PER_DAY;
     }
 
+    public double yearsSince2000()
+    {
+        return julianDayNumberSince( Time.J2000 ) / Time.DAYS_PER_YEAR;
+    }
+
     public double terrestrialDynamicalTime()
     {
         return julianDayNumberSince( J2000 ) + TDT_OFFSET;
