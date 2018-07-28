@@ -1,64 +1,13 @@
 package com.mkreidl.ephemeris.sky;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Constellations
 {
-
-    public static class Constellation implements Iterable<Integer>
-    {
-        private String name = "";
-
-        List<int[]> mEdges;
-
-        public List<int[]> getEdges()
-        {
-            return mEdges;
-        }
-
-        public String getName()
-        {
-            return name;
-        }
-
-        private Constellation( String name, int[]... edges )
-        {
-            this.name = name;
-            mEdges = Arrays.asList( edges );
-        }
-
-        @Override
-        public Iterator<Integer> iterator()
-        {
-            return new Iterator<Integer>()
-            {
-                int edge = 0;
-                int vertex = 0;
-
-                @Override
-                public boolean hasNext()
-                {
-                    return vertex < mEdges.get( edge ).length - 1 || edge < mEdges.size() - 1;
-                }
-
-                @Override
-                public Integer next()
-                {
-                    if ( vertex < mEdges.get( edge ).length - 1 )
-                        vertex++;
-                    else
-                    {
-                        vertex = 0;
-                        edge++;
-                    }
-                    return mEdges.get( edge )[vertex];
-                }
-            };
-        }
-    }
-
     public static final Constellation AQUARIUS = new Constellation( "Aquarius",
             new int[]{395, 1164, 157, 686},
             new int[]{157, 164, 1084, 997, 535},
@@ -390,30 +339,27 @@ public class Constellations
 
     public static final Constellation[] ALL = new Constellation[PTOLEMAIC.length + MODERN.length];
 
+    public static final Map<Integer, List<Integer>> NEIGHBORS = new HashMap<>();
+
     static
     {
         System.arraycopy( PTOLEMAIC, 0, ALL, 0, PTOLEMAIC.length );
         System.arraycopy( MODERN, 0, ALL, PTOLEMAIC.length, MODERN.length );
+        for ( Constellation constellation : ALL )
+            for ( int[] path : constellation.getPaths() )
+                for ( int i = 0; i < path.length - 1; ++i )
+                {
+                    putNeighbor( path[i], path[i + 1] );
+                    putNeighbor( path[i + 1], path[i] );
+                }
     }
 
-    public static final Iterator<Constellation[]> CURSOR = new Iterator<Constellation[]>()
+    private static void putNeighbor( int start, int end )
     {
-
-        private int index = 0;
-
-        @Override
-        public boolean hasNext()
-        {
-            return true;
-        }
-
-        @Override
-        public Constellation[] next()
-        {
-            if ( index >= MODERN.length )
-                index = 0;
-            return new Constellation[]{MODERN[index++]};
-        }
-    };
-
+        final List<Integer> neighbors = NEIGHBORS.get( start );
+        if ( neighbors == null )
+            NEIGHBORS.put( start, new ArrayList<>( Arrays.asList( end ) ) );
+        else
+            neighbors.add( end );
+    }
 }

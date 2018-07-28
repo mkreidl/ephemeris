@@ -21,10 +21,7 @@ public class Stars
     private final PrecessionMatrix precession = new PrecessionMatrix();
     private final Matrix rotation = new Matrix();
     private final Matrix transformation = new Matrix();
-    private final Equatorial.Cart[] positions = new Equatorial.Cart[StarsCatalog.SIZE];
     private int numberOfThreads = 8;
-    private int numCalcPerThread = StarsCatalog.SIZE / numberOfThreads + 1;
-    private Thread[] threads = new Thread[numberOfThreads];
 
     static
     {
@@ -57,8 +54,6 @@ public class Stars
     public void setNumberOfThreads( int numberOfThreads )
     {
         this.numberOfThreads = numberOfThreads;
-        numCalcPerThread = StarsCatalog.SIZE / numberOfThreads + 1;
-        threads = new Thread[numberOfThreads];
     }
 
     public void compute( int starIndex, Time time, Equatorial.Cart outputPosition )
@@ -87,7 +82,7 @@ public class Stars
         }
     }
 
-    public void compute( double yearsSince2000, Matrix rotY2000ToDate, final Equatorial.Cart[] outputPositions, int startIncl, int endExcl )
+    public static void compute( double yearsSince2000, Matrix rotY2000ToDate, final Equatorial.Cart[] outputPositions, int startIncl, int endExcl )
     {
         for ( int i = startIncl; i < endExcl; ++i )
         {

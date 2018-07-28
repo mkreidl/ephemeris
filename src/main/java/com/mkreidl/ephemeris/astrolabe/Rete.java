@@ -5,7 +5,7 @@ import com.mkreidl.ephemeris.geometry.Cartesian;
 import com.mkreidl.ephemeris.geometry.Circle;
 import com.mkreidl.ephemeris.geometry.Coordinates;
 import com.mkreidl.ephemeris.geometry.Matrix;
-import com.mkreidl.ephemeris.sky.Constellations;
+import com.mkreidl.ephemeris.sky.Constellation;
 import com.mkreidl.ephemeris.sky.Stars;
 import com.mkreidl.ephemeris.sky.StarsCatalog;
 import com.mkreidl.ephemeris.solarsystem.Zodiac;
@@ -97,7 +97,7 @@ public class Rete extends AbstractPart
         stars.setNumberOfThreads( numberOfThreads );
     }
 
-    public void getConstellationCenter( Constellations.Constellation constellation, Cartesian output )
+    public void getConstellationCenter( Constellation constellation, Cartesian output )
     {
         int count = 0;
         output.set( 0, 0, 0 );
