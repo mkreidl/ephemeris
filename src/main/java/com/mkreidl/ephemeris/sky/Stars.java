@@ -42,12 +42,12 @@ public class Stars
                     0, cos( decl ), 0
             );
             tmp.set( StarsCatalog.getVRAscJ2000( i ), StarsCatalog.getVDeclJ2000( i ), 0 );
-            jacobian.apply( tmp, velEquatorial );
-            VEL_J2000[i] = (Ecliptical.Cart)equ2ecl.apply( velEquatorial, new Ecliptical.Cart() );
+            jacobian.applyTo( tmp, velEquatorial );
+            VEL_J2000[i] = (Ecliptical.Cart)equ2ecl.applyTo( velEquatorial, new Ecliptical.Cart() );
 
             posJ2000.set( 1.0, StarsCatalog.getRAscJ2000( i ), StarsCatalog.getDeclJ2000( i ) );
             posJ2000.transform( posEquatorial );
-            POS_J2000[i] = (Ecliptical.Cart)equ2ecl.apply( posEquatorial, new Ecliptical.Cart() );
+            POS_J2000[i] = (Ecliptical.Cart)equ2ecl.applyTo( posEquatorial, new Ecliptical.Cart() );
         }
     }
 
@@ -64,7 +64,7 @@ public class Stars
         outputPosition.x = POS_J2000[starIndex].x + VEL_J2000[starIndex].x * yearsSince2000;
         outputPosition.y = POS_J2000[starIndex].y + VEL_J2000[starIndex].y * yearsSince2000;
         outputPosition.z = POS_J2000[starIndex].z + VEL_J2000[starIndex].z * yearsSince2000;
-        transformation.apply( outputPosition ).normalize();
+        transformation.applyTo( outputPosition ).normalize();
     }
 
     public void compute( Time time, final Equatorial.Cart[] outputPositions, int startIncl, int endExcl )
@@ -73,25 +73,23 @@ public class Stars
         setupTransformationToDate( time, precession );
         final double yearsSince2000 = time.yearsSince2000();
         for ( int i = startIncl; i < endExcl; ++i )
-        {
             // Calculate ecliptical cartesian coordinates to date
-            outputPositions[i].x = POS_J2000[i].x + VEL_J2000[i].x * yearsSince2000;
-            outputPositions[i].y = POS_J2000[i].y + VEL_J2000[i].y * yearsSince2000;
-            outputPositions[i].z = POS_J2000[i].z + VEL_J2000[i].z * yearsSince2000;
-            precession.apply( outputPositions[i] ).normalize();
-        }
+            computeStar( yearsSince2000, precession, outputPositions, i );
     }
 
     public static void compute( double yearsSince2000, Matrix rotY2000ToDate, final Equatorial.Cart[] outputPositions, int startIncl, int endExcl )
     {
         for ( int i = startIncl; i < endExcl; ++i )
-        {
-            // Calculate equatorial cartesian coordinates to date
-            outputPositions[i].x = POS_J2000[i].x + VEL_J2000[i].x * yearsSince2000;
-            outputPositions[i].y = POS_J2000[i].y + VEL_J2000[i].y * yearsSince2000;
-            outputPositions[i].z = POS_J2000[i].z + VEL_J2000[i].z * yearsSince2000;
-            rotY2000ToDate.apply( outputPositions[i] ).normalize();
-        }
+            computeStar( yearsSince2000, rotY2000ToDate, outputPositions, i );
+    }
+
+    public static void computeStar( double yearsSince2000, Matrix rotY2000ToDate, Equatorial.Cart[] outputPositions, int i )
+    {
+        // Calculate equatorial cartesian coordinates to date
+        outputPositions[i].x = POS_J2000[i].x + VEL_J2000[i].x * yearsSince2000;
+        outputPositions[i].y = POS_J2000[i].y + VEL_J2000[i].y * yearsSince2000;
+        outputPositions[i].z = POS_J2000[i].z + VEL_J2000[i].z * yearsSince2000;
+        rotY2000ToDate.applyTo( outputPositions[i] ).normalize();
     }
 
     public void project( Stereographic projection, Equatorial.Cart[] equatorial, float[] output )
@@ -137,7 +135,7 @@ public class Stars
                 outputPositions[i].x = POS_J2000[i].x + VEL_J2000[i].x * yearsSince2000;
                 outputPositions[i].y = POS_J2000[i].y + VEL_J2000[i].y * yearsSince2000;
                 outputPositions[i].z = POS_J2000[i].z + VEL_J2000[i].z * yearsSince2000;
-                matrix.apply( outputPositions[i] ).normalize();
+                matrix.applyTo( outputPositions[i] ).normalize();
             }
         }
     }

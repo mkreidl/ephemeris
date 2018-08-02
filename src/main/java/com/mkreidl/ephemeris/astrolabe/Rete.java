@@ -116,7 +116,7 @@ public class Rete extends AbstractPart
         for ( int i = 0; i < POINT_COUNT_SIGN_BOUNDARY; i++ )
         {
             equatorialCart.set( signBoundariesEcliptical.get( sign )[i] );
-            matrixEcl2Equ.apply( equatorialCart );
+            matrixEcl2Equ.applyTo( equatorialCart );
             astrolabe.project( equatorialCart, signBoundariesProjected.get( sign )[i] );
         }
     }

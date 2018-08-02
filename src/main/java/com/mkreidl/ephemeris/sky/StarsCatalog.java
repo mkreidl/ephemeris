@@ -82,7 +82,7 @@ public class StarsCatalog
     public static int findIndexByName( String name )
     {
         for ( int index = 0; index < SIZE; ++index )
-            if ( name.equals( FLAMSTEED_BAYER[index] ) || name.equals(IAU_NAME[index]) || name.equals( "HR " + Integer.toString( BRIGHT_STAR_NUMBER[index] ) ) )
+            if ( name.equals( FLAMSTEED_BAYER[index] ) || name.equals( IAU_NAME[index] ) || name.equals( "HR " + Integer.toString( BRIGHT_STAR_NUMBER[index] ) ) )
                 return index;
         return -1;
     }

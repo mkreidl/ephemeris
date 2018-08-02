@@ -63,7 +63,7 @@ public class VSOP87CoordinateTransformationTest
             else
             {
                 final Matrix matrix = new PrecessionMatrix().compute( dataSetFirst.time );
-                matrix.apply( dataSetFirst.model.getPosition( actualCartesian ) );
+                matrix.applyTo( dataSetFirst.model.getPosition( actualCartesian ) );
             }
             if ( second == VSOP87File.Version.B || second == VSOP87File.Version.D )
             {

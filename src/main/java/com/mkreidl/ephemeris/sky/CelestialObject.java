@@ -28,12 +28,12 @@ public class CelestialObject
 
     public static CelestialObject createStar( int index )
     {
-        if (index > -1 && index < StarsCatalog.SIZE)
+        if ( index > -1 && index < StarsCatalog.SIZE )
         {
             final CelestialObject star = new CelestialObject();
             star.index = index;
-            star.scientificName = StarsCatalog.FLAMSTEED_BAYER[index];
-            star.trivialName = StarsCatalog.IAU_NAME[index];
+            star.scientificName = StarsCatalog.FLAMSTEED_BAYER[index] != null ? StarsCatalog.FLAMSTEED_BAYER[index] : "";
+            star.trivialName = StarsCatalog.IAU_NAME[index] != null ? StarsCatalog.IAU_NAME[index] : "";
             star.catalogName = "HR " + Integer.toString( StarsCatalog.BRIGHT_STAR_NUMBER[index] );
             return star;
         }

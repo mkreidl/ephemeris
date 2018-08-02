@@ -76,7 +76,7 @@ public class Cartesian extends Coordinates<Cartesian>
         synchronized ( rotation )
         {
             rotation.setRotation( angle, axis );
-            rotation.apply( this );
+            rotation.applyTo( this );
         }
         return this;
     }

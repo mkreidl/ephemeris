@@ -1,10 +1,9 @@
 package com.mkreidl.ephemeris.sky;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 public class Constellations
 {
@@ -23,9 +22,9 @@ public class Constellations
             new int[]{1313, 105, 48, 337} );
     public static final Constellation CANCER = new Constellation( "Cancer",
             new int[]{665, 483, 289},
-            new int[]{483, 1075, 8662} );
+            new int[]{483, 1075, 529} );
     public static final Constellation CAPRICORNUS = new Constellation( "Capricornus",
-            new int[]{315, 190, 4758, 603, 586, 900, 376, 1102,
+            new int[]{315, 190, 603, 586, 900, 376, 1102,
                     147, 354, 696, 564, 2105, 315} );
     public static final Constellation CRATER = new Constellation( "Crater",
             new int[]{1124, 1324, 308, 567, 1159, 2015},
@@ -339,27 +338,27 @@ public class Constellations
 
     public static final Constellation[] ALL = new Constellation[PTOLEMAIC.length + MODERN.length];
 
-    public static final Map<Integer, List<Integer>> NEIGHBORS = new HashMap<>();
+    public static final int MAX_STAR_INDEX;
+    public static final List<Set<Integer>> NEIGHBORS = new ArrayList<>();
 
     static
     {
         System.arraycopy( PTOLEMAIC, 0, ALL, 0, PTOLEMAIC.length );
         System.arraycopy( MODERN, 0, ALL, PTOLEMAIC.length, MODERN.length );
+        for ( int i = 0; i < StarsCatalog.SIZE; ++i )
+            NEIGHBORS.add( new HashSet<>() );
+        int maxIndex = 0;
         for ( Constellation constellation : ALL )
+        {
             for ( int[] path : constellation.getPaths() )
                 for ( int i = 0; i < path.length - 1; ++i )
                 {
-                    putNeighbor( path[i], path[i + 1] );
-                    putNeighbor( path[i + 1], path[i] );
+                    NEIGHBORS.get( path[i] ).add( path[i + 1] );
+                    NEIGHBORS.get( path[i + 1] ).add( path[i] );
                 }
-    }
-
-    private static void putNeighbor( int start, int end )
-    {
-        final List<Integer> neighbors = NEIGHBORS.get( start );
-        if ( neighbors == null )
-            NEIGHBORS.put( start, new ArrayList<>( Arrays.asList( end ) ) );
-        else
-            neighbors.add( end );
+            for ( int index : constellation )
+                maxIndex = Math.max( index, maxIndex );
+        }
+        MAX_STAR_INDEX = maxIndex;
     }
 }

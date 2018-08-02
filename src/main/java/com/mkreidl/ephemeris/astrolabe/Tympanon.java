@@ -93,17 +93,17 @@ public class Tympanon extends AbstractPart
     @Override
     protected void onRecomputeProjection()
     {
-        rotation.apply( _horizon_mathematical, horizonMathematical );
-        rotation.apply( _horizon_apparent, horizonApparent );
-        rotation.apply( _horizon_sunrise, horizonSunrise );
-        rotation.apply( _horizon_civil, horizonCivil );
-        rotation.apply( _horizon_nautical, horizonNautical );
-        rotation.apply( _horizon_astronomical, horizonAstronomical );
-        rotation.apply( _twilight_civil, twilightCivil );
-        rotation.apply( _twilight_nautical, twilightNautical );
-        rotation.apply( _twilight_astronomical, twilightAstronomical );
-        rotation.apply( _zenith, zenith );
-        rotation.apply( _nadir, nadir );
+        rotation.applyTo( _horizon_mathematical, horizonMathematical );
+        rotation.applyTo( _horizon_apparent, horizonApparent );
+        rotation.applyTo( _horizon_sunrise, horizonSunrise );
+        rotation.applyTo( _horizon_civil, horizonCivil );
+        rotation.applyTo( _horizon_nautical, horizonNautical );
+        rotation.applyTo( _horizon_astronomical, horizonAstronomical );
+        rotation.applyTo( _twilight_civil, twilightCivil );
+        rotation.applyTo( _twilight_nautical, twilightNautical );
+        rotation.applyTo( _twilight_astronomical, twilightAstronomical );
+        rotation.applyTo( _zenith, zenith );
+        rotation.applyTo( _nadir, nadir );
     }
 
     public Circle azimuth( Angle longitude, Circle projection )
@@ -111,12 +111,12 @@ public class Tympanon extends AbstractPart
         horizontal.set( 1.0, longitude.get( Angle.Unit.RADIANS ), 0.0 );
         horizontal.toEquatorial( astrolabe.geographicLocation, equatorial );
         astrolabe.project( equatorial, PI / 2, projection );
-        return rotation.apply( projection );
+        return rotation.applyTo( projection );
     }
 
     public Circle height( Angle latitude, Circle projection )
     {
         astrolabe.project( astrolabe.geographicLocation, latitude.get( Angle.Unit.RADIANS ), projection );
-        return rotation.apply( projection );
+        return rotation.applyTo( projection );
     }
 }

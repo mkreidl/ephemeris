@@ -25,7 +25,7 @@ public class Matrix
         return this;
     }
 
-    public Cartesian apply( Cartesian point )
+    public Cartesian applyTo( Cartesian point )
     {
         final double x = point.x;
         final double y = point.y;
@@ -36,13 +36,24 @@ public class Matrix
         return point;
     }
 
-    public Cartesian apply( Cartesian input, Cartesian output )
+    public Cartesian applyTransposeTo( Cartesian point )
     {
-        output.set( input );
-        return apply( output );
+        final double x = point.x;
+        final double y = point.y;
+        final double z = point.z;
+        point.x = values[0] * x + values[3] * y + values[6] * z;
+        point.y = values[1] * x + values[4] * y + values[7] * z;
+        point.z = values[2] * x + values[5] * y + values[8] * z;
+        return point;
     }
 
-    public Circle apply( Circle circle )
+    public Cartesian applyTo( Cartesian input, Cartesian output )
+    {
+        output.set( input );
+        return applyTo( output );
+    }
+
+    public Circle applyTo( Circle circle )
     {
         final double x = circle.x;
         final double y = circle.y;
@@ -51,10 +62,10 @@ public class Matrix
         return circle;
     }
 
-    public Circle apply( Circle input, Circle output )
+    public Circle applyTo( Circle input, Circle output )
     {
         output.set( input );
-        return apply( output );
+        return applyTo( output );
     }
 
     public Matrix setIdentity()
