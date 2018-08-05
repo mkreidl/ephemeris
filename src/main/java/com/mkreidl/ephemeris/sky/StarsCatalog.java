@@ -38,8 +38,13 @@ public class StarsCatalog
         COLOR_TABLE.put( 'R', 0xfffbc886 );
         COLOR_TABLE.put( 'N', 0xfffbc886 );
         COLOR_TABLE.put( 'S', 0xfffbb1a5 );
+        COLOR_TABLE.put( 'W', 0xffffffff );
+        COLOR_TABLE.put( 'C', 0xfffbc886 );
         initializeStars();
         initializeDerived();
+        for ( int i = 0; i < SIZE; ++i )
+            if ( !COLOR_TABLE.containsKey( SPECTRAL_TYPE[i] ) )
+                throw new IllegalArgumentException( "Star nr. " + i + " has missing spectral type " + SPECTRAL_TYPE[i] );
     }
 
     private StarsCatalog()
@@ -94,7 +99,7 @@ public class StarsCatalog
         {
             BRIGHTNESS[i] = (float)Math.exp( MAG[i] * base );
             SQRT_BRIGHTNESS[i] = (float)Math.sqrt( BRIGHTNESS[i] );
-            COLOR[i] = COLOR_TABLE.containsKey( SPECTRAL_TYPE[i] ) ? COLOR_TABLE.get( SPECTRAL_TYPE[i] ) : 0xffffffff;
+            COLOR[i] = COLOR_TABLE.get( SPECTRAL_TYPE[i] );
             if ( IAU_NAME[i] != null )
                 NAMED_STARS.add( i );
         }
@@ -35478,7 +35483,7 @@ public class StarsCatalog
         MAG[6363] = 6.21f;
         PAR[6363] = Float.NaN;
         QP[6363] = new float[]{Float.NaN, 2.81e+00f, -1.04e+00f, -2.50e+01f, -1.94e-08f, 4.36e-08f};
-        SPECTRAL_TYPE[6363] = 'p';
+        SPECTRAL_TYPE[6363] = 'O';
         BRIGHT_STAR_NUMBER[6364] = 4364;
         MAG[6364] = 6.21f;
         PAR[6364] = Float.NaN;
