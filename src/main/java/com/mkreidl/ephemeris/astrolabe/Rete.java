@@ -92,11 +92,6 @@ public class Rete extends AbstractPart
         stars.project( astrolabe, toDatePositionsEquatorial, projectedPos );
     }
 
-    public void setNumberOfThreads( int numberOfThreads )
-    {
-        stars.setNumberOfThreads( numberOfThreads );
-    }
-
     public void getConstellationCenter( Constellation constellation, Cartesian output )
     {
         int count = 0;

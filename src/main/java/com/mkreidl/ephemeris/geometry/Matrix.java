@@ -25,6 +25,28 @@ public class Matrix
         return this;
     }
 
+    public float[] getValuesAsFloat()
+    {
+        final float[] values = new float[9];
+        for ( int i = 0; i < 9; ++i )
+            values[i] = (float)this.values[i];
+        return values;
+    }
+
+    public void applyTo( float[] points )
+    {
+        double x, y, z;
+        for ( int offset = 0; offset < points.length; offset += 3 )
+        {
+            x = points[offset];
+            y = points[offset + 1];
+            z = points[offset + 2];
+            points[offset] = (float)( values[0] * x + values[1] * y + values[2] * z );
+            points[offset + 1] = (float)( values[3] * x + values[4] * y + values[5] * z );
+            points[offset + 2] = (float)( values[6] * x + values[7] * y + values[8] * z );
+        }
+    }
+
     public Cartesian applyTo( Cartesian point )
     {
         final double x = point.x;

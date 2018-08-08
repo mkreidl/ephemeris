@@ -21,7 +21,6 @@ public class Stars
     private final PrecessionMatrix precession = new PrecessionMatrix();
     private final Matrix rotation = new Matrix();
     private final Matrix transformation = new Matrix();
-    private int numberOfThreads = 8;
 
     static
     {
@@ -51,16 +50,24 @@ public class Stars
         }
     }
 
-    public void setNumberOfThreads( int numberOfThreads )
+    public void compute( Time time, double[] positions3d )
     {
-        this.numberOfThreads = numberOfThreads;
+        final double yearsSince2000 = time.yearsSince2000();
+        for ( int i = 0; i < StarsCatalog.SIZE; ++i )
+        {
+            final int offset = 3 * i;
+            // Calculate ecliptical cartesian coordinates resp. to Y2000
+            positions3d[offset] = POS_J2000[i].x + VEL_J2000[i].x * yearsSince2000;
+            positions3d[offset + 1] = POS_J2000[i].y + VEL_J2000[i].y * yearsSince2000;
+            positions3d[offset + 2] = POS_J2000[i].z + VEL_J2000[i].z * yearsSince2000;
+        }
     }
 
     public void compute( int starIndex, Time time, Equatorial.Cart outputPosition )
     {
         final double yearsSince2000 = time.yearsSince2000();
         setupTransformationToDate( time, transformation );
-        // Calculate ecliptical cartesian coordinates to date
+        // Calculate ecliptical cartesian coordinates resp. to Y2000
         outputPosition.x = POS_J2000[starIndex].x + VEL_J2000[starIndex].x * yearsSince2000;
         outputPosition.y = POS_J2000[starIndex].y + VEL_J2000[starIndex].y * yearsSince2000;
         outputPosition.z = POS_J2000[starIndex].z + VEL_J2000[starIndex].z * yearsSince2000;
@@ -90,6 +97,15 @@ public class Stars
         outputPositions[i].y = POS_J2000[i].y + VEL_J2000[i].y * yearsSince2000;
         outputPositions[i].z = POS_J2000[i].z + VEL_J2000[i].z * yearsSince2000;
         rotY2000ToDate.applyTo( outputPositions[i] ).normalize();
+    }
+
+    public static void computeStarEclipticalY2000( double yearsSince2000, Ecliptical.Cart[] outputPositions, int i )
+    {
+        // Calculate equatorial cartesian coordinates to date
+        outputPositions[i].x = POS_J2000[i].x + VEL_J2000[i].x * yearsSince2000;
+        outputPositions[i].y = POS_J2000[i].y + VEL_J2000[i].y * yearsSince2000;
+        outputPositions[i].z = POS_J2000[i].z + VEL_J2000[i].z * yearsSince2000;
+        outputPositions[i].normalize();
     }
 
     public void project( Stereographic projection, Equatorial.Cart[] equatorial, float[] output )

@@ -1,9 +1,10 @@
 package com.mkreidl.ephemeris.solarsystem;
 
-import com.mkreidl.ephemeris.*;
-import com.mkreidl.ephemeris.geometry.*;
+import com.mkreidl.ephemeris.Time;
+import com.mkreidl.ephemeris.geometry.Matrix;
 
-import static com.mkreidl.ephemeris.Time.*;
+import static com.mkreidl.ephemeris.Time.DAYS_PER_MILLENNIUM;
+import static com.mkreidl.ephemeris.Time.J2000;
 
 public class PrecessionMatrix extends Matrix
 {
@@ -33,6 +34,15 @@ public class PrecessionMatrix extends Matrix
         values[8] = evaluatePolynomial( t, A33 );
 
         return this;
+    }
+
+    public float[] asFloatArray()
+    {
+        return new float[]{
+                (float)values[0], (float)values[1], (float)values[2],
+                (float)values[3], (float)values[4], (float)values[5],
+                (float)values[6], (float)values[7], (float)values[8]
+        };
     }
 
     private static double evaluatePolynomial( double t, double[] polynomial )

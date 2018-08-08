@@ -70,6 +70,14 @@ public class Cartesian extends Coordinates<Cartesian>
         return this;
     }
 
+    public float[] projectiveToAffine( float[] affinePoints, int offset )
+    {
+        final double zInv = 1 / z;
+        affinePoints[offset] = (float)( x * zInv );
+        affinePoints[offset + 1] = (float)( y * zInv );
+        return affinePoints;
+    }
+
     @Override
     public Cartesian rotate( Axis axis, double angle )
     {
