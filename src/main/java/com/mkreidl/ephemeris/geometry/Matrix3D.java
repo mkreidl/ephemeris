@@ -4,22 +4,22 @@ import java.util.Arrays;
 
 import static com.mkreidl.ephemeris.geometry.Coordinates.Axis;
 
-public class Matrix
+public class Matrix3D
 {
     public double[] values = new double[9];
 
-    public Matrix()
+    public Matrix3D()
     {
         this.setIdentity();
     }
 
-    public Matrix set( double... values )
+    public Matrix3D set( double... values )
     {
         this.values = values;
         return this;
     }
 
-    public Matrix set( Matrix original )
+    public Matrix3D set( Matrix3D original )
     {
         values = Arrays.copyOf( original.values, original.values.length );
         return this;
@@ -90,7 +90,7 @@ public class Matrix
         return applyTo( output );
     }
 
-    public Matrix setIdentity()
+    public Matrix3D setIdentity()
     {
         values[0] = 1.0;
         values[1] = 0.0;
@@ -104,7 +104,7 @@ public class Matrix
         return this;
     }
 
-    public Matrix setRotation( double angle, Axis axis )
+    public Matrix3D setRotation( double angle, Axis axis )
     {
         this.setIdentity();
         final double cosa = Math.cos( angle );
@@ -133,7 +133,7 @@ public class Matrix
         return this;
     }
 
-    public Matrix transpose()
+    public Matrix3D transpose()
     {
         double tmp = values[1];
         values[1] = values[3];
@@ -147,7 +147,7 @@ public class Matrix
         return this;
     }
 
-    public Matrix setProduct( Matrix left, Matrix right )
+    public Matrix3D setProduct( Matrix3D left, Matrix3D right )
     {
         final double[] l = left.values;
         final double[] r = right.values;
@@ -163,7 +163,7 @@ public class Matrix
         return this;
     }
 
-    public Matrix preConcat( Matrix multiplyRight )
+    public Matrix3D preConcat( Matrix3D multiplyRight )
     {
         final double a11 = values[0];
         final double a12 = values[1];
@@ -187,7 +187,7 @@ public class Matrix
         return this;
     }
 
-    public Matrix preRotateX( double radians )
+    public Matrix3D preRotateX( double radians )
     {
         final double cos = Math.cos( radians );
         final double sin = Math.sin( radians );
@@ -206,7 +206,7 @@ public class Matrix
         return this;
     }
 
-    public Matrix preRotateZ( double radians )
+    public Matrix3D preRotateZ( double radians )
     {
         final double cos = Math.cos( radians );
         final double sin = Math.sin( radians );
@@ -225,7 +225,7 @@ public class Matrix
         return this;
     }
 
-    public Matrix postConcat( Matrix multiplyLeft )
+    public Matrix3D postConcat( Matrix3D multiplyLeft )
     {
         final double a11 = values[0];
         final double a12 = values[1];
@@ -249,7 +249,7 @@ public class Matrix
         return this;
     }
 
-    public Matrix postRotateX( double radians )
+    public Matrix3D postRotateX( double radians )
     {
         final double cos = Math.cos( radians );
         final double sin = Math.sin( radians );
@@ -268,7 +268,7 @@ public class Matrix
         return this;
     }
 
-    public Matrix postRotateZ( double radians )
+    public Matrix3D postRotateZ( double radians )
     {
         final double cos = Math.cos( radians );
         final double sin = Math.sin( radians );

@@ -4,7 +4,7 @@ import com.mkreidl.ephemeris.Position;
 import com.mkreidl.ephemeris.Time;
 import com.mkreidl.ephemeris.geometry.Cartesian;
 import com.mkreidl.ephemeris.geometry.Coordinates;
-import com.mkreidl.ephemeris.geometry.Matrix;
+import com.mkreidl.ephemeris.geometry.Matrix3D;
 import com.mkreidl.ephemeris.sky.coordinates.Ecliptical;
 
 import java.util.ArrayList;
@@ -48,13 +48,13 @@ public abstract class SolarSystem
         return Math.toRadians( 23.4392911111 - t * ( 1.30041667e-2 + t * ( 1.638888e-7 - t * 5.036111e-7 ) ) );
     }
 
-    static Matrix getEcl2EquMatrix( Time time, Matrix output )
+    static Matrix3D getEcl2EquMatrix( Time time, Matrix3D output )
     {
         output.setRotation( getEcliptic( time ), Coordinates.Axis.X );
         return output;
     }
 
-    public static Matrix getEqu2EclMatrix( Time time, Matrix output )
+    public static Matrix3D getEqu2EclMatrix( Time time, Matrix3D output )
     {
         output.setRotation( -getEcliptic( time ), Coordinates.Axis.X );
         return output;

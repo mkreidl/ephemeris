@@ -35,7 +35,10 @@ public class Time
     private static final ZoneId UTC = ZoneId.of( "UTC" );
     public static final long SECONDS_PER_DAY = 24 * 3600;
 
-    private long millisSinceEpoch = 0;
+    public static final long MILLIS_SINCE_EPOCH_AT_J2000 = 946_728_000_000L;
+    public static final double JULIAN_YEARS_PER_MILLISECOND = 1.0 / ( MILLIS_PER_DAY * 365.25 );
+
+    private long millisSinceEpoch;
 
     @Override
     public String toString()
@@ -73,9 +76,14 @@ public class Time
         return (double)( millisSinceEpoch - instant.millisSinceEpoch ) / MILLIS_PER_DAY;
     }
 
-    public double yearsSince2000()
+    public double julianYearsSinceJ2000()
     {
-        return julianDayNumberSince( Time.J2000 ) / Time.DAYS_PER_YEAR;
+        return julianDayNumberSince( J2000 ) / DAYS_PER_YEAR;
+    }
+
+    public static double julianYearsSinceJ2000( long millisSinceEpoch )
+    {
+        return ( millisSinceEpoch - MILLIS_SINCE_EPOCH_AT_J2000 ) * JULIAN_YEARS_PER_MILLISECOND;
     }
 
     public double terrestrialDynamicalTime()

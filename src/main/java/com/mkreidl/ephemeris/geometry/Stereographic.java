@@ -50,7 +50,7 @@ public class Stereographic
         return output;
     }
 
-    public Matrix getJacobian( Cartesian locus, Matrix j )
+    public Matrix3D getJacobian( Cartesian locus, Matrix3D j )
     {
         final double stretch = 1.0 - locus.z / centerZ;
         final double d_dz_stretch = stretch * stretch / centerZ;

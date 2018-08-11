@@ -11,7 +11,7 @@ public class Cartesian extends Coordinates<Cartesian>
     public double z = 0.0;
 
     public static final Cartesian ORIGIN = new Cartesian( 0, 0, 0 );
-    public static final Matrix rotation = new Matrix();
+    public static final Matrix3D rotation = new Matrix3D();
 
     public Cartesian()
     {
