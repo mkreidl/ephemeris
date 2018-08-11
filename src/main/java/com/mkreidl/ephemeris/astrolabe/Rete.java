@@ -96,7 +96,7 @@ public class Rete extends AbstractPart
     {
         int count = 0;
         output.set( 0, 0, 0 );
-        for ( int star : constellation )
+        for ( int star : constellation.getStarSet() )
         {
             output.x += projectedPos[2 * star];
             output.y += projectedPos[2 * star + 1];

@@ -68,6 +68,15 @@ public abstract class SolarSystem
         }
     }
 
+    public void getSortedByDistanceDescending( List<Body> sortedDescending )
+    {
+        synchronized ( positions )
+        {
+            sortedDescending.clear();
+            sortedDescending.addAll( sortedByDistance );
+        }
+    }
+
     public Cartesian getHeliocentric( final Body body, final Cartesian output )
     {
         synchronized ( positions )

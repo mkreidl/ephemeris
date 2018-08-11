@@ -36,15 +36,6 @@ public class PrecessionMatrix extends Matrix
         return this;
     }
 
-    public float[] asFloatArray()
-    {
-        return new float[]{
-                (float)values[0], (float)values[1], (float)values[2],
-                (float)values[3], (float)values[4], (float)values[5],
-                (float)values[6], (float)values[7], (float)values[8]
-        };
-    }
-
     private static double evaluatePolynomial( double t, double[] polynomial )
     {
         final int deg = polynomial.length;

@@ -162,4 +162,128 @@ public class Matrix
         values[8] = l[6] * r[2] + l[7] * r[5] + l[8] * r[8];
         return this;
     }
+
+    public Matrix preConcat( Matrix multiplyRight )
+    {
+        final double a11 = values[0];
+        final double a12 = values[1];
+        final double a13 = values[2];
+        final double a21 = values[3];
+        final double a22 = values[4];
+        final double a23 = values[5];
+        final double a31 = values[6];
+        final double a32 = values[7];
+        final double a33 = values[8];
+        final double[] r = multiplyRight.values;
+        values[0] = a11 * r[0] + a12 * r[3] + a13 * r[6];
+        values[1] = a11 * r[1] + a12 * r[4] + a13 * r[7];
+        values[2] = a11 * r[2] + a12 * r[5] + a13 * r[8];
+        values[3] = a21 * r[0] + a22 * r[3] + a23 * r[6];
+        values[4] = a21 * r[1] + a22 * r[4] + a23 * r[7];
+        values[5] = a21 * r[2] + a22 * r[5] + a23 * r[8];
+        values[6] = a31 * r[0] + a32 * r[3] + a33 * r[6];
+        values[7] = a31 * r[1] + a32 * r[4] + a33 * r[7];
+        values[8] = a31 * r[2] + a32 * r[5] + a33 * r[8];
+        return this;
+    }
+
+    public Matrix preRotateX( double radians )
+    {
+        final double cos = Math.cos( radians );
+        final double sin = Math.sin( radians );
+        final double a12 = values[1];
+        final double a13 = values[2];
+        final double a22 = values[4];
+        final double a23 = values[5];
+        final double a32 = values[7];
+        final double a33 = values[8];
+        values[1] = a12 * cos + a13 * sin;
+        values[2] = a12 * -sin + a13 * cos;
+        values[4] = a22 * cos + a23 * sin;
+        values[5] = a22 * -sin + a23 * cos;
+        values[7] = a32 * cos + a33 * sin;
+        values[8] = a32 * -sin + a33 * cos;
+        return this;
+    }
+
+    public Matrix preRotateZ( double radians )
+    {
+        final double cos = Math.cos( radians );
+        final double sin = Math.sin( radians );
+        final double a11 = values[0];
+        final double a12 = values[1];
+        final double a21 = values[3];
+        final double a22 = values[4];
+        final double a31 = values[6];
+        final double a32 = values[7];
+        values[0] = a11 * cos + a12 * sin;
+        values[1] = a11 * -sin + a12 * cos;
+        values[3] = a21 * cos + a22 * sin;
+        values[4] = a21 * -sin + a22 * cos;
+        values[6] = a31 * cos + a32 * sin;
+        values[7] = a31 * -sin + a32 * cos;
+        return this;
+    }
+
+    public Matrix postConcat( Matrix multiplyLeft )
+    {
+        final double a11 = values[0];
+        final double a12 = values[1];
+        final double a13 = values[2];
+        final double a21 = values[3];
+        final double a22 = values[4];
+        final double a23 = values[5];
+        final double a31 = values[6];
+        final double a32 = values[7];
+        final double a33 = values[8];
+        final double[] l = multiplyLeft.values;
+        values[0] = l[0] * a11 + l[1] * a21 + l[2] * a31;
+        values[1] = l[0] * a12 + l[1] * a22 + l[2] * a32;
+        values[2] = l[0] * a13 + l[1] * a23 + l[2] * a33;
+        values[3] = l[3] * a11 + l[4] * a21 + l[5] * a31;
+        values[4] = l[3] * a12 + l[4] * a22 + l[5] * a32;
+        values[5] = l[3] * a13 + l[4] * a23 + l[5] * a33;
+        values[6] = l[6] * a11 + l[7] * a21 + l[8] * a31;
+        values[7] = l[6] * a12 + l[7] * a22 + l[8] * a32;
+        values[8] = l[6] * a13 + l[7] * a23 + l[8] * a33;
+        return this;
+    }
+
+    public Matrix postRotateX( double radians )
+    {
+        final double cos = Math.cos( radians );
+        final double sin = Math.sin( radians );
+        final double a21 = values[3];
+        final double a22 = values[4];
+        final double a23 = values[5];
+        final double a31 = values[6];
+        final double a32 = values[7];
+        final double a33 = values[8];
+        values[3] = cos * a21 + -sin * a31;
+        values[4] = cos * a22 + -sin * a32;
+        values[5] = cos * a23 + -sin * a33;
+        values[6] = sin * a21 + cos * a31;
+        values[7] = sin * a22 + cos * a32;
+        values[8] = sin * a23 + cos * a33;
+        return this;
+    }
+
+    public Matrix postRotateZ( double radians )
+    {
+        final double cos = Math.cos( radians );
+        final double sin = Math.sin( radians );
+        final double a11 = values[0];
+        final double a12 = values[1];
+        final double a13 = values[2];
+        final double a21 = values[3];
+        final double a22 = values[4];
+        final double a23 = values[5];
+        values[0] = cos * a11 + -sin * a21;
+        values[1] = cos * a12 + -sin * a22;
+        values[2] = cos * a13 + -sin * a23;
+        values[3] = sin * a11 + cos * a21;
+        values[4] = sin * a12 + cos * a22;
+        values[5] = sin * a13 + cos * a23;
+        return this;
+    }
 }

@@ -1,67 +1,40 @@
 package com.mkreidl.ephemeris.sky;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-public class Constellation implements Iterable<Integer>
+public class Constellation
 {
     private final String name;
-    private final List<int[]> paths;
-
-    private final StarIterator iterator = new StarIterator();
-
-    private class StarIterator implements Iterator<Integer>
-    {
-        int path = 0;
-        int vertex = 0;
-
-        void reset()
-        {
-            path = 0;
-            vertex = 0;
-        }
-
-        @Override
-        public boolean hasNext()
-        {
-            return vertex < paths.get( path ).length - 1 || path < paths.size() - 1;
-        }
-
-        @Override
-        public Integer next()
-        {
-            if ( vertex < paths.get( path ).length - 1 )
-                vertex++;
-            else
-            {
-                vertex = 0;
-                path++;
-            }
-            return paths.get( path )[vertex];
-        }
-    }
-
-    public List<int[]> getPaths()
-    {
-        return paths;
-    }
+    private final List<List<Integer>> paths = new ArrayList<>();
+    private final Set<Integer> starSet = new HashSet<>();
 
     public String getName()
     {
         return name;
     }
 
-    Constellation( String name, int[]... paths )
+    public List<List<Integer>> getPaths()
     {
-        this.name = name;
-        this.paths = Arrays.asList( paths );
+        return paths;
     }
 
-    @Override
-    public Iterator<Integer> iterator()
+    public Set<Integer> getStarSet()
     {
-        iterator.reset();
-        return iterator;
+        return starSet;
+    }
+
+    Constellation( String name, Integer[]... paths )
+    {
+        this.name = name;
+        for ( Integer[] path : paths )
+        {
+            final List<Integer> pathAsList = Arrays.asList( path );
+            this.paths.add( pathAsList );
+            this.starSet.addAll( pathAsList );
+        }
     }
 }

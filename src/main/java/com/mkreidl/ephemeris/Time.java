@@ -103,6 +103,16 @@ public class Time
         return getSiderealTimeDayFraction() * 24;
     }
 
+    /**
+     * Calculate the Mean Sidereal Time for Greenwich at given date
+     *
+     * @return Greenwich Mean Sidereal Time in radians
+     */
+    public double getMeanSiderealTimeRadians()
+    {
+        return getSiderealTimeDayFraction() * 2 * Math.PI;
+    }
+
     private double getSiderealTimeDayFraction()
     {
         final double midnightUT = midnightAtGreenwichSameDate();

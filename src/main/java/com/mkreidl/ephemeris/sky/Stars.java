@@ -18,6 +18,9 @@ public class Stars
     private static final Ecliptical.Cart[] POS_J2000 = new Ecliptical.Cart[StarsCatalog.SIZE];
     private static final Ecliptical.Cart[] VEL_J2000 = new Ecliptical.Cart[StarsCatalog.SIZE];
 
+    private final double[] POS_J2000_FLAT = new double[StarsCatalog.SIZE * 3];
+    private final double[] VEL_J2000_FLAT = new double[StarsCatalog.SIZE * 3];
+
     private final PrecessionMatrix precession = new PrecessionMatrix();
     private final Matrix rotation = new Matrix();
     private final Matrix transformation = new Matrix();
@@ -50,24 +53,58 @@ public class Stars
         }
     }
 
-    public void compute( Time time, double[] positions3d )
+    public Stars()
+    {
+        for ( int i = 0; i < StarsCatalog.SIZE; ++i )
+        {
+            final int offset = 3 * i;
+            POS_J2000_FLAT[offset] = POS_J2000[i].x;
+            POS_J2000_FLAT[offset + 1] = POS_J2000[i].y;
+            POS_J2000_FLAT[offset + 2] = POS_J2000[i].z;
+            VEL_J2000_FLAT[offset] = VEL_J2000[i].x;
+            VEL_J2000_FLAT[offset + 1] = VEL_J2000[i].y;
+            VEL_J2000_FLAT[offset + 2] = VEL_J2000[i].z;
+        }
+    }
+
+    public void compute( double yearsSince2000, double[] positions3d )
+    {
+        for ( int i = 0; i < StarsCatalog.SIZE; ++i )
+        {
+            final int offset = 3 * i;
+            // Compute ecliptical cartesian coordinates for Y2000 frame
+            positions3d[offset] = POS_J2000_FLAT[offset] + VEL_J2000_FLAT[offset] * yearsSince2000;
+            positions3d[offset + 1] = POS_J2000_FLAT[offset + 1] + VEL_J2000_FLAT[offset + 1] * yearsSince2000;
+            positions3d[offset + 2] = POS_J2000_FLAT[offset + 2] + VEL_J2000_FLAT[offset + 2] * yearsSince2000;
+        }
+    }
+
+    public static void compute( Time time, double[] positions3d )
     {
         final double yearsSince2000 = time.yearsSince2000();
         for ( int i = 0; i < StarsCatalog.SIZE; ++i )
         {
             final int offset = 3 * i;
-            // Calculate ecliptical cartesian coordinates resp. to Y2000
+            // Compute ecliptical cartesian coordinates for Y2000 frame
             positions3d[offset] = POS_J2000[i].x + VEL_J2000[i].x * yearsSince2000;
             positions3d[offset + 1] = POS_J2000[i].y + VEL_J2000[i].y * yearsSince2000;
             positions3d[offset + 2] = POS_J2000[i].z + VEL_J2000[i].z * yearsSince2000;
         }
     }
 
+    public static void computeEclipticalJ2000( double yearsSince2000, Cartesian eclipticalPosition, int starIndex )
+    {
+        // Compute ecliptical cartesian coordinates for Y2000 frame
+        eclipticalPosition.x = POS_J2000[starIndex].x + VEL_J2000[starIndex].x * yearsSince2000;
+        eclipticalPosition.y = POS_J2000[starIndex].y + VEL_J2000[starIndex].y * yearsSince2000;
+        eclipticalPosition.z = POS_J2000[starIndex].z + VEL_J2000[starIndex].z * yearsSince2000;
+    }
+
     public void compute( int starIndex, Time time, Equatorial.Cart outputPosition )
     {
         final double yearsSince2000 = time.yearsSince2000();
         setupTransformationToDate( time, transformation );
-        // Calculate ecliptical cartesian coordinates resp. to Y2000
+        // Compute ecliptical cartesian coordinates resp. to Y2000
         outputPosition.x = POS_J2000[starIndex].x + VEL_J2000[starIndex].x * yearsSince2000;
         outputPosition.y = POS_J2000[starIndex].y + VEL_J2000[starIndex].y * yearsSince2000;
         outputPosition.z = POS_J2000[starIndex].z + VEL_J2000[starIndex].z * yearsSince2000;
@@ -96,7 +133,7 @@ public class Stars
         outputPositions[i].x = POS_J2000[i].x + VEL_J2000[i].x * yearsSince2000;
         outputPositions[i].y = POS_J2000[i].y + VEL_J2000[i].y * yearsSince2000;
         outputPositions[i].z = POS_J2000[i].z + VEL_J2000[i].z * yearsSince2000;
-        rotY2000ToDate.applyTo( outputPositions[i] ).normalize();
+        rotY2000ToDate.applyTo( outputPositions[i] );
     }
 
     public static void computeStarEclipticalY2000( double yearsSince2000, Ecliptical.Cart[] outputPositions, int i )
