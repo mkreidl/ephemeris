@@ -286,4 +286,51 @@ public class Matrix3D
         values[5] = sin * a13 + cos * a23;
         return this;
     }
+
+    public Matrix3D postScale( double scaleX, double scaleY, double scaleZ )
+    {
+        values[0] *= scaleX;
+        values[1] *= scaleX;
+        values[2] *= scaleX;
+        values[3] *= scaleY;
+        values[4] *= scaleY;
+        values[5] *= scaleY;
+        values[6] *= scaleZ;
+        values[7] *= scaleZ;
+        values[8] *= scaleZ;
+        return this;
+    }
+
+    public Matrix3D preScale( double scaleX, double scaleY, double scaleZ )
+    {
+        values[0] *= scaleX;
+        values[3] *= scaleX;
+        values[6] *= scaleX;
+        values[1] *= scaleY;
+        values[4] *= scaleY;
+        values[7] *= scaleY;
+        values[2] *= scaleZ;
+        values[5] *= scaleZ;
+        values[8] *= scaleZ;
+        return this;
+    }
+
+    public Matrix3D postTranslate( double shiftX, double shiftY )
+    {
+        values[0] += values[6] * shiftX;
+        values[1] += values[7] * shiftX;
+        values[2] += values[8] * shiftX;
+        values[3] += values[6] * shiftY;
+        values[4] += values[7] * shiftY;
+        values[5] += values[8] * shiftY;
+        return this;
+    }
+
+    public Matrix3D preTranslate( double shiftX, double shiftY )
+    {
+        values[2] += values[0] * shiftX + values[1] * shiftY;
+        values[5] += values[3] * shiftX + values[4] * shiftY;
+        values[8] += values[6] * shiftX + values[7] * shiftY;
+        return this;
+    }
 }
