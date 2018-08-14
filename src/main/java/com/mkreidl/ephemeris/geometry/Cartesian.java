@@ -1,9 +1,5 @@
 package com.mkreidl.ephemeris.geometry;
 
-import static java.lang.Math.asin;
-import static java.lang.Math.atan2;
-import static java.lang.Math.sqrt;
-
 public class Cartesian extends Coordinates<Cartesian>
 {
     public double x = 0.0;
@@ -48,13 +44,13 @@ public class Cartesian extends Coordinates<Cartesian>
     @Override
     public double length()
     {
-        return sqrt( x * x + y * y + z * z );
+        return Math.sqrt( x * x + y * y + z * z );
     }
 
     @Override
     public Cartesian normalize()
     {
-        double n = sqrt( x * x + y * y + z * z );
+        final double n = Math.sqrt( x * x + y * y + z * z );
         x /= n;
         y /= n;
         z /= n;
@@ -91,9 +87,9 @@ public class Cartesian extends Coordinates<Cartesian>
 
     public Spherical transform( Spherical output )
     {
-        output.dst = sqrt( x * x + y * y + z * z );
-        output.lat = asin( z / output.dst );
-        output.lon = atan2( y, x );
+        output.dst = Math.sqrt( x * x + y * y + z * z );
+        output.lat = Math.asin( z / output.dst );
+        output.lon = Math.atan2( y, x );
         return output.standardize();
     }
 
@@ -122,6 +118,11 @@ public class Cartesian extends Coordinates<Cartesian>
     public double dot( Cartesian other )
     {
         return x * other.x + y * other.y + z * other.z;
+    }
+
+    public Cartesian crossProd( Cartesian v, Cartesian w )
+    {
+        return set( v.y * w.z - v.z * w.y, v.z * w.x - v.x * w.z, v.x * w.y - v.y * w.x );
     }
 
     @Override
