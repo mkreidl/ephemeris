@@ -10,19 +10,23 @@ public class Matrix3D
 
     public Matrix3D()
     {
-        this.setIdentity();
+        setIdentity();
     }
 
     public Matrix3D set( double... values )
     {
-        this.values = values;
+        System.arraycopy( values, 0, this.values, 0, 9 );
         return this;
     }
 
     public Matrix3D set( Matrix3D original )
     {
-        values = Arrays.copyOf( original.values, original.values.length );
-        return this;
+        return set( original.values );
+    }
+
+    public Matrix3D setTransposeOf( Matrix3D original )
+    {
+        return set( original ).transpose();
     }
 
     public float[] getValuesAsFloat()
@@ -35,12 +39,11 @@ public class Matrix3D
 
     public void applyTo( float[] points )
     {
-        double x, y, z;
         for ( int offset = 0; offset < points.length; offset += 3 )
         {
-            x = points[offset];
-            y = points[offset + 1];
-            z = points[offset + 2];
+            final double x = points[offset];
+            final double y = points[offset + 1];
+            final double z = points[offset + 2];
             points[offset] = (float)( values[0] * x + values[1] * y + values[2] * z );
             points[offset + 1] = (float)( values[3] * x + values[4] * y + values[5] * z );
             points[offset + 2] = (float)( values[6] * x + values[7] * y + values[8] * z );
@@ -92,21 +95,14 @@ public class Matrix3D
 
     public Matrix3D setIdentity()
     {
-        values[0] = 1.0;
-        values[1] = 0.0;
-        values[2] = 0.0;
-        values[3] = 0.0;
-        values[4] = 1.0;
-        values[5] = 0.0;
-        values[6] = 0.0;
-        values[7] = 0.0;
-        values[8] = 1.0;
+        Arrays.fill( values, 0 );
+        values[0] = values[4] = values[8] = 1.0;
         return this;
     }
 
     public Matrix3D setRotation( double angle, Axis axis )
     {
-        this.setIdentity();
+        setIdentity();
         final double cosa = Math.cos( angle );
         final double sina = Math.sin( angle );
         switch ( axis )

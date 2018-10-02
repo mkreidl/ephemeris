@@ -21,7 +21,6 @@ public class Planets extends AbstractPart
     private final Position position = new Position();
     private final SolarSystem solarSystem = new SolarSystemMeeus();
 
-    private final Map<Body, String> planetNames = new EnumMap<>( Body.class );
     private final Map<Body, Circle> apparentDisks = new EnumMap<>( Body.class );
     private final Map<Body, Cartesian> projectedPositions = new EnumMap<>( Body.class );
 
@@ -34,18 +33,7 @@ public class Planets extends AbstractPart
         {
             projectedPositions.put( body, new Cartesian() );
             apparentDisks.put( body, new Circle() );
-            planetNames.put( body, body.toString() );
         }
-    }
-
-    public void setPlanetNames( Map<Body, String> planetNames )
-    {
-        this.planetNames.putAll( planetNames );
-    }
-
-    public String getName( Body planet )
-    {
-        return planetNames.get( planet );
     }
 
     public Circle getApparentDisk( Body object )

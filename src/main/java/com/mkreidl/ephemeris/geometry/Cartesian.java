@@ -87,7 +87,7 @@ public class Cartesian extends Coordinates<Cartesian>
 
     public Spherical transform( Spherical output )
     {
-        output.dst = Math.sqrt( x * x + y * y + z * z );
+        output.dst = length();
         output.lat = Math.asin( z / output.dst );
         output.lon = Math.atan2( y, x );
         return output.standardize();

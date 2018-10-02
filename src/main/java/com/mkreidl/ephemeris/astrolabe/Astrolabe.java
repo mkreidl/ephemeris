@@ -117,11 +117,11 @@ public class Astrolabe extends Stereographic
         try
         {
             final Body planet = Body.valueOf( name );
-            return CelestialObject.createPlanet( planet, planets.getName( planet ) );
+            return CelestialObject.of( planet );
         }
         catch ( IllegalArgumentException unused )
         {
-            return CelestialObject.createStar( StarsCatalog.findIndexByName( name ) );
+            return CelestialObject.of( StarsCatalog.findIndexByName( name ) );
         }
     }
 
