@@ -35,11 +35,6 @@ public class CelestialObject
         planetNames.put( planet, name );
     }
 
-    public static String getPlanetName( Body planet )
-    {
-        return planetNames.get( planet );
-    }
-
     public static CelestialObject of( int index )
     {
         if ( index > -1 && index < StarsCatalog.SIZE )
@@ -55,18 +50,18 @@ public class CelestialObject
             return NONE;
     }
 
-    public static CelestialObject of( Body body )
+    public static CelestialObject of( Body planet )
     {
-        final CelestialObject planet = new CelestialObject();
-        planet.body = body;
-        planet.scientificName = planetNames.get( body );
-        planet.trivialName = planetNames.get( body );
-        planet.catalogName = planetNames.get( body );
-        return planet;
+        final CelestialObject planetObject = new CelestialObject();
+        planetObject.planet = planet;
+        planetObject.scientificName = planetNames.get( planet );
+        planetObject.trivialName = planetNames.get( planet );
+        planetObject.catalogName = planetNames.get( planet );
+        return planetObject;
     }
 
     private int index = -1;
-    private Body body = null;
+    private Body planet = null;
     private String scientificName = "";
     private String trivialName = "";
     private String catalogName = "";
@@ -78,12 +73,12 @@ public class CelestialObject
 
     public boolean isPlanet()
     {
-        return body != null;
+        return planet != null;
     }
 
     public Body asPlanet()
     {
-        return body;
+        return planet;
     }
 
     public boolean isStar()
@@ -98,8 +93,14 @@ public class CelestialObject
 
     public String getName()
     {
-        return trivialName.isEmpty() ?
-                ( scientificName.isEmpty() ? catalogName : scientificName ) : trivialName;
+        if ( planet != null )
+            return planetNames.get( planet );
+        else if ( !trivialName.isEmpty() )
+            return trivialName;
+        else if ( !scientificName.isEmpty() )
+            return scientificName;
+        else
+            return catalogName;
     }
 
     public String getScientificName()
@@ -119,6 +120,6 @@ public class CelestialObject
 
     public String toString()
     {
-        return isPlanet() ? body.toString() : catalogName;
+        return isPlanet() ? planet.toString() : catalogName;
     }
 }
