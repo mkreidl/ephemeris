@@ -1,12 +1,12 @@
 package com.mkreidl.ephemeris.solarsystem;
 
 import com.mkreidl.ephemeris.Time;
-import com.mkreidl.ephemeris.geometry.Matrix3D;
+import com.mkreidl.ephemeris.geometry.Matrix3x3;
 
 import static com.mkreidl.ephemeris.Time.DAYS_PER_MILLENNIUM;
 import static com.mkreidl.ephemeris.Time.J2000;
 
-public class PrecessionMatrix extends Matrix3D
+public class PrecessionMatrix extends Matrix3x3
 {
     public PrecessionMatrix compute( final Time time )
     {

@@ -4,7 +4,7 @@ import com.mkreidl.ephemeris.geometry.Angle;
 import com.mkreidl.ephemeris.geometry.Cartesian;
 import com.mkreidl.ephemeris.geometry.Circle;
 import com.mkreidl.ephemeris.geometry.Coordinates;
-import com.mkreidl.ephemeris.geometry.Matrix3D;
+import com.mkreidl.ephemeris.geometry.Matrix3x3;
 import com.mkreidl.ephemeris.sky.coordinates.Equatorial;
 import com.mkreidl.ephemeris.sky.coordinates.Horizontal;
 
@@ -52,7 +52,7 @@ public class Tympanon extends AbstractPart
     private final Circle _twilight_astronomical = new Circle();
 
     private final Angle angle = new Angle();
-    private final Matrix3D rotation = new Matrix3D();
+    private final Matrix3x3 rotation = new Matrix3x3();
 
     private final Cartesian _zenith = new Cartesian();
     private final Cartesian _nadir = new Cartesian();

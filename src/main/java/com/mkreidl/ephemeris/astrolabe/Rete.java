@@ -4,7 +4,7 @@ import com.mkreidl.ephemeris.geometry.Angle;
 import com.mkreidl.ephemeris.geometry.Cartesian;
 import com.mkreidl.ephemeris.geometry.Circle;
 import com.mkreidl.ephemeris.geometry.Coordinates;
-import com.mkreidl.ephemeris.geometry.Matrix3D;
+import com.mkreidl.ephemeris.geometry.Matrix3x3;
 import com.mkreidl.ephemeris.sky.Constellation;
 import com.mkreidl.ephemeris.sky.Stars;
 import com.mkreidl.ephemeris.sky.StarsCatalog;
@@ -28,7 +28,7 @@ public class Rete extends AbstractPart
 
     private final Ecliptical.Sphe eclipticalSphe = new Ecliptical.Sphe();
     private final Equatorial.Cart equatorialCart = new Equatorial.Cart();
-    private final Matrix3D matrixEcl2Equ = new Matrix3D();
+    private final Matrix3x3 matrixEcl2Equ = new Matrix3x3();
 
     private final EnumMap<Zodiac.Sign, Cartesian> signs = new EnumMap<>( Zodiac.Sign.class );
     private final EnumMap<Zodiac.Sign, Cartesian[]> signBoundariesEcliptical = new EnumMap<>( Zodiac.Sign.class );

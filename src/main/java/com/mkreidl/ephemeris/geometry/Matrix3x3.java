@@ -4,27 +4,27 @@ import java.util.Arrays;
 
 import static com.mkreidl.ephemeris.geometry.Coordinates.Axis;
 
-public class Matrix3D
+public class Matrix3x3
 {
     public double[] values = new double[9];
 
-    public Matrix3D()
+    public Matrix3x3()
     {
         setIdentity();
     }
 
-    public Matrix3D set( double... values )
+    public Matrix3x3 set( double... values )
     {
         System.arraycopy( values, 0, this.values, 0, 9 );
         return this;
     }
 
-    public Matrix3D set( Matrix3D original )
+    public Matrix3x3 set( Matrix3x3 original )
     {
         return set( original.values );
     }
 
-    public Matrix3D setTransposeOf( Matrix3D original )
+    public Matrix3x3 setTransposeOf( Matrix3x3 original )
     {
         return set( original ).transpose();
     }
@@ -93,14 +93,14 @@ public class Matrix3D
         return applyTo( output );
     }
 
-    public Matrix3D setIdentity()
+    public Matrix3x3 setIdentity()
     {
         Arrays.fill( values, 0 );
         values[0] = values[4] = values[8] = 1.0;
         return this;
     }
 
-    public Matrix3D setRotation( double angle, Axis axis )
+    public Matrix3x3 setRotation( double angle, Axis axis )
     {
         setIdentity();
         final double cosa = Math.cos( angle );
@@ -129,7 +129,7 @@ public class Matrix3D
         return this;
     }
 
-    public Matrix3D transpose()
+    public Matrix3x3 transpose()
     {
         double tmp = values[1];
         values[1] = values[3];
@@ -143,7 +143,7 @@ public class Matrix3D
         return this;
     }
 
-    public Matrix3D setProduct( Matrix3D left, Matrix3D right )
+    public Matrix3x3 setProduct( Matrix3x3 left, Matrix3x3 right )
     {
         final double[] l = left.values;
         final double[] r = right.values;
@@ -159,7 +159,7 @@ public class Matrix3D
         return this;
     }
 
-    public Matrix3D preConcat( Matrix3D multiplyRight )
+    public Matrix3x3 preConcat( Matrix3x3 multiplyRight )
     {
         final double a11 = values[0];
         final double a12 = values[1];
@@ -183,7 +183,7 @@ public class Matrix3D
         return this;
     }
 
-    public Matrix3D preRotateX( double radians )
+    public Matrix3x3 preRotateX( double radians )
     {
         final double cos = Math.cos( radians );
         final double sin = Math.sin( radians );
@@ -202,7 +202,7 @@ public class Matrix3D
         return this;
     }
 
-    public Matrix3D preRotateZ( double radians )
+    public Matrix3x3 preRotateZ( double radians )
     {
         final double cos = Math.cos( radians );
         final double sin = Math.sin( radians );
@@ -221,7 +221,7 @@ public class Matrix3D
         return this;
     }
 
-    public Matrix3D postConcat( Matrix3D multiplyLeft )
+    public Matrix3x3 postConcat( Matrix3x3 multiplyLeft )
     {
         final double a11 = values[0];
         final double a12 = values[1];
@@ -245,7 +245,7 @@ public class Matrix3D
         return this;
     }
 
-    public Matrix3D postRotateX( double radians )
+    public Matrix3x3 postRotateX( double radians )
     {
         final double cos = Math.cos( radians );
         final double sin = Math.sin( radians );
@@ -264,7 +264,7 @@ public class Matrix3D
         return this;
     }
 
-    public Matrix3D postRotateZ( double radians )
+    public Matrix3x3 postRotateZ( double radians )
     {
         final double cos = Math.cos( radians );
         final double sin = Math.sin( radians );
@@ -283,7 +283,7 @@ public class Matrix3D
         return this;
     }
 
-    public Matrix3D postScale( double scaleX, double scaleY, double scaleZ )
+    public Matrix3x3 postScale( double scaleX, double scaleY, double scaleZ )
     {
         values[0] *= scaleX;
         values[1] *= scaleX;
@@ -297,7 +297,7 @@ public class Matrix3D
         return this;
     }
 
-    public Matrix3D preScale( double scaleX, double scaleY, double scaleZ )
+    public Matrix3x3 preScale( double scaleX, double scaleY, double scaleZ )
     {
         values[0] *= scaleX;
         values[3] *= scaleX;
@@ -311,7 +311,7 @@ public class Matrix3D
         return this;
     }
 
-    public Matrix3D postTranslate( double shiftX, double shiftY )
+    public Matrix3x3 postTranslate( double shiftX, double shiftY )
     {
         values[0] += values[6] * shiftX;
         values[1] += values[7] * shiftX;
@@ -322,7 +322,7 @@ public class Matrix3D
         return this;
     }
 
-    public Matrix3D preTranslate( double shiftX, double shiftY )
+    public Matrix3x3 preTranslate( double shiftX, double shiftY )
     {
         values[2] += values[0] * shiftX + values[1] * shiftY;
         values[5] += values[3] * shiftX + values[4] * shiftY;

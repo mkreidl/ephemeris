@@ -3,7 +3,7 @@ package com.mkreidl.ephemeris.sky;
 import com.mkreidl.ephemeris.Time;
 import com.mkreidl.ephemeris.geometry.Cartesian;
 import com.mkreidl.ephemeris.geometry.Coordinates;
-import com.mkreidl.ephemeris.geometry.Matrix3D;
+import com.mkreidl.ephemeris.geometry.Matrix3x3;
 import com.mkreidl.ephemeris.geometry.Stereographic;
 import com.mkreidl.ephemeris.sky.coordinates.Ecliptical;
 import com.mkreidl.ephemeris.sky.coordinates.Equatorial;
@@ -22,13 +22,13 @@ public class Stars
     private final double[] VEL_J2000_FLAT = new double[StarsCatalog.SIZE * 3];
 
     private final PrecessionMatrix precession = new PrecessionMatrix();
-    private final Matrix3D rotation = new Matrix3D();
-    private final Matrix3D transformation = new Matrix3D();
+    private final Matrix3x3 rotation = new Matrix3x3();
+    private final Matrix3x3 transformation = new Matrix3x3();
 
     static
     {
-        final Matrix3D equ2ecl = SolarSystemVSOP87C.getEqu2EclMatrix( Time.J2000, new Matrix3D() );
-        final Matrix3D jacobian = new Matrix3D();
+        final Matrix3x3 equ2ecl = SolarSystemVSOP87C.getEqu2EclMatrix( Time.J2000, new Matrix3x3() );
+        final Matrix3x3 jacobian = new Matrix3x3();
         final Cartesian tmp = new Cartesian();
         final Equatorial.Cart velEquatorial = new Equatorial.Cart();
         final Equatorial.Cart posEquatorial = new Equatorial.Cart();
@@ -113,7 +113,7 @@ public class Stars
 
     public void compute( Time time, final Equatorial.Cart[] outputPositions, int startIncl, int endExcl )
     {
-        final Matrix3D precession = new PrecessionMatrix();
+        final Matrix3x3 precession = new PrecessionMatrix();
         setupTransformationToDate( time, precession );
         final double yearsSince2000 = time.julianYearsSinceJ2000();
         for ( int i = startIncl; i < endExcl; ++i )
@@ -121,13 +121,13 @@ public class Stars
             computeStar( yearsSince2000, precession, outputPositions, i );
     }
 
-    public static void compute( double yearsSince2000, Matrix3D rotY2000ToDate, final Equatorial.Cart[] outputPositions, int startIncl, int endExcl )
+    public static void compute( double yearsSince2000, Matrix3x3 rotY2000ToDate, final Equatorial.Cart[] outputPositions, int startIncl, int endExcl )
     {
         for ( int i = startIncl; i < endExcl; ++i )
             computeStar( yearsSince2000, rotY2000ToDate, outputPositions, i );
     }
 
-    public static void computeStar( double yearsSince2000, Matrix3D rotY2000ToDate, Equatorial.Cart[] outputPositions, int i )
+    public static void computeStar( double yearsSince2000, Matrix3x3 rotY2000ToDate, Equatorial.Cart[] outputPositions, int i )
     {
         // Calculate equatorial cartesian coordinates to date
         outputPositions[i].x = POS_J2000[i].x + VEL_J2000[i].x * yearsSince2000;
@@ -156,7 +156,7 @@ public class Stars
         }
     }
 
-    private void setupTransformationToDate( Time time, Matrix3D transformation )
+    private void setupTransformationToDate( Time time, Matrix3x3 transformation )
     {
         precession.compute( time );
         rotation.setRotation( SolarSystemVSOP87C.getEcliptic( time ), Coordinates.Axis.X );
@@ -167,10 +167,10 @@ public class Stars
     {
         private int from, to;
         private final double yearsSince2000;
-        private final Matrix3D matrix = new Matrix3D();
+        private final Matrix3x3 matrix = new Matrix3x3();
         private final Cartesian[] outputPositions;
 
-        StarCalculationThread( double time, Matrix3D postTransform, Cartesian[] output, int fromIncl, int toExcl )
+        StarCalculationThread( double time, Matrix3x3 postTransform, Cartesian[] output, int fromIncl, int toExcl )
         {
             yearsSince2000 = time;
             matrix.set( postTransform );
