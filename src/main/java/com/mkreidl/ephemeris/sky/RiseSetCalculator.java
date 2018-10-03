@@ -105,13 +105,14 @@ public abstract class RiseSetCalculator
         return Math.abs( Math.toDegrees( geographicLocation.lat - topocentric.lat ) ) >= 90 - virtualHorizonDeg;
     }
 
-    void updateHorizon()
+    private void updateHorizon()
     {
         projection.project( geographicLocation, Math.toRadians( 90 - virtualHorizonDeg ), horizon );
     }
 
     boolean adjustTime()
     {
+        updateHorizon();
         final double alpha;
         switch(mode) {
           case RISE:

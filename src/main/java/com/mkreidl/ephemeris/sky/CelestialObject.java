@@ -35,6 +35,18 @@ public class CelestialObject
         planetNames.put( planet, name );
     }
 
+    public static CelestialObject of( String name )
+    {
+        try
+        {
+            return CelestialObject.of( Body.valueOf( name ) );
+        }
+        catch ( IllegalArgumentException unused )
+        {
+            return CelestialObject.of( StarsCatalog.findIndexByName( name ) );
+        }
+    }
+
     public static CelestialObject of( int index )
     {
         if ( index > -1 && index < StarsCatalog.SIZE )
@@ -66,9 +78,14 @@ public class CelestialObject
     private String trivialName = "";
     private String catalogName = "";
 
-    public int getIndex()
+    public boolean isVoid()
     {
-        return index;
+        return false;
+    }
+
+    public boolean isStar()
+    {
+        return index >= 0;
     }
 
     public boolean isPlanet()
@@ -81,14 +98,9 @@ public class CelestialObject
         return planet;
     }
 
-    public boolean isStar()
+    public int getIndex()
     {
-        return index >= 0;
-    }
-
-    public boolean isVoid()
-    {
-        return false;
+        return index;
     }
 
     public String getName()
@@ -118,6 +130,7 @@ public class CelestialObject
         return catalogName;
     }
 
+    @Override
     public String toString()
     {
         return isPlanet() ? planet.toString() : catalogName;

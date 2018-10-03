@@ -112,19 +112,6 @@ public class Astrolabe extends Stereographic
         return angle;
     }
 
-    public CelestialObject createCelestialObjectFromString( String name )
-    {
-        try
-        {
-            final Body planet = Body.valueOf( name );
-            return CelestialObject.of( planet );
-        }
-        catch ( IllegalArgumentException unused )
-        {
-            return CelestialObject.of( StarsCatalog.findIndexByName( name ) );
-        }
-    }
-
     private void changeObserverLocation()
     {
         tympanon.changeObserverLocation();

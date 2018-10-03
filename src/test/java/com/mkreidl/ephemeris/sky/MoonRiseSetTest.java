@@ -52,6 +52,6 @@ public class MoonRiseSetTest extends PlanetRiseSetTest
     @Override
     protected RiseSetCalculator getCalculator()
     {
-        return SunMoonRiseSetCalculator.of( new SolarSystemMeeus(), Body.MOON );
+        return PlanetRiseSetCalculator.of( new SolarSystemMeeus(), Body.MOON );
     }
 }
