@@ -48,7 +48,7 @@ public class StarsCatalog
         GREEK_LETTER_MAP.put( "Rho", "\u03c1" );
         GREEK_LETTER_MAP.put( "Sig", "\u03c3" );
         GREEK_LETTER_MAP.put( "Tau", "\u03c4" );
-        GREEK_LETTER_MAP.put( "Yps", "\u03c5" );
+        GREEK_LETTER_MAP.put( "Ups", "\u03c5" );
         GREEK_LETTER_MAP.put( "Phi", "\u03c6" );
         GREEK_LETTER_MAP.put( "Chi", "\u03c7" );
         GREEK_LETTER_MAP.put( "Psi", "\u03c8" );
