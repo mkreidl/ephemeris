@@ -26,7 +26,7 @@ public abstract class RiseSetCalculator
         FORWARD, BACKWARD
     }
 
-    static final double OPTICAL_HORIZON_DEG = -34.0 / 60;
+    public static final double OPTICAL_HORIZON_DEG = -34.0 / 60;
     private static final double RAD_TO_SIDEREAL_MILLIS = Time.MILLIS_PER_SIDEREAL_DAY / ( 2 * Math.PI );
 
     protected final Equatorial.Sphe topocentric = new Equatorial.Sphe();

@@ -1,7 +1,9 @@
 package com.mkreidl.ephemeris.sky;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class StarsCatalog
 {
@@ -23,8 +25,35 @@ public class StarsCatalog
 
     public static final List<Integer> NAMED_STARS = new ArrayList<>();
 
+    private static final Map<String, String> GREEK_LETTER_MAP = new HashMap<>();
+
     static
     {
+        GREEK_LETTER_MAP.put( "Alp", "\u03b1" );
+        GREEK_LETTER_MAP.put( "Bet", "\u03b2" );
+        GREEK_LETTER_MAP.put( "Gam", "\u03b3" );
+        GREEK_LETTER_MAP.put( "Del", "\u03b4" );
+        GREEK_LETTER_MAP.put( "Eps", "\u03b5" );
+        GREEK_LETTER_MAP.put( "Zet", "\u03b6" );
+        GREEK_LETTER_MAP.put( "Eta", "\u03b7" );
+        GREEK_LETTER_MAP.put( "The", "\u03b8" );
+        GREEK_LETTER_MAP.put( "Iot", "\u03b9" );
+        GREEK_LETTER_MAP.put( "Kap", "\u03ba" );
+        GREEK_LETTER_MAP.put( "Lam", "\u03bb" );
+        GREEK_LETTER_MAP.put( "Mu", "\u03bc" );
+        GREEK_LETTER_MAP.put( "Nu", "\u03bd" );
+        GREEK_LETTER_MAP.put( "Xi", "\u03be" );
+        GREEK_LETTER_MAP.put( "Omi", "\u03bf" );
+        GREEK_LETTER_MAP.put( "Pi", "\u03c0" );
+        GREEK_LETTER_MAP.put( "Rho", "\u03c1" );
+        GREEK_LETTER_MAP.put( "Sig", "\u03c3" );
+        GREEK_LETTER_MAP.put( "Tau", "\u03c4" );
+        GREEK_LETTER_MAP.put( "Yps", "\u03c5" );
+        GREEK_LETTER_MAP.put( "Phi", "\u03c6" );
+        GREEK_LETTER_MAP.put( "Chi", "\u03c7" );
+        GREEK_LETTER_MAP.put( "Psi", "\u03c8" );
+        GREEK_LETTER_MAP.put( "Ome", "\u03c9" );
+
         COLOR_TABLE.put( 'O', 0xff9bb0ff );
         COLOR_TABLE.put( 'B', 0xffaabfff );
         COLOR_TABLE.put( 'A', 0xffe4e8fc );
@@ -42,6 +71,22 @@ public class StarsCatalog
         COLOR_TABLE.put( 'C', 0xfffbc886 );
         initializeStars();
         initializeDerived();
+        replaceGreekLetters();
+        checkSpectralTypes();
+    }
+
+    private static void replaceGreekLetters()
+    {
+        for ( int i = 0; i < SIZE; ++i )
+            if ( FLAMSTEED_BAYER[i] != null )
+                for ( Map.Entry<String, String> entry : GREEK_LETTER_MAP.entrySet() )
+                    FLAMSTEED_BAYER[i] = FLAMSTEED_BAYER[i]
+                            .replaceFirst( entry.getKey() + "([1-9\\s])", entry.getValue() + "$1 " )
+                            .replaceFirst( "  ", " " );
+    }
+
+    private static void checkSpectralTypes()
+    {
         for ( int i = 0; i < SIZE; ++i )
             if ( !COLOR_TABLE.containsKey( SPECTRAL_TYPE[i] ) )
                 throw new IllegalArgumentException( "Star nr. " + i + " has missing spectral type " + SPECTRAL_TYPE[i] );
