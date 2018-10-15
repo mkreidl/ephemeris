@@ -79,10 +79,12 @@ public class StarsCatalog
     {
         for ( int i = 0; i < SIZE; ++i )
             if ( FLAMSTEED_BAYER[i] != null )
+            {
+                FLAMSTEED_BAYER[i] = FLAMSTEED_BAYER[i].replaceFirst( "^(\\d+)([A-Za-z])", "$1/$2");
                 for ( Map.Entry<String, String> entry : GREEK_LETTER_MAP.entrySet() )
-                    FLAMSTEED_BAYER[i] = FLAMSTEED_BAYER[i]
-                            .replaceFirst( entry.getKey() + "([1-9\\s])", entry.getValue() + "$1 " )
-                            .replaceFirst( "  ", " " );
+                    FLAMSTEED_BAYER[i] = FLAMSTEED_BAYER[i].replaceFirst( entry.getKey() + "([1-9\\s])", entry.getValue() + "$1 " );
+                FLAMSTEED_BAYER[i] = FLAMSTEED_BAYER[i].replaceFirst( "  ", " " );
+            }
     }
 
     private static void checkSpectralTypes()

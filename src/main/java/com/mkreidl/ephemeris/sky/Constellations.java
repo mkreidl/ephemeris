@@ -333,16 +333,9 @@ public class Constellations
 
     public static final Constellation[] ALL = new Constellation[PTOLEMAIC.length + MODERN.length];
 
-    public static final int MAX_STAR_INDEX;
-
     static
     {
         System.arraycopy( PTOLEMAIC, 0, ALL, 0, PTOLEMAIC.length );
         System.arraycopy( MODERN, 0, ALL, PTOLEMAIC.length, MODERN.length );
-        int maxIndex = 0;
-        for ( Constellation constellation : ALL )
-            for ( int index : constellation.getStarSet() )
-                maxIndex = Math.max( index, maxIndex );
-        MAX_STAR_INDEX = maxIndex;
     }
 }
