@@ -37,16 +37,25 @@ public class Matrix3x3
         return values;
     }
 
+    public void apply( double[] in, float[] out, int index )
+    {
+        final int index1 = index + 1;
+        final int index2 = index + 2;
+        out[index] = (float)(values[0] * in[index] + values[1] * in[index1] + values[2] * in[index2]);
+        out[index1] = (float)(values[3] * in[index] + values[4] * in[index1] + values[5] * in[index2]);
+        out[index2] = (float)(values[6] * in[index] + values[7] * in[index1] + values[8] * in[index2]);
+    }
+
     public void applyTo( float[] points )
     {
-        for ( int offset = 0; offset < points.length; offset += 3 )
+        for ( int offset = 0; offset < points.length; ++offset )
         {
             final double x = points[offset];
             final double y = points[offset + 1];
             final double z = points[offset + 2];
             points[offset] = (float)( values[0] * x + values[1] * y + values[2] * z );
-            points[offset + 1] = (float)( values[3] * x + values[4] * y + values[5] * z );
-            points[offset + 2] = (float)( values[6] * x + values[7] * y + values[8] * z );
+            points[++offset] = (float)( values[3] * x + values[4] * y + values[5] * z );
+            points[++offset] = (float)( values[6] * x + values[7] * y + values[8] * z );
         }
     }
 

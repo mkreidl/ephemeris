@@ -92,6 +92,15 @@ public class Stars
         }
     }
 
+    public static void computeEclipticalJ2000( double yearsSince2000, double[] eclipticalPositions, int starIndex )
+    {
+        // Compute ecliptical cartesian coordinates for Y2000 frame
+        int i = starIndex * 3;
+        eclipticalPositions[i] = POS_J2000[starIndex].x + VEL_J2000[starIndex].x * yearsSince2000;
+        eclipticalPositions[++i] = POS_J2000[starIndex].y + VEL_J2000[starIndex].y * yearsSince2000;
+        eclipticalPositions[++i] = POS_J2000[starIndex].z + VEL_J2000[starIndex].z * yearsSince2000;
+    }
+
     public static void computeEclipticalJ2000( double yearsSince2000, Cartesian eclipticalPosition, int starIndex )
     {
         // Compute ecliptical cartesian coordinates for Y2000 frame

@@ -50,10 +50,10 @@ public class Cartesian extends Coordinates<Cartesian>
     @Override
     public Cartesian normalize()
     {
-        final double n = Math.sqrt( x * x + y * y + z * z );
-        x /= n;
-        y /= n;
-        z /= n;
+        final double s = 1 / Math.sqrt( x * x + y * y + z * z );
+        x *= s;
+        y *= s;
+        z *= s;
         return this;
     }
 
