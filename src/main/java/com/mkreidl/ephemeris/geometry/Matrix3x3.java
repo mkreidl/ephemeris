@@ -41,9 +41,12 @@ public class Matrix3x3
     {
         final int index1 = index + 1;
         final int index2 = index + 2;
-        out[index] = (float)(values[0] * in[index] + values[1] * in[index1] + values[2] * in[index2]);
-        out[index1] = (float)(values[3] * in[index] + values[4] * in[index1] + values[5] * in[index2]);
-        out[index2] = (float)(values[6] * in[index] + values[7] * in[index1] + values[8] * in[index2]);
+        final double x = in[index];
+        final double y = in[index + 1];
+        final double z = in[index + 2];
+        out[index] = (float)( values[0] * x + values[1] * y + values[2] * z );
+        out[index1] = (float)( values[3] * x + values[4] * y + values[5] * z );
+        out[index2] = (float)( values[6] * x + values[7] * y + values[8] * z );
     }
 
     public void applyTo( float[] points )

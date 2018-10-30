@@ -1,7 +1,6 @@
 package com.mkreidl.ephemeris.sky;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -9,32 +8,34 @@ import java.util.Set;
 public class Constellation
 {
     private final String name;
-    private final List<List<Integer>> paths = new ArrayList<>();
-    private final Set<Integer> starSet = new HashSet<>();
+    private final List<int[]> paths = new ArrayList<>();
+    private final Integer[] starSet;
 
     public String getName()
     {
         return name;
     }
 
-    public List<List<Integer>> getPaths()
+    public List<int[]> getPaths()
     {
         return paths;
     }
 
-    public Set<Integer> getStarSet()
+    public Integer[] getStarSet()
     {
         return starSet;
     }
 
-    Constellation( String name, Integer[]... paths )
+    Constellation( String name, int[]... paths )
     {
         this.name = name;
-        for ( Integer[] path : paths )
+        final Set<Integer> starSet = new HashSet<>();
+        for ( int[] path : paths )
         {
-            final List<Integer> pathAsList = Arrays.asList( path );
-            this.paths.add( pathAsList );
-            this.starSet.addAll( pathAsList );
+            this.paths.add( path );
+            for ( int i : path )
+                starSet.add( i );
         }
+        this.starSet = starSet.toArray( new Integer[0] );
     }
 }
