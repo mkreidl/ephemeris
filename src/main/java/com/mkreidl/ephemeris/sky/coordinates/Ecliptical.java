@@ -15,7 +15,7 @@ public interface Ecliptical
 
     Spherical toHorizontal( double ecliptic, Spherical zenit, Spherical spherical );
 
-    class Cart extends Cartesian implements Ecliptical
+    final class Cart extends Cartesian implements Ecliptical
     {
         private final Equatorial.Cart tmp = new Equatorial.Cart();
 
@@ -45,7 +45,7 @@ public interface Ecliptical
         }
     }
 
-    class Sphe extends Spherical implements Ecliptical
+    final class Sphe extends Spherical implements Ecliptical
     {
         private final Ecliptical.Cart tmp = new Ecliptical.Cart();
 

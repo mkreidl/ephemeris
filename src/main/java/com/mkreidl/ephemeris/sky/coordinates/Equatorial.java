@@ -16,7 +16,7 @@ public interface Equatorial
 
     Spherical toHorizontal( Spherical zenit, Spherical horizontal );
 
-    class Cart extends Cartesian implements Equatorial
+    final class Cart extends Cartesian implements Equatorial
     {
 
         @Override
@@ -45,7 +45,7 @@ public interface Equatorial
         }
     }
 
-    class Sphe extends Spherical implements Equatorial
+    final class Sphe extends Spherical implements Equatorial
     {
         private final Equatorial.Cart tmp = new Equatorial.Cart();
 

@@ -13,7 +13,7 @@ import com.mkreidl.ephemeris.solarsystem.SolarSystemVSOP87C;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
-public class Stars
+final public class Stars
 {
     private static final Ecliptical.Cart[] POS_J2000 = new Ecliptical.Cart[StarsCatalog.SIZE];
     private static final Ecliptical.Cart[] VEL_J2000 = new Ecliptical.Cart[StarsCatalog.SIZE];
@@ -95,18 +95,22 @@ public class Stars
     public static void computeEclipticalJ2000( double yearsSince2000, double[] eclipticalPositions, int starIndex )
     {
         // Compute ecliptical cartesian coordinates for Y2000 frame
+        final Cartesian pos = POS_J2000[starIndex];
+        final Cartesian vel = VEL_J2000[starIndex];
         int i = starIndex * 3;
-        eclipticalPositions[i] = POS_J2000[starIndex].x + VEL_J2000[starIndex].x * yearsSince2000;
-        eclipticalPositions[++i] = POS_J2000[starIndex].y + VEL_J2000[starIndex].y * yearsSince2000;
-        eclipticalPositions[++i] = POS_J2000[starIndex].z + VEL_J2000[starIndex].z * yearsSince2000;
+        eclipticalPositions[i] = pos.x + vel.x * yearsSince2000;
+        eclipticalPositions[++i] = pos.y + vel.y * yearsSince2000;
+        eclipticalPositions[++i] = pos.z + vel.z * yearsSince2000;
     }
 
     public static void computeEclipticalJ2000( double yearsSince2000, Cartesian eclipticalPosition, int starIndex )
     {
         // Compute ecliptical cartesian coordinates for Y2000 frame
-        eclipticalPosition.x = POS_J2000[starIndex].x + VEL_J2000[starIndex].x * yearsSince2000;
-        eclipticalPosition.y = POS_J2000[starIndex].y + VEL_J2000[starIndex].y * yearsSince2000;
-        eclipticalPosition.z = POS_J2000[starIndex].z + VEL_J2000[starIndex].z * yearsSince2000;
+        final Cartesian pos = POS_J2000[starIndex];
+        final Cartesian vel = VEL_J2000[starIndex];
+        eclipticalPosition.x = pos.x + vel.x * yearsSince2000;
+        eclipticalPosition.y = pos.y + vel.y * yearsSince2000;
+        eclipticalPosition.z = pos.z + vel.z * yearsSince2000;
     }
 
     public void compute( int starIndex, Time time, Equatorial.Cart outputPosition )

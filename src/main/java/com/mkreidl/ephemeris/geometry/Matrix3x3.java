@@ -29,14 +29,6 @@ public class Matrix3x3
         return set( original ).transpose();
     }
 
-    public float[] getValuesAsFloat()
-    {
-        final float[] values = new float[9];
-        for ( int i = 0; i < 9; ++i )
-            values[i] = (float)this.values[i];
-        return values;
-    }
-
     public void apply( double[] in, float[] out, int index )
     {
         final int index1 = index + 1;
@@ -73,21 +65,12 @@ public class Matrix3x3
         return point;
     }
 
-    public Cartesian applyTransposeTo( Cartesian point )
-    {
-        final double x = point.x;
-        final double y = point.y;
-        final double z = point.z;
-        point.x = values[0] * x + values[3] * y + values[6] * z;
-        point.y = values[1] * x + values[4] * y + values[7] * z;
-        point.z = values[2] * x + values[5] * y + values[8] * z;
-        return point;
-    }
-
     public Cartesian applyTo( Cartesian input, Cartesian output )
     {
-        output.set( input );
-        return applyTo( output );
+        output.x = values[0] * input.x + values[1] * input.y + values[2] * input.z;
+        output.y = values[3] * input.x + values[4] * input.y + values[5] * input.z;
+        output.z = values[6] * input.x + values[7] * input.y + values[8] * input.z;
+        return output;
     }
 
     public Circle applyTo( Circle circle )
