@@ -149,15 +149,6 @@ final public class Stars
         rotY2000ToDate.applyTo( outputPositions[i] );
     }
 
-    public static void computeStarEclipticalY2000( double yearsSince2000, Ecliptical.Cart[] outputPositions, int i )
-    {
-        // Calculate equatorial cartesian coordinates to date
-        outputPositions[i].x = POS_J2000[i].x + VEL_J2000[i].x * yearsSince2000;
-        outputPositions[i].y = POS_J2000[i].y + VEL_J2000[i].y * yearsSince2000;
-        outputPositions[i].z = POS_J2000[i].z + VEL_J2000[i].z * yearsSince2000;
-        outputPositions[i].normalize();
-    }
-
     public void project( Stereographic projection, Equatorial.Cart[] equatorial, float[] output )
     {
         final Cartesian tmpCartesian = new Cartesian();
