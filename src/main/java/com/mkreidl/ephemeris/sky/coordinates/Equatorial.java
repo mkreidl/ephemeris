@@ -5,16 +5,15 @@ import com.mkreidl.ephemeris.geometry.Cartesian;
 import com.mkreidl.ephemeris.geometry.Coordinates;
 import com.mkreidl.ephemeris.geometry.Spherical;
 
-
 public interface Equatorial
 {
     Cartesian toEcliptical( double ecliptic, Cartesian eclipticalCart );
 
     Spherical toEcliptical( double ecliptic, Spherical eclipticalCart );
 
-    Cartesian toHorizontal( Spherical zenit, Cartesian horizontal );
+    Cartesian toHorizontal( Spherical zenith, Cartesian horizontal );
 
-    Spherical toHorizontal( Spherical zenit, Spherical horizontal );
+    Spherical toHorizontal( Spherical zenith, Spherical horizontal );
 
     final class Cart extends Cartesian implements Equatorial
     {
@@ -32,16 +31,17 @@ public interface Equatorial
         }
 
         @Override
-        public Cartesian toHorizontal( Spherical zenit, Cartesian horizontal )
+        public Cartesian toHorizontal( Spherical zenith, Cartesian horizontal )
         {
-            horizontal.set( this ).rotate( Coordinates.Axis.Z, -zenit.lon );
-            return horizontal.rotate( Coordinates.Axis.Y, Math.PI / 2 - zenit.lat );
+            return horizontal.set( this )
+                    .rotate( Coordinates.Axis.Z, -zenith.lon )
+                    .rotate( Coordinates.Axis.Y, Math.PI / 2 - zenith.lat );
         }
 
         @Override
-        public Spherical toHorizontal( Spherical zenit, Spherical spherical )
+        public Spherical toHorizontal( Spherical zenith, Spherical spherical )
         {
-            return toHorizontal( zenit, spherical.tmpCartesian ).transform( spherical );
+            return toHorizontal( zenith, spherical.tmpCartesian ).transform( spherical );
         }
     }
 
@@ -62,15 +62,16 @@ public interface Equatorial
         }
 
         @Override
-        public Cartesian toHorizontal( Spherical zenit, Cartesian horizontal )
+        public Cartesian toHorizontal( Spherical zenith, Cartesian horizontal )
         {
-            return ( (Cart)transform( tmp ) ).toHorizontal( zenit, horizontal );
+            transform( tmp );
+            return tmp.toHorizontal( zenith, horizontal );
         }
 
         @Override
-        public Spherical toHorizontal( Spherical zenit, Spherical spherical )
+        public Spherical toHorizontal( Spherical zenith, Spherical spherical )
         {
-            return toHorizontal( zenit, tmpCartesian ).transform( spherical );
+            return toHorizontal( zenith, tmpCartesian ).transform( spherical );
         }
 
         public Angle getRightAscension( Angle angle )

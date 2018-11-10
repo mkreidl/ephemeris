@@ -144,8 +144,8 @@ public class Position
             case GEOCENTRIC:
                 return geoCart.toHorizontal( currentEcliptic, toposEquatorialSpherical, cartesian );
             case TOPOCENTRIC:
-                return ( (Equatorial.Cart)get( tmpEquatorialCartesian, CoordinatesCenter.TOPOCENTRIC ) )
-                        .toHorizontal( toposEquatorialSpherical, cartesian );
+                get( tmpEquatorialCartesian, CoordinatesCenter.TOPOCENTRIC );
+                return tmpEquatorialCartesian.toHorizontal( toposEquatorialSpherical, cartesian );
             default:
                 return helioCart.toHorizontal( currentEcliptic, toposEquatorialSpherical, cartesian );
         }
@@ -198,7 +198,7 @@ public class Position
      */
     public Angle getPhase( Angle phase )
     {
-        // This computes the angle beween the three bodies:
+        // This computes the angle between the three bodies:
         final double cosPhase = helioCart.dot( geoCart ) / ( geoCart.length() * helioCart.length() );
         final double det = helioCart.x * geoCart.y - helioCart.y * geoCart.x;
         final double angle = Math.acos( cosPhase );
@@ -226,13 +226,8 @@ public class Position
      * Compute angle between the rays originating from the earth (observer),
      * pointing to the sun and this body, resp.
      *
-     * @return Angle between -180° and +180°
+     * @return Angle in radians
      */
-    public Angle getElongation( Angle elongation, CoordinatesCenter coordinatesCenter )
-    {
-        return elongation.set( getElongationRadians( coordinatesCenter ), Angle.Unit.RADIANS );
-    }
-
     public double getElongationRadians( CoordinatesCenter coordinatesCenter )
     {
         get( tmpEclipticalCartesian, coordinatesCenter );
@@ -243,12 +238,6 @@ public class Position
     private double getElongationSign()
     {
         return Math.signum( posSun.x * tmpEclipticalCartesian.y - posSun.y * tmpEclipticalCartesian.x );
-    }
-
-    public double getElongationSign( CoordinatesCenter coordinatesCenter )
-    {
-        get( tmpEclipticalCartesian, coordinatesCenter );
-        return getElongationSign();
     }
 
     public boolean isVisible()
