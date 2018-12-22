@@ -43,7 +43,11 @@ public class CelestialObject
         }
         catch ( IllegalArgumentException unused )
         {
-            return CelestialObject.of( StarsCatalog.findIndexByName( name ) );
+            final Constellation constellation = Constellations.findByName( name );
+            if ( constellation != null )
+                return CelestialObject.of( constellation );
+            else
+                return CelestialObject.of( StarsCatalog.findIndexByName( name ) );
         }
     }
 
@@ -51,12 +55,12 @@ public class CelestialObject
     {
         if ( index > -1 && index < StarsCatalog.SIZE )
         {
-            final CelestialObject star = new CelestialObject();
-            star.index = index;
-            star.scientificName = StarsCatalog.FLAMSTEED_BAYER[index] != null ? StarsCatalog.FLAMSTEED_BAYER[index] : "";
-            star.trivialName = StarsCatalog.IAU_NAME[index] != null ? StarsCatalog.IAU_NAME[index] : "";
-            star.catalogName = "HR " + Integer.toString( StarsCatalog.BRIGHT_STAR_NUMBER[index] );
-            return star;
+            final CelestialObject object = new CelestialObject();
+            object.index = index;
+            object.scientificName = StarsCatalog.FLAMSTEED_BAYER[index] != null ? StarsCatalog.FLAMSTEED_BAYER[index] : "";
+            object.trivialName = StarsCatalog.IAU_NAME[index] != null ? StarsCatalog.IAU_NAME[index] : "";
+            object.catalogName = "HR " + Integer.toString( StarsCatalog.BRIGHT_STAR_NUMBER[index] );
+            return object;
         }
         else
             return NONE;
@@ -64,16 +68,27 @@ public class CelestialObject
 
     public static CelestialObject of( Body planet )
     {
-        final CelestialObject planetObject = new CelestialObject();
-        planetObject.planet = planet;
-        planetObject.scientificName = planetNames.get( planet );
-        planetObject.trivialName = planetNames.get( planet );
-        planetObject.catalogName = planetNames.get( planet );
-        return planetObject;
+        final CelestialObject object = new CelestialObject();
+        object.planet = planet;
+        object.scientificName = planetNames.get( planet );
+        object.trivialName = planetNames.get( planet );
+        object.catalogName = planetNames.get( planet );
+        return object;
+    }
+
+    public static CelestialObject of( Constellation constellation )
+    {
+        final CelestialObject object = new CelestialObject();
+        object.constellation = constellation;
+        object.scientificName = constellation.getName();
+        object.trivialName = constellation.getName();
+        object.catalogName = constellation.getName();
+        return object;
     }
 
     private int index = -1;
     private Body planet = null;
+    private Constellation constellation = null;
     private String scientificName = "";
     private String trivialName = "";
     private String catalogName = "";
@@ -93,14 +108,24 @@ public class CelestialObject
         return planet != null;
     }
 
+    public boolean isConstellation()
+    {
+        return constellation != null;
+    }
+
+    public int asStar()
+    {
+        return index;
+    }
+
     public Body asPlanet()
     {
         return planet;
     }
 
-    public int getIndex()
+    public Constellation asConstellation()
     {
-        return index;
+        return constellation;
     }
 
     public String getName()

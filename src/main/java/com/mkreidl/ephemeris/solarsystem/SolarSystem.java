@@ -19,7 +19,7 @@ public abstract class SolarSystem
     protected final EnumMap<Body, Ecliptical.Cart> positions = new EnumMap<>( Body.class );
     protected final EnumMap<Body, Ecliptical.Cart> velocities = new EnumMap<>( Body.class );
     final EnumMap<Body, OrbitalModel> models = new EnumMap<>( Body.class );
-    final List<Body> sortedByDistance = new ArrayList<>( Arrays.asList( Body.values() ) );
+    private final List<Body> sortedByDistance = new ArrayList<>( Arrays.asList( Body.values() ) );
     private final LinkedList<Thread> threadList = new LinkedList<>();
     private final Cartesian cartesian = new Cartesian();
     private final EnumMap<Body, Double> distances = new EnumMap<>( Body.class );

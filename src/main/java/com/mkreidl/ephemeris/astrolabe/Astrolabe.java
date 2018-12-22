@@ -5,7 +5,6 @@ import com.mkreidl.ephemeris.geometry.Angle;
 import com.mkreidl.ephemeris.geometry.Spherical;
 import com.mkreidl.ephemeris.geometry.Stereographic;
 import com.mkreidl.ephemeris.sky.CelestialObject;
-import com.mkreidl.ephemeris.sky.StarsCatalog;
 import com.mkreidl.ephemeris.sky.coordinates.Equatorial;
 import com.mkreidl.ephemeris.solarsystem.Body;
 
@@ -134,8 +133,8 @@ public class Astrolabe extends Stereographic
         }
         else
         {
-            xy[0] = rete.projectedPos[2 * object.getIndex()];
-            xy[1] = rete.projectedPos[2 * object.getIndex() + 1];
+            xy[0] = rete.projectedPos[2 * object.asStar()];
+            xy[1] = rete.projectedPos[2 * object.asStar() + 1];
         }
         return xy;
     }
@@ -146,8 +145,8 @@ public class Astrolabe extends Stereographic
             return planets.getPosition( object.asPlanet() ).length();
         else
         {
-            final double x = rete.projectedPos[2 * object.getIndex()];
-            final double y = rete.projectedPos[2 * object.getIndex() + 1];
+            final double x = rete.projectedPos[2 * object.asStar()];
+            final double y = rete.projectedPos[2 * object.asStar() + 1];
             return Math.sqrt( x * x + y * y );
         }
     }

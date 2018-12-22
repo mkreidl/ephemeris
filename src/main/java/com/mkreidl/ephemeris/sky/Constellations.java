@@ -333,6 +333,14 @@ public class Constellations
 
     public static final Constellation[] ALL = new Constellation[PTOLEMAIC.length + MODERN.length];
 
+    public static Constellation findByName( String name )
+    {
+        for ( Constellation constellation : ALL )
+            if ( constellation.getName().equals( name ) )
+                return constellation;
+        return null;
+    }
+
     static
     {
         System.arraycopy( PTOLEMAIC, 0, ALL, 0, PTOLEMAIC.length );

@@ -107,6 +107,14 @@ public class Cartesian extends Coordinates<Cartesian>
         return this;
     }
 
+    public Cartesian add( double x, double y, double z )
+    {
+        this.x += x;
+        this.y += y;
+        this.z += z;
+        return this;
+    }
+
     public Cartesian sub( Cartesian summand )
     {
         this.x -= summand.x;
