@@ -29,7 +29,7 @@ public class Matrix3x3
         return set( original ).transpose();
     }
 
-    public void apply( double[] in, float[] out, int index )
+    public void apply( double[] in, double[] out, int index )
     {
         final int index1 = index + 1;
         final int index2 = index + 2;

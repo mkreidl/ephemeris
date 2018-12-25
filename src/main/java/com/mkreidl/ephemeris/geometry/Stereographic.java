@@ -31,17 +31,9 @@ public class Stereographic
         return output;
     }
 
-    public float[] project( Cartesian input, float[] output )
-    {
-        final double scale = centerZ / ( centerZ - input.z );
-        output[0] = (float)( input.x * scale );
-        output[1] = (float)( input.y * scale );
-        return output;
-    }
-
     public Spherical project( Spherical input, Spherical output )
     {
-        final double scale = centerZ / (1.0 - input.dst * sin( input.lat ) );
+        final double scale = centerZ / ( 1.0 - input.dst * sin( input.lat ) );
         if ( scale < 0.0 ) // TODO: This might be generalized
             throw new IllegalArgumentException( "Projection in polar coordinates impossible" );
         output.dst = input.dst * cos( input.lat ) * scale;

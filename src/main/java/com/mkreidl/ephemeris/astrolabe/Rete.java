@@ -24,7 +24,6 @@ public class Rete extends AbstractPart
     public final Circle capricorn = new Circle( 0.0, 0.0, 0.0 );
     public final Circle ecliptic = new Circle( 0.0, 0.0, 1.0 );
 
-    private final Stars stars = new Stars();
     private final Zodiac zodiac = new Zodiac();
 
     private final Ecliptical.Sphe eclipticalSphe = new Ecliptical.Sphe();
@@ -36,7 +35,8 @@ public class Rete extends AbstractPart
     private final EnumMap<Zodiac.Sign, Cartesian> signs = new EnumMap<>( Zodiac.Sign.class );
     private final EnumMap<Zodiac.Sign, Cartesian[]> signBoundariesEcliptical = new EnumMap<>( Zodiac.Sign.class );
     private final double[] starsEclipticalJ2000 = new double[3 * StarsCatalog.SIZE];
-    private final float[] starsEquatorialToDate = new float[3 * StarsCatalog.SIZE];
+    private final double[] starsEquatorialToDate = new double[3 * StarsCatalog.SIZE];
+    private final double[] constellationCenter = new double[3];
 
     public final EnumMap<Zodiac.Sign, Cartesian> signsCenter = new EnumMap<>( Zodiac.Sign.class );
     public final EnumMap<Zodiac.Sign, Cartesian[]> signBoundariesProjected = new EnumMap<>( Zodiac.Sign.class );
@@ -66,7 +66,7 @@ public class Rete extends AbstractPart
     {
         zodiac.compute( astrolabe.time );
         Stars.compute( astrolabe.time, starsEclipticalJ2000 );
-        SolarSystem.computeTransfEclJ200ToEquToDate( astrolabe.time, transformEclipticalJ2000ToEquatorial );
+        SolarSystem.computeTransfEclJ2000ToEquToDate( astrolabe.time, transformEclipticalJ2000ToEquatorial );
         for ( int i = 0; i < StarsCatalog.SIZE; ++i )
             transformEclipticalJ2000ToEquatorial.apply( starsEclipticalJ2000, starsEquatorialToDate, i );
     }
@@ -82,6 +82,12 @@ public class Rete extends AbstractPart
         cancer.r = astrolabe.project1D( zodiac.obliquity );
         capricorn.r = astrolabe.project1D( -zodiac.obliquity );
         astrolabe.project( zodiac.pole, Math.PI / 2, ecliptic );
+        projectZodiac();
+        projectStars();
+    }
+
+    private void projectZodiac()
+    {
         for ( Zodiac.Sign sign : Zodiac.Sign.values() )
         {
             astrolabe.project(
@@ -94,10 +100,9 @@ public class Rete extends AbstractPart
             );
             computeSignBoundary( sign );
         }
-        projectStereographic();
     }
 
-    private void projectStereographic()
+    private void projectStars()
     {
         final Cartesian tmpCartesian = new Cartesian();
         for ( int i = 0; i < StarsCatalog.SIZE; ++i )
@@ -115,15 +120,9 @@ public class Rete extends AbstractPart
 
     public void getConstellationCenter( Constellation constellation, Cartesian output )
     {
-        int count = 0;
-        output.set( 0, 0, 0 );
-        for ( int star : constellation.getStarSet() )
-        {
-            output.x += projectedPos[2 * star];
-            output.y += projectedPos[2 * star + 1];
-            ++count;
-        }
-        output.scale( 1.0 / count );
+        Stars.computeConstellationCenter( constellation, starsEquatorialToDate, constellationCenter );
+        output.set( constellationCenter[0], constellationCenter[1], constellationCenter[2] );
+        astrolabe.project( output, output );
     }
 
     private void computeSignBoundary( Zodiac.Sign sign )

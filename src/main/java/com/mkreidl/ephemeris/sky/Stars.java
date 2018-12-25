@@ -107,7 +107,7 @@ final public class Stars
     public void compute( int starIndex, Time time, Equatorial.Cart outputPosition )
     {
         final double yearsSince2000 = time.julianYearsSinceJ2000();
-        SolarSystem.computeTransfEclJ200ToEquToDate( time, transformation );
+        SolarSystem.computeTransfEclJ2000ToEquToDate( time, transformation );
         // Compute ecliptical cartesian coordinates resp. to Y2000
         outputPosition.x = POS_J2000[starIndex].x + VEL_J2000[starIndex].x * yearsSince2000;
         outputPosition.y = POS_J2000[starIndex].y + VEL_J2000[starIndex].y * yearsSince2000;
@@ -117,7 +117,7 @@ final public class Stars
 
     public static void computeConstellationCenter( Constellation constellation, double[] starsCoordinates, double[] center )
     {
-        Arrays.fill(center, 0);
+        Arrays.fill( center, 0 );
         for ( int star : constellation.getStarSet() )
         {
             final int index = star * 3;
