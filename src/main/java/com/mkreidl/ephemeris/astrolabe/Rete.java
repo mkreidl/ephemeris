@@ -94,7 +94,23 @@ public class Rete extends AbstractPart
             );
             computeSignBoundary( sign );
         }
-        stars.project( astrolabe, starsEquatorialToDate, projectedPos );
+        projectStereographic();
+    }
+
+    private void projectStereographic()
+    {
+        final Cartesian tmpCartesian = new Cartesian();
+        for ( int i = 0; i < StarsCatalog.SIZE; ++i )
+        {
+            int offset = 3 * i;
+            tmpCartesian.set(
+                    starsEquatorialToDate[offset],
+                    starsEquatorialToDate[offset + 1],
+                    starsEquatorialToDate[offset + 2] );
+            astrolabe.project( tmpCartesian, tmpCartesian );
+            projectedPos[2 * i] = (float)tmpCartesian.x;
+            projectedPos[2 * i + 1] = (float)tmpCartesian.y;
+        }
     }
 
     public void getConstellationCenter( Constellation constellation, Cartesian output )

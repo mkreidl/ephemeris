@@ -3,11 +3,12 @@ package com.mkreidl.ephemeris.sky;
 import com.mkreidl.ephemeris.Time;
 import com.mkreidl.ephemeris.geometry.Cartesian;
 import com.mkreidl.ephemeris.geometry.Matrix3x3;
-import com.mkreidl.ephemeris.geometry.Stereographic;
 import com.mkreidl.ephemeris.sky.coordinates.Ecliptical;
 import com.mkreidl.ephemeris.sky.coordinates.Equatorial;
 import com.mkreidl.ephemeris.solarsystem.SolarSystem;
 import com.mkreidl.ephemeris.solarsystem.SolarSystemVSOP87C;
+
+import java.util.Arrays;
 
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
@@ -114,16 +115,19 @@ final public class Stars
         transformation.applyTo( outputPosition ).normalize();
     }
 
-    public void project( Stereographic projection, float[] equatorial, float[] output )
+    public static void computeConstellationCenter( Constellation constellation, double[] starsCoordinates, double[] center )
     {
-        final Cartesian tmpCartesian = new Cartesian();
-        for ( int i = 0; i < StarsCatalog.SIZE; ++i )
+        Arrays.fill(center, 0);
+        for ( int star : constellation.getStarSet() )
         {
-            int offset = 3 * i;
-            tmpCartesian.set( equatorial[offset], equatorial[offset + 1], equatorial[offset + 2] );
-            projection.project( tmpCartesian, tmpCartesian );
-            output[2 * i] = (float)tmpCartesian.x;
-            output[2 * i + 1] = (float)tmpCartesian.y;
+            final int index = star * 3;
+            final double x = starsCoordinates[index];
+            final double y = starsCoordinates[index + 1];
+            final double z = starsCoordinates[index + 2];
+            final double dInv = 1 / Math.sqrt( x * x + y * y + z * z );
+            center[0] += x * dInv;
+            center[1] += y * dInv;
+            center[2] += z * dInv;
         }
     }
 }
