@@ -108,6 +108,11 @@ public class CelestialObject
         return planet != null;
     }
 
+    public boolean isObjectWithLocation()
+    {
+        return isStar() || isPlanet();
+    }
+
     public boolean isConstellation()
     {
         return constellation != null;

@@ -8,7 +8,11 @@ import static com.mkreidl.ephemeris.Time.J2000;
 
 public class PrecessionMatrix extends Matrix3x3
 {
-    public PrecessionMatrix compute( final Time time )
+    private PrecessionMatrix()
+    {
+    }
+
+    public static Matrix3x3 compute( final Time time, final Matrix3x3 matrix )
     {
         final double t = time.julianDayNumberSince( J2000 ) / DAYS_PER_MILLENNIUM;
 
@@ -23,17 +27,17 @@ public class PrecessionMatrix extends Matrix3x3
         final double cos_xi = Math.cos( xi );
         final double sin_xi = Math.sin( xi );
 
-        values[0] = s11 * sin_xi + c11 * cos_xi;
-        values[1] = s12 * sin_xi + c12 * cos_xi;
-        values[2] = s13 * sin_xi + c13 * cos_xi;
-        values[3] = c11 * sin_xi - s11 * cos_xi;
-        values[4] = c12 * sin_xi - s12 * cos_xi;
-        values[5] = c13 * sin_xi - s13 * cos_xi;
-        values[6] = evaluatePolynomial( t, A31 );
-        values[7] = evaluatePolynomial( t, A32 );
-        values[8] = evaluatePolynomial( t, A33 );
+        matrix.values[0] = s11 * sin_xi + c11 * cos_xi;
+        matrix.values[1] = s12 * sin_xi + c12 * cos_xi;
+        matrix.values[2] = s13 * sin_xi + c13 * cos_xi;
+        matrix.values[3] = c11 * sin_xi - s11 * cos_xi;
+        matrix.values[4] = c12 * sin_xi - s12 * cos_xi;
+        matrix.values[5] = c13 * sin_xi - s13 * cos_xi;
+        matrix.values[6] = evaluatePolynomial( t, A31 );
+        matrix.values[7] = evaluatePolynomial( t, A32 );
+        matrix.values[8] = evaluatePolynomial( t, A33 );
 
-        return this;
+        return matrix;
     }
 
     private static double evaluatePolynomial( double t, double[] polynomial )

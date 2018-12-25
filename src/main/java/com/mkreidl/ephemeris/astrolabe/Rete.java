@@ -8,9 +8,10 @@ import com.mkreidl.ephemeris.geometry.Matrix3x3;
 import com.mkreidl.ephemeris.sky.Constellation;
 import com.mkreidl.ephemeris.sky.Stars;
 import com.mkreidl.ephemeris.sky.StarsCatalog;
-import com.mkreidl.ephemeris.solarsystem.Zodiac;
 import com.mkreidl.ephemeris.sky.coordinates.Ecliptical;
 import com.mkreidl.ephemeris.sky.coordinates.Equatorial;
+import com.mkreidl.ephemeris.solarsystem.SolarSystem;
+import com.mkreidl.ephemeris.solarsystem.Zodiac;
 
 import java.util.EnumMap;
 
@@ -30,9 +31,12 @@ public class Rete extends AbstractPart
     private final Equatorial.Cart equatorialCart = new Equatorial.Cart();
     private final Matrix3x3 matrixEcl2Equ = new Matrix3x3();
 
+    private final Matrix3x3 transformEclipticalJ2000ToEquatorial = new Matrix3x3();
+
     private final EnumMap<Zodiac.Sign, Cartesian> signs = new EnumMap<>( Zodiac.Sign.class );
     private final EnumMap<Zodiac.Sign, Cartesian[]> signBoundariesEcliptical = new EnumMap<>( Zodiac.Sign.class );
-    private final Equatorial.Cart[] toDatePositionsEquatorial = new Equatorial.Cart[StarsCatalog.SIZE];
+    private final double[] starsEclipticalJ2000 = new double[3 * StarsCatalog.SIZE];
+    private final float[] starsEquatorialToDate = new float[3 * StarsCatalog.SIZE];
 
     public final EnumMap<Zodiac.Sign, Cartesian> signsCenter = new EnumMap<>( Zodiac.Sign.class );
     public final EnumMap<Zodiac.Sign, Cartesian[]> signBoundariesProjected = new EnumMap<>( Zodiac.Sign.class );
@@ -55,15 +59,16 @@ public class Rete extends AbstractPart
                 signBoundariesProjected.get( sign )[i] = new Cartesian();
             }
         }
-        for ( int i = 0; i < StarsCatalog.SIZE; ++i )
-            toDatePositionsEquatorial[i] = new Equatorial.Cart();
     }
 
     @Override
     protected void onSynchronize()
     {
         zodiac.compute( astrolabe.time );
-        stars.compute( astrolabe.time, toDatePositionsEquatorial, 0, StarsCatalog.SIZE );
+        Stars.compute( astrolabe.time, starsEclipticalJ2000 );
+        SolarSystem.computeTransfEclJ200ToEquToDate( astrolabe.time, transformEclipticalJ2000ToEquatorial );
+        for ( int i = 0; i < StarsCatalog.SIZE; ++i )
+            transformEclipticalJ2000ToEquatorial.apply( starsEclipticalJ2000, starsEquatorialToDate, i );
     }
 
     @Override
@@ -89,7 +94,7 @@ public class Rete extends AbstractPart
             );
             computeSignBoundary( sign );
         }
-        stars.project( astrolabe, toDatePositionsEquatorial, projectedPos );
+        stars.project( astrolabe, starsEquatorialToDate, projectedPos );
     }
 
     public void getConstellationCenter( Constellation constellation, Cartesian output )

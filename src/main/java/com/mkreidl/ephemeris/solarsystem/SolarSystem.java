@@ -34,6 +34,12 @@ public abstract class SolarSystem
         }
     }
 
+    public static void computeTransfEclJ200ToEquToDate( Time time, Matrix3x3 transformation )
+    {
+        PrecessionMatrix.compute( time, transformation );
+        transformation.postRotateX( SolarSystemVSOP87C.getEcliptic( time ) );
+    }
+
     /**
      * Calculate the ecliptic of the ecliptic.
      * <p>

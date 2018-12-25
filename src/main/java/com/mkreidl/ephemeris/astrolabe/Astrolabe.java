@@ -132,10 +132,7 @@ public class Astrolabe extends Stereographic
             xy[1] = (float)planets.getApparentDisk( object.asPlanet() ).y;
         }
         else
-        {
-            xy[0] = rete.projectedPos[2 * object.asStar()];
-            xy[1] = rete.projectedPos[2 * object.asStar() + 1];
-        }
+            System.arraycopy( rete.projectedPos, 2 * object.asStar(), xy, 0, 2 );
         return xy;
     }
 
@@ -143,12 +140,15 @@ public class Astrolabe extends Stereographic
     {
         if ( object.isPlanet() )
             return planets.getPosition( object.asPlanet() ).length();
-        else
+        else if ( object.isStar() )
         {
+            // FIXME: Treat constellations here!
             final double x = rete.projectedPos[2 * object.asStar()];
             final double y = rete.projectedPos[2 * object.asStar() + 1];
             return Math.sqrt( x * x + y * y );
         }
+        else
+            return 0;
     }
 
 }
