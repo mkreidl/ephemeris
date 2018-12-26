@@ -15,13 +15,8 @@ import static java.lang.Math.sin;
 
 final public class Stars
 {
-    private static final Ecliptical.Cart[] POS_J2000 = new Ecliptical.Cart[StarsCatalog.SIZE];
-    private static final Ecliptical.Cart[] VEL_J2000 = new Ecliptical.Cart[StarsCatalog.SIZE];
-
-    private final double[] POS_J2000_FLAT = new double[StarsCatalog.SIZE * 3];
-    private final double[] VEL_J2000_FLAT = new double[StarsCatalog.SIZE * 3];
-
-    private final Matrix3x3 transformation = new Matrix3x3();
+    private static final double[] POS_J2000 = new double[StarsCatalog.SIZE * 3];
+    private static final double[] VEL_J2000 = new double[StarsCatalog.SIZE * 3];
 
     static
     {
@@ -43,75 +38,54 @@ final public class Stars
             );
             tmp.set( StarsCatalog.getVRAscJ2000( i ), StarsCatalog.getVDeclJ2000( i ), 0 );
             jacobian.applyTo( tmp, velEquatorial );
-            VEL_J2000[i] = (Ecliptical.Cart)equ2ecl.applyTo( velEquatorial, new Ecliptical.Cart() );
+            final Cartesian vel = equ2ecl.applyTo( velEquatorial, new Ecliptical.Cart() );
 
             posJ2000.set( 1.0, StarsCatalog.getRAscJ2000( i ), StarsCatalog.getDeclJ2000( i ) );
             posJ2000.transform( posEquatorial );
-            POS_J2000[i] = (Ecliptical.Cart)equ2ecl.applyTo( posEquatorial, new Ecliptical.Cart() );
+            final Cartesian pos = equ2ecl.applyTo( posEquatorial, new Ecliptical.Cart() );
+
+            int offset = 3 * i;
+            POS_J2000[offset] = pos.x;
+            VEL_J2000[offset] = vel.x;
+            POS_J2000[++offset] = pos.y;
+            VEL_J2000[offset] = vel.y;
+            POS_J2000[++offset] = pos.z;
+            VEL_J2000[offset] = vel.z;
         }
     }
 
-    public Stars()
+    private Stars()
     {
-        for ( int i = 0; i < StarsCatalog.SIZE; ++i )
-        {
-            final int offset = 3 * i;
-            POS_J2000_FLAT[offset] = POS_J2000[i].x;
-            POS_J2000_FLAT[offset + 1] = POS_J2000[i].y;
-            POS_J2000_FLAT[offset + 2] = POS_J2000[i].z;
-            VEL_J2000_FLAT[offset] = VEL_J2000[i].x;
-            VEL_J2000_FLAT[offset + 1] = VEL_J2000[i].y;
-            VEL_J2000_FLAT[offset + 2] = VEL_J2000[i].z;
-        }
     }
 
-    public void compute( double yearsSince2000, double[] positions3d )
+    public static void computeEclipticalJ2000( Time time, double[] eclipticalPositions )
     {
-        for ( int i = 0; i < StarsCatalog.SIZE; ++i )
-        {
-            final int offset = 3 * i;
-            // Compute ecliptical cartesian coordinates for Y2000 frame
-            positions3d[offset] = POS_J2000_FLAT[offset] + VEL_J2000_FLAT[offset] * yearsSince2000;
-            positions3d[offset + 1] = POS_J2000_FLAT[offset + 1] + VEL_J2000_FLAT[offset + 1] * yearsSince2000;
-            positions3d[offset + 2] = POS_J2000_FLAT[offset + 2] + VEL_J2000_FLAT[offset + 2] * yearsSince2000;
-        }
+        computeEclipticalJ2000( time.getTime(), eclipticalPositions, 0, 1 );
     }
 
-    public static void compute( Time time, double[] eclipticalPositions )
+    public static void computeEclipticalJ2000( long timeInMillis, double[] eclipticalPositions, int start, int delta )
     {
-        final double yearsSince2000 = time.julianYearsSinceJ2000();
-        for ( int i = 0; i < StarsCatalog.SIZE; ++i )
-        {
-            final int offset = 3 * i;
-            // Compute ecliptical cartesian coordinates for Y2000 frame
-            eclipticalPositions[offset] = POS_J2000[i].x + VEL_J2000[i].x * yearsSince2000;
-            eclipticalPositions[offset + 1] = POS_J2000[i].y + VEL_J2000[i].y * yearsSince2000;
-            eclipticalPositions[offset + 2] = POS_J2000[i].z + VEL_J2000[i].z * yearsSince2000;
-        }
-    }
-
-    public static void computeEclipticalJ2000( double yearsSince2000, double[] eclipticalPositions, int start, int delta )
-    {
+        final double yearsSince2000 = Time.julianYearsSinceJ2000( timeInMillis );
         for ( int i = start; i < StarsCatalog.SIZE; i += delta )
         {
+            final int offset = 3 * i;
             // Compute ecliptical cartesian coordinates for Y2000 frame
-            final Cartesian pos = POS_J2000[i];
-            final Cartesian vel = VEL_J2000[i];
-            int k = i * 3;
-            eclipticalPositions[k] = pos.x + vel.x * yearsSince2000;
-            eclipticalPositions[++k] = pos.y + vel.y * yearsSince2000;
-            eclipticalPositions[++k] = pos.z + vel.z * yearsSince2000;
+            eclipticalPositions[offset] = POS_J2000[offset] + VEL_J2000[offset] * yearsSince2000;
+            eclipticalPositions[offset + 1] = POS_J2000[offset + 1] + VEL_J2000[offset + 1] * yearsSince2000;
+            eclipticalPositions[offset + 2] = POS_J2000[offset + 2] + VEL_J2000[offset + 2] * yearsSince2000;
         }
     }
 
-    public void compute( int starIndex, Time time, Equatorial.Cart outputPosition )
+    public static void computeEquatorial( int starIndex, Time time, Equatorial.Cart outputPosition )
     {
+        final Matrix3x3 transformation = new Matrix3x3();
         final double yearsSince2000 = time.julianYearsSinceJ2000();
-        SolarSystem.computeTransfEclJ2000ToEquToDate( time, transformation );
+        SolarSystem.computeEclJ2000ToEquToDate( time, transformation );
         // Compute ecliptical cartesian coordinates resp. to Y2000
-        outputPosition.x = POS_J2000[starIndex].x + VEL_J2000[starIndex].x * yearsSince2000;
-        outputPosition.y = POS_J2000[starIndex].y + VEL_J2000[starIndex].y * yearsSince2000;
-        outputPosition.z = POS_J2000[starIndex].z + VEL_J2000[starIndex].z * yearsSince2000;
+        final int offset = 3 * starIndex;
+        outputPosition.x = POS_J2000[offset] + VEL_J2000[offset] * yearsSince2000;
+        outputPosition.y = POS_J2000[offset + 1] + VEL_J2000[offset + 1] * yearsSince2000;
+        outputPosition.z = POS_J2000[offset + 2] + VEL_J2000[offset + 2] * yearsSince2000;
         transformation.applyTo( outputPosition ).normalize();
     }
 
@@ -120,14 +94,10 @@ final public class Stars
         Arrays.fill( center, 0 );
         for ( int star : constellation.getStarSet() )
         {
-            final int index = star * 3;
-            final double x = starsCoordinates[index];
-            final double y = starsCoordinates[index + 1];
-            final double z = starsCoordinates[index + 2];
-            final double dInv = 1 / Math.sqrt( x * x + y * y + z * z );
-            center[0] += x * dInv;
-            center[1] += y * dInv;
-            center[2] += z * dInv;
+            int index = star * 3;
+            center[0] += starsCoordinates[index];
+            center[1] += starsCoordinates[++index];
+            center[2] += starsCoordinates[++index];
         }
     }
 }
