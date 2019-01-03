@@ -124,6 +124,18 @@ public class Astrolabe extends Stereographic
         time.getMeanSiderealTime( angle, angle );
     }
 
+    public double computeDeclinationDeg( CelestialObject object )
+    {
+        if ( object.isPlanet() )
+            return Math.toDegrees( planets.getDeclination( object.asPlanet() ) );
+        else if ( object.isStar() )
+            return Math.toDegrees( rete.getDeclination( object.asStar() ) );
+        else if ( object.isConstellation() )
+            return Math.toDegrees( rete.getDeclination( object.asConstellation() ) );
+        else
+            return 0;
+    }
+
     public float[] getProjectedXY( CelestialObject object, float[] xy )
     {
         if ( object.isPlanet() )
@@ -131,24 +143,17 @@ public class Astrolabe extends Stereographic
             xy[0] = (float)planets.getApparentDisk( object.asPlanet() ).x;
             xy[1] = (float)planets.getApparentDisk( object.asPlanet() ).y;
         }
-        else
+        else if ( object.isStar() )
             System.arraycopy( rete.projectedPos, 2 * object.asStar(), xy, 0, 2 );
+        else if ( object.isConstellation() )
+            rete.getConstellationCenter( object.asConstellation(), xy );
         return xy;
     }
 
     public double getDistanceFromPole( CelestialObject object )
     {
-        if ( object.isPlanet() )
-            return planets.getPosition( object.asPlanet() ).length();
-        else if ( object.isStar() )
-        {
-            // FIXME: Treat constellations here!
-            final double x = rete.projectedPos[2 * object.asStar()];
-            final double y = rete.projectedPos[2 * object.asStar() + 1];
-            return Math.sqrt( x * x + y * y );
-        }
-        else
-            return 0;
+        final float[] p = getProjectedXY( object, new float[2] );
+        return Math.sqrt( p[0] * p[0] + p[1] * p[1] );
     }
 
 }

@@ -29,29 +29,14 @@ public class Matrix3x3
         return set( original ).transpose();
     }
 
-    public void apply( double[] in, double[] out, int index )
+    public void apply( double[] in, double[] out, int offset )
     {
-        final int index1 = index + 1;
-        final int index2 = index + 2;
-        final double x = in[index];
-        final double y = in[index1];
-        final double z = in[index2];
-        out[index] = (float)( values[0] * x + values[1] * y + values[2] * z );
-        out[index1] = (float)( values[3] * x + values[4] * y + values[5] * z );
-        out[index2] = (float)( values[6] * x + values[7] * y + values[8] * z );
-    }
-
-    public void applyTo( float[] points )
-    {
-        for ( int offset = 0; offset < points.length; ++offset )
-        {
-            final double x = points[offset];
-            final double y = points[offset + 1];
-            final double z = points[offset + 2];
-            points[offset] = (float)( values[0] * x + values[1] * y + values[2] * z );
-            points[++offset] = (float)( values[3] * x + values[4] * y + values[5] * z );
-            points[++offset] = (float)( values[6] * x + values[7] * y + values[8] * z );
-        }
+        final double x = in[offset];
+        final double y = in[++offset];
+        final double z = in[++offset];
+        out[offset] = (float)( values[6] * x + values[7] * y + values[8] * z );
+        out[--offset] = (float)( values[3] * x + values[4] * y + values[5] * z );
+        out[--offset] = (float)( values[0] * x + values[1] * y + values[2] * z );
     }
 
     public Cartesian applyTo( Cartesian point )
@@ -98,27 +83,27 @@ public class Matrix3x3
     public Matrix3x3 setRotation( double angle, Axis axis )
     {
         setIdentity();
-        final double cosa = Math.cos( angle );
-        final double sina = Math.sin( angle );
+        final double cosA = Math.cos( angle );
+        final double sinA = Math.sin( angle );
         switch ( axis )
         {
             case X:
-                values[4] = cosa;
-                values[5] = -sina;
-                values[7] = sina;
-                values[8] = cosa;
+                values[4] = cosA;
+                values[5] = -sinA;
+                values[7] = sinA;
+                values[8] = cosA;
                 break;
             case Y:
-                values[0] = cosa;
-                values[2] = -sina;
-                values[6] = sina;
-                values[8] = cosa;
+                values[0] = cosA;
+                values[2] = -sinA;
+                values[6] = sinA;
+                values[8] = cosA;
                 break;
             case Z:
-                values[0] = cosa;
-                values[1] = -sina;
-                values[3] = sina;
-                values[4] = cosa;
+                values[0] = cosA;
+                values[1] = -sinA;
+                values[3] = sinA;
+                values[4] = cosA;
                 break;
         }
         return this;

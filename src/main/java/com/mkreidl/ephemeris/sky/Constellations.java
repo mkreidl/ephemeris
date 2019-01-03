@@ -1,7 +1,22 @@
 package com.mkreidl.ephemeris.sky;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Constellations
 {
+    public enum Hemisphere
+    {
+        NORTHERN, SOUTHERN, ZODIAC
+    }
+
+    private static final Map<Constellation, Hemisphere> hemispheres = new HashMap<>();
+
+    public static Hemisphere getHemisphere( Constellation constellation )
+    {
+        return hemispheres.get( constellation );
+    }
+
     public static final Constellation AQUARIUS = new Constellation( "Aquarius",
             new int[]{395, 1164, 157, 686},
             new int[]{157, 164, 1084, 997, 535},
@@ -256,7 +271,7 @@ public class Constellations
     public static final Constellation CIRCINUS = new Constellation( "Circinus",
             new int[]{563, 211, 910} );
 
-    public static final Constellation[] ECLIPTIC = new Constellation[]{
+    public static final Constellation[] ZODIAC = new Constellation[]{
             AQUARIUS,
             ARIES,
             CANCER,
@@ -333,7 +348,7 @@ public class Constellations
 
     public static final Constellation[] ALL = new Constellation[PTOLEMAIC.length + MODERN.length];
 
-    public static Constellation findByName( String name )
+    static Constellation findByName( String name )
     {
         for ( Constellation constellation : ALL )
             if ( constellation.getName().equals( name ) )
@@ -345,5 +360,29 @@ public class Constellations
     {
         System.arraycopy( PTOLEMAIC, 0, ALL, 0, PTOLEMAIC.length );
         System.arraycopy( MODERN, 0, ALL, PTOLEMAIC.length, MODERN.length );
+
+        for ( Constellation constellation : ALL )
+            hemispheres.put( constellation, computeHemisphere( constellation ) );
+        for ( Constellation constellation : ALL )
+            System.out.println( "CONSTELLATION " + constellation.getName() + " " + hemispheres.get( constellation ) );
+    }
+
+    private static Hemisphere computeHemisphere( Constellation constellation )
+    {
+        boolean hasStarNorthern = false;
+        boolean hasStarSouthern = false;
+        for ( int star : constellation.getStarSet() )
+        {
+            hasStarNorthern |= Stars.POS_J2000[3 * star + 2] > 0;
+            hasStarSouthern |= Stars.POS_J2000[3 * star + 2] < 0;
+        }
+        if ( hasStarNorthern && hasStarSouthern )
+            return Hemisphere.ZODIAC;
+        else if ( hasStarNorthern )
+            return Hemisphere.NORTHERN;
+        else if ( hasStarSouthern )
+            return Hemisphere.SOUTHERN;
+        else
+            return null;
     }
 }

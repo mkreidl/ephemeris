@@ -4,7 +4,7 @@ import com.mkreidl.ephemeris.sky.coordinates.Equatorial;
 
 public class StarRiseSetCalculator extends RiseSetCalculator
 {
-    private final Equatorial.Cart cart = new Equatorial.Cart();
+    private final Equatorial.Cart cartesian = new Equatorial.Cart();
     private final int starIndex;
 
     public static StarRiseSetCalculator of( int starIndex )
@@ -30,8 +30,8 @@ public class StarRiseSetCalculator extends RiseSetCalculator
     public boolean compute( long startTimeMs )
     {
         super.setStartTime( startTimeMs );
-        Stars.computeEquatorial( starIndex, time, cart );
-        cart.transform( topocentric );
+        Stars.computeEquatorial( starIndex, time, cartesian );
+        cartesian.transform( topocentric );
         final boolean isCrossing = isCrossing();
         if ( isCrossing )
             adjustTime();

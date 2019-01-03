@@ -8,15 +8,13 @@ import com.mkreidl.ephemeris.sky.coordinates.Equatorial;
 import com.mkreidl.ephemeris.solarsystem.SolarSystem;
 import com.mkreidl.ephemeris.solarsystem.SolarSystemVSOP87C;
 
-import java.util.Arrays;
-
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
 final public class Stars
 {
-    private static final double[] POS_J2000 = new double[StarsCatalog.SIZE * 3];
-    private static final double[] VEL_J2000 = new double[StarsCatalog.SIZE * 3];
+    static final double[] POS_J2000 = new double[StarsCatalog.SIZE * 3];
+    static final double[] VEL_J2000 = new double[StarsCatalog.SIZE * 3];
 
     static
     {
@@ -89,15 +87,14 @@ final public class Stars
         transformation.applyTo( outputPosition ).normalize();
     }
 
-    public static void computeConstellationCenter( Constellation constellation, double[] starsCoordinates, double[] center )
+    public static void computeConstellationCenter( Constellation constellation, double[] starsCoordinates, Cartesian center )
     {
-        Arrays.fill( center, 0 );
+        center.set( 0, 0, 0 );
         for ( int star : constellation.getStarSet() )
         {
             int index = star * 3;
-            center[0] += starsCoordinates[index];
-            center[1] += starsCoordinates[++index];
-            center[2] += starsCoordinates[++index];
+            center.add( starsCoordinates[index], starsCoordinates[++index], starsCoordinates[++index] );
         }
+        center.normalize();
     }
 }

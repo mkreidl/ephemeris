@@ -7,6 +7,7 @@ import com.mkreidl.ephemeris.geometry.Coordinates;
 import com.mkreidl.ephemeris.geometry.Matrix3x3;
 import com.mkreidl.ephemeris.geometry.Spherical;
 import com.mkreidl.ephemeris.sky.Constellation;
+import com.mkreidl.ephemeris.sky.Constellations;
 import com.mkreidl.ephemeris.sky.Stars;
 import com.mkreidl.ephemeris.sky.StarsCatalog;
 import com.mkreidl.ephemeris.sky.coordinates.Equatorial;
@@ -14,6 +15,8 @@ import com.mkreidl.ephemeris.solarsystem.SolarSystem;
 import com.mkreidl.ephemeris.solarsystem.Zodiac;
 
 import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Rete extends AbstractPart
 {
@@ -29,14 +32,14 @@ public class Rete extends AbstractPart
     private final Equatorial.Cart equatorialCart = new Equatorial.Cart();
     private final Matrix3x3 matrixEcl2Equ = new Matrix3x3();
 
-    private final EnumMap<Zodiac.Sign, Cartesian> signs = new EnumMap<>( Zodiac.Sign.class );
-    private final EnumMap<Zodiac.Sign, Cartesian[]> signBoundariesEcliptical = new EnumMap<>( Zodiac.Sign.class );
+    private final Map<Zodiac.Sign, Cartesian> signs = new EnumMap<>( Zodiac.Sign.class );
+    private final Map<Zodiac.Sign, Cartesian[]> signBoundariesEcliptical = new EnumMap<>( Zodiac.Sign.class );
     private final double[] starsEclipticalJ2000 = new double[3 * StarsCatalog.SIZE];
     private final double[] starsEquatorialToDate = new double[3 * StarsCatalog.SIZE];
-    private final double[] constellationCenter = new double[3];
 
-    public final EnumMap<Zodiac.Sign, Cartesian> signsCenter = new EnumMap<>( Zodiac.Sign.class );
-    public final EnumMap<Zodiac.Sign, Cartesian[]> signBoundariesProjected = new EnumMap<>( Zodiac.Sign.class );
+    private final Map<Constellation, Cartesian> constellationCenterMap = new HashMap<>();
+    public final Map<Zodiac.Sign, Cartesian> signsCenter = new EnumMap<>( Zodiac.Sign.class );
+    public final Map<Zodiac.Sign, Cartesian[]> signBoundariesProjected = new EnumMap<>( Zodiac.Sign.class );
     public final float[] projectedPos = new float[2 * StarsCatalog.SIZE];
 
     Rete( Astrolabe astrolabe )
@@ -57,6 +60,8 @@ public class Rete extends AbstractPart
                 signBoundariesProjected.get( sign )[i] = new Cartesian();
             }
         }
+        for ( Constellation constellation : Constellations.ALL )
+            constellationCenterMap.put( constellation, new Cartesian() );
     }
 
     @Override
@@ -67,7 +72,12 @@ public class Rete extends AbstractPart
         SolarSystem.computeEclJ2000ToEquToDate( astrolabe.time, transformEclipticalJ2000ToEquatorial );
         Stars.computeEclipticalJ2000( astrolabe.time, starsEclipticalJ2000 );
         for ( int i = 0; i < StarsCatalog.SIZE; ++i )
-            transformEclipticalJ2000ToEquatorial.apply( starsEclipticalJ2000, starsEquatorialToDate, i );
+            transformEclipticalJ2000ToEquatorial.apply( starsEclipticalJ2000, starsEquatorialToDate, 3 * i );
+        for ( Constellation constellation : Constellations.ALL )
+        {
+            final Cartesian constellationCenter = constellationCenterMap.get( constellation );
+            Stars.computeConstellationCenter( constellation, starsEquatorialToDate, constellationCenter );
+        }
     }
 
     @Override
@@ -104,25 +114,41 @@ public class Rete extends AbstractPart
     private void projectStars()
     {
         final Cartesian tmpCartesian = new Cartesian();
+        int srcOffset = -1;
+        int targetOffset = -1;
         for ( int i = 0; i < StarsCatalog.SIZE; ++i )
         {
-            int offset = 3 * i;
             tmpCartesian.set(
-                    starsEquatorialToDate[offset],
-                    starsEquatorialToDate[++offset],
-                    starsEquatorialToDate[++offset] );
+                    starsEquatorialToDate[++srcOffset],
+                    starsEquatorialToDate[++srcOffset],
+                    starsEquatorialToDate[++srcOffset] );
             astrolabe.project( tmpCartesian, tmpCartesian );
-            offset = 2 * i;
-            projectedPos[offset] = (float)tmpCartesian.x;
-            projectedPos[++offset] = (float)tmpCartesian.y;
+            projectedPos[++targetOffset] = (float)tmpCartesian.x;
+            projectedPos[++targetOffset] = (float)tmpCartesian.y;
         }
     }
 
     public void getConstellationCenter( Constellation constellation, Cartesian output )
     {
-        Stars.computeConstellationCenter( constellation, starsEquatorialToDate, constellationCenter );
-        output.set( constellationCenter[0], constellationCenter[1], constellationCenter[2] ).normalize();
-        astrolabe.project( output, output );
+        astrolabe.project( constellationCenterMap.get( constellation ), output );
+    }
+
+    void getConstellationCenter( Constellation constellation, float[] output )
+    {
+        final Cartesian cartesian = new Cartesian();
+        astrolabe.project( constellationCenterMap.get( constellation ), cartesian );
+        output[0] = (float)cartesian.x;
+        output[1] = (float)cartesian.y;
+    }
+
+    double getDeclination( int starIndex )
+    {
+        return Math.asin( starsEquatorialToDate[3 * starIndex + 2] );
+    }
+
+    double getDeclination( Constellation constellation )
+    {
+        return Math.asin( constellationCenterMap.get( constellation ).z );
     }
 
     private void computeSignBoundary( Zodiac.Sign sign )

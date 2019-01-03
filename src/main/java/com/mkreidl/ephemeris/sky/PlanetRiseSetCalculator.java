@@ -26,7 +26,7 @@ public class PlanetRiseSetCalculator extends RiseSetCalculator
         return new PlanetRiseSetCalculator( solarSystem, body );
     }
 
-    PlanetRiseSetCalculator( SolarSystem solarSystem, Body body )
+    private PlanetRiseSetCalculator( SolarSystem solarSystem, Body body )
     {
         this.solarSystem = solarSystem;
         this.body = body;

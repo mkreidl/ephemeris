@@ -17,11 +17,11 @@ import java.util.Map;
 public class Planets extends AbstractPart
 {
     private final Cartesian onUnitSphere = new Cartesian();
-    private final Equatorial.Sphe topocentric = new Equatorial.Sphe();
     private final Position position = new Position();
     private final SolarSystem solarSystem = new SolarSystemMeeus();
 
     private final Map<Body, Circle> apparentDisks = new EnumMap<>( Body.class );
+    private final Map<Body, Equatorial.Sphe> topocentricPositions = new EnumMap<>( Body.class );
     private final Map<Body, Cartesian> projectedPositions = new EnumMap<>( Body.class );
 
     public List<Body> sortedByDistance;
@@ -32,6 +32,7 @@ public class Planets extends AbstractPart
         for ( Body body : Body.values() )
         {
             projectedPositions.put( body, new Cartesian() );
+            topocentricPositions.put( body, new Equatorial.Sphe() );
             apparentDisks.put( body, new Circle() );
         }
     }
@@ -77,6 +78,7 @@ public class Planets extends AbstractPart
 
     private void recompute( Body object )
     {
+        final Equatorial.Sphe topocentric = topocentricPositions.get( object );
         solarSystem.getEphemerides( object, position );
         position.get( topocentric, Position.CoordinatesCenter.TOPOCENTRIC ).transform( onUnitSphere ).normalize();
         astrolabe.project( onUnitSphere, projectedPositions.get( object ) );
@@ -87,5 +89,10 @@ public class Planets extends AbstractPart
     public List<Body> getSortedByDistance()
     {
         return sortedByDistance;
+    }
+
+    double getDeclination( Body planet )
+    {
+        return topocentricPositions.get( planet ).lat;
     }
 }
