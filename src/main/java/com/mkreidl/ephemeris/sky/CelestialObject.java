@@ -2,9 +2,6 @@ package com.mkreidl.ephemeris.sky;
 
 import com.mkreidl.ephemeris.solarsystem.Body;
 
-import java.util.EnumMap;
-import java.util.Map;
-
 public class CelestialObject
 {
     public static final CelestialObject NONE = new CelestialObject()
@@ -21,19 +18,6 @@ public class CelestialObject
             return true;
         }
     };
-
-    private static final Map<Body, String> planetNames = new EnumMap<>( Body.class );
-
-    static
-    {
-        for ( Body planet : Body.values() )
-            planetNames.put( planet, planet.toString() );
-    }
-
-    public static void setPlanetName( Body planet, String name )
-    {
-        planetNames.put( planet, name );
-    }
 
     public static CelestialObject of( String name )
     {
@@ -70,9 +54,9 @@ public class CelestialObject
     {
         final CelestialObject object = new CelestialObject();
         object.planet = planet;
-        object.scientificName = planetNames.get( planet );
-        object.trivialName = planetNames.get( planet );
-        object.catalogName = planetNames.get( planet );
+        object.scientificName = planet.toString();
+        object.trivialName = planet.toString();
+        object.catalogName = planet.toString();
         return object;
     }
 
@@ -133,11 +117,9 @@ public class CelestialObject
         return constellation;
     }
 
-    public String getName()
+    public String getStarName()
     {
-        if ( planet != null )
-            return planetNames.get( planet );
-        else if ( !trivialName.isEmpty() )
+        if ( !trivialName.isEmpty() )
             return trivialName;
         else if ( !scientificName.isEmpty() )
             return scientificName;

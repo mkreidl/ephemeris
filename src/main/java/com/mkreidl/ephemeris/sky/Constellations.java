@@ -114,18 +114,18 @@ public class Constellations
     public static final Constellation CYGNUS = new Constellation( "Cygnus",
             new int[]{18, 64, 466, 189},
             new int[]{393, 401, 146, 64, 89, 213} );
-    private static final Constellation DRACO = new Constellation( "Draco",
+    public static final Constellation DRACO = new Constellation( "Draco",
             new int[]{382, 69, 130, 1388, 382, 187, 423},
             new int[]{187, 636, 314},
             new int[]{636, 1265, 207, 121, 521, 233, 343, 452, 428} );
-    private static final Constellation ERIDANUS = new Constellation( "Eridanus",
+    public static final Constellation ERIDANUS = new Constellation( "Eridanus",
             new int[]{129, 528, 479, 543, 161, 818, 298, 372, 1254,
                     461, 660, 863, 573, 355, 678, 646, 1055, 1071,
                     907, 412, 493, 307, 616, 977, 748, 576, 1184,
                     659, 306, 359, 8} );
-    private static final Constellation EQUULEUS = new Constellation( "Equuleus",
+    public static final Constellation EQUULEUS = new Constellation( "Equuleus",
             new int[]{478, 889, 1114} );
-    private static final Constellation HERCULES = new Constellation( "Hercules",
+    public static final Constellation HERCULES = new Constellation( "Hercules",
             new int[]{464, 629, 296, 134, 126, 282},
             new int[]{126, 380},
             new int[]{296, 203},
@@ -271,23 +271,7 @@ public class Constellations
     public static final Constellation CIRCINUS = new Constellation( "Circinus",
             new int[]{563, 211, 910} );
 
-    public static final Constellation[] ZODIAC = new Constellation[]{
-            AQUARIUS,
-            ARIES,
-            CANCER,
-            CAPRICORNUS,
-            GEMINI,
-            LEO,
-            LIBRA,
-            OPHIUCHUS,
-            PISCES,
-            SAGITTARIUS,
-            SCORPIO,
-            TAURUS,
-            VIRGO
-    };
-
-    public static final Constellation[] PTOLEMAIC = new Constellation[]{
+    private static final Constellation[] PTOLEMAIC = new Constellation[]{
             AQUARIUS,
             ARIES,
             CANCER,
@@ -338,7 +322,7 @@ public class Constellations
             URSA_MINOR
     };
 
-    public static final Constellation[] MODERN = new Constellation[]{
+    private static final Constellation[] MODERN = new Constellation[]{
             PUPPIS, SCULPTOR, CHAMAELEON, FORNAX, LACERTA, MONOCEROS, MUSCA, VOLANS, VULPECULA,
             CAMELOPARDALIS, CAELUM, COMA_BERENICES, INDUS, CANES_VENATICI, CARINA, HYDRUS,
             LEO_MINOR, GRUS, CRUX, LYNX, ANTLIA, PICTOR, MICROSCOPIUM, RETICULUM, OCTANS, APUS,
