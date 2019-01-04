@@ -1,20 +1,9 @@
 package com.mkreidl.ephemeris.sky;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class Constellations
 {
-    public enum Hemisphere
+    private Constellations()
     {
-        NORTHERN, SOUTHERN, ZODIAC
-    }
-
-    private static final Map<Constellation, Hemisphere> hemispheres = new HashMap<>();
-
-    public static Hemisphere getHemisphere( Constellation constellation )
-    {
-        return hemispheres.get( constellation );
     }
 
     public static final Constellation AQUARIUS = new Constellation( "Aquarius",
@@ -344,29 +333,5 @@ public class Constellations
     {
         System.arraycopy( PTOLEMAIC, 0, ALL, 0, PTOLEMAIC.length );
         System.arraycopy( MODERN, 0, ALL, PTOLEMAIC.length, MODERN.length );
-
-        for ( Constellation constellation : ALL )
-            hemispheres.put( constellation, computeHemisphere( constellation ) );
-        for ( Constellation constellation : ALL )
-            System.out.println( "CONSTELLATION " + constellation.getName() + " " + hemispheres.get( constellation ) );
-    }
-
-    private static Hemisphere computeHemisphere( Constellation constellation )
-    {
-        boolean hasStarNorthern = false;
-        boolean hasStarSouthern = false;
-        for ( int star : constellation.getStarSet() )
-        {
-            hasStarNorthern |= Stars.POS_J2000[3 * star + 2] > 0;
-            hasStarSouthern |= Stars.POS_J2000[3 * star + 2] < 0;
-        }
-        if ( hasStarNorthern && hasStarSouthern )
-            return Hemisphere.ZODIAC;
-        else if ( hasStarNorthern )
-            return Hemisphere.NORTHERN;
-        else if ( hasStarSouthern )
-            return Hemisphere.SOUTHERN;
-        else
-            return null;
     }
 }
