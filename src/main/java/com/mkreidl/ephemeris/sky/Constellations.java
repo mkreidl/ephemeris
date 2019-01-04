@@ -73,10 +73,10 @@ public class Constellations
     public static final Constellation AURIGA = new Constellation( "Auriga",
             new int[]{5, 367, 40, 103, 26/* =Beta tauri; alternatively: Chi aurigae=1197 */, 112, 204, 5},
             new int[]{40, 5, 167, 378} );
-    public static final Constellation BOOTES = new Constellation( "Boötes",
+    public static final Constellation BOOTES = new Constellation( "Bootes",
             new int[]{110, 2, 317, 180, 286, 279, 117, 2, 829},
             new int[]{180, 621, 945, 549, 621} );
-    public static final Constellation CANIS_MAJOR = new Constellation( "Canis Major",
+    public static final Constellation CANIS_MAIOR = new Constellation( "Canis Maior",
             new int[]{0, 45, 488, 450, 22, 277, 35, 435, 88},
             new int[]{35, 179, 1095, 0, 780, 590, 559, 780} );
     public static final Constellation CANIS_MINOR = new Constellation( "Canis Minor",
@@ -156,7 +156,7 @@ public class Constellations
     public static final Constellation SERPENS = new Constellation( "Serpens",
             new int[]{350, 438, 575, 922, 350, 406, 108, 364, 295, 120},
             new int[]{85, 302, 244, 224, 1028} );
-    public static final Constellation URSA_MAJOR = new Constellation( "Ursa Major",
+    public static final Constellation URSA_MAIOR = new Constellation( "Ursa Maior",
             new int[]{38, 74, 31, 236, 34, 349, 249, 404, 349},
             new int[]{201, 206, 404, 80, 86, 236},
             new int[]{325, 206},
@@ -280,7 +280,7 @@ public class Constellations
             ARA,
             AURIGA,
             BOOTES,
-            CANIS_MAJOR,
+            CANIS_MAIOR,
             CANIS_MINOR,
             CASSIOPEIA,
             CENTAURUS,
@@ -307,7 +307,7 @@ public class Constellations
             SAGITTA,
             SERPENS,
             TRIANGULUM,
-            URSA_MAJOR,
+            URSA_MAIOR,
             URSA_MINOR
     };
 
