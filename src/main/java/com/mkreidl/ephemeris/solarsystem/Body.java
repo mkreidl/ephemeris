@@ -1,5 +1,8 @@
 package com.mkreidl.ephemeris.solarsystem;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 public enum Body
 {
     SUN( 0.0, 6.96342e8, 6.96342e8 ),
@@ -13,6 +16,10 @@ public enum Body
     URANUS( 0.0, 0.0, 2.5559e7 ),
     NEPTUNE( 0.0, 0.0, 2.4764e7 ),
     PLUTO( 1.303e22, 2.374e6 / 2, 2.374e6 / 2 );
+
+    public static final Collection<Body> EXTRA_TERRESTRIAL = Arrays.asList(
+            SUN, MOON, MERCURY, VENUS, MARS, JUPITER, SATURN, URANUS, NEPTUNE, PLUTO
+    );
 
     public final double MASS;
     public final double RADIUS_EQUATORIAL_M;

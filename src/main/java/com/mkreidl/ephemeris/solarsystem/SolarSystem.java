@@ -7,26 +7,20 @@ import com.mkreidl.ephemeris.geometry.Coordinates;
 import com.mkreidl.ephemeris.geometry.Matrix3x3;
 import com.mkreidl.ephemeris.sky.coordinates.Ecliptical;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.EnumMap;
 import java.util.LinkedList;
-import java.util.List;
 
 public abstract class SolarSystem
 {
     protected final EnumMap<Body, Ecliptical.Cart> positions = new EnumMap<>( Body.class );
     protected final EnumMap<Body, Ecliptical.Cart> velocities = new EnumMap<>( Body.class );
     final EnumMap<Body, OrbitalModel> models = new EnumMap<>( Body.class );
-    private final List<Body> sortedByDistance = new ArrayList<>( Arrays.asList( Body.values() ) );
     private final LinkedList<Thread> threadList = new LinkedList<>();
     private final Cartesian cartesian = new Cartesian();
-    private final EnumMap<Body, Double> distances = new EnumMap<>( Body.class );
+    private final EnumMap<Body, Double> geocentricDistances = new EnumMap<>( Body.class );
 
     SolarSystem()
     {
-        sortedByDistance.remove( Body.EARTH );
         for ( Body body : Body.values() )
         {
             positions.put( body, new Ecliptical.Cart() );
@@ -64,23 +58,6 @@ public abstract class SolarSystem
     {
         output.setRotation( -getEcliptic( time ), Coordinates.Axis.X );
         return output;
-    }
-
-    public List<Body> getSortedByDistanceDescending()
-    {
-        synchronized ( positions )
-        {
-            return Collections.unmodifiableList( sortedByDistance );
-        }
-    }
-
-    public void getSortedByDistanceDescending( List<Body> sortedDescending )
-    {
-        synchronized ( positions )
-        {
-            sortedDescending.clear();
-            sortedDescending.addAll( sortedByDistance );
-        }
     }
 
     public Cartesian getHeliocentric( final Body body, final Cartesian output )
@@ -121,6 +98,11 @@ public abstract class SolarSystem
         return position;
     }
 
+    public double getGeocentricDistance( Body body )
+    {
+        return geocentricDistances.get( body );
+    }
+
     public void compute( final Time time, final Body body )
     {
         final OrbitalModel model = models.get( body );
@@ -145,9 +127,8 @@ public abstract class SolarSystem
         for ( final Body body : Body.values() )
         {
             cartesian.set( positions.get( body ) ).sub( earth );
-            distances.put( body, cartesian.length() );
+            geocentricDistances.put( body, cartesian.length() );
         }
-        Collections.sort( sortedByDistance, ( o1, o2 ) -> Double.compare( distances.get( o2 ), distances.get( o1 ) ) );
     }
 
     /**
@@ -179,9 +160,8 @@ public abstract class SolarSystem
             for ( final Body body : Body.values() )
             {
                 cartesian.set( positions.get( body ) ).sub( earth );
-                distances.put( body, cartesian.length() );
+                geocentricDistances.put( body, cartesian.length() );
             }
-            Collections.sort( sortedByDistance, ( o1, o2 ) -> Double.compare( distances.get( o2 ), distances.get( o1 ) ) );
         }
     }
 }

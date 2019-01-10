@@ -19,7 +19,6 @@ public class Tympanon extends AbstractPart
     public static final double ATMOSPHERIC_REFRACTION = 34 * MIN;
     public static final double SUNS_UPPER_LIMB_WITH_REFRACTION = ATMOSPHERIC_REFRACTION + SUNS_RADIUS;
 
-    public final Circle equator = new Circle( 0.0, 0.0, 1.0 );
     public final Circle horizonMathematical = new Circle();
     public final Circle horizonApparent = new Circle();
     public final Circle horizonSunrise = new Circle();  //** Sunrise/set is when the Sun's center passes this line

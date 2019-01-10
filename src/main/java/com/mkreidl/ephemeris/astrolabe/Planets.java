@@ -9,6 +9,8 @@ import com.mkreidl.ephemeris.solarsystem.Body;
 import com.mkreidl.ephemeris.solarsystem.SolarSystem;
 import com.mkreidl.ephemeris.solarsystem.SolarSystemMeeus;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +26,7 @@ public class Planets extends AbstractPart
     private final Map<Body, Equatorial.Sphe> topocentricPositions = new EnumMap<>( Body.class );
     private final Map<Body, Cartesian> projectedPositions = new EnumMap<>( Body.class );
 
-    public List<Body> sortedByDistance;
+    public List<Body> sortedByDistance = new ArrayList<>( Body.EXTRA_TERRESTRIAL );
 
     Planets( Astrolabe astrolabe )
     {
@@ -65,7 +67,9 @@ public class Planets extends AbstractPart
         onChangeViewParameters();
         for ( Body object : Body.values() )
             recompute( object );
-        sortedByDistance = solarSystem.getSortedByDistanceDescending();
+        Collections.sort( sortedByDistance, ( o1, o2 ) ->
+                Double.compare( solarSystem.getGeocentricDistance( o2 ),
+                        solarSystem.getGeocentricDistance( o1 ) ) );
         //CHECK? onRecomputeListener.onRecomputeProjection();
     }
 

@@ -29,7 +29,27 @@ public class Matrix3x3
         return set( original ).transpose();
     }
 
-    public void apply( double[] in, double[] out, int offset )
+    public void applyTo( double[] in, double[] out, int offset )
+    {
+        final double x = in[offset];
+        final double y = in[++offset];
+        final double z = in[++offset];
+        out[offset] = values[6] * x + values[7] * y + values[8] * z;
+        out[--offset] = values[3] * x + values[4] * y + values[5] * z;
+        out[--offset] = values[0] * x + values[1] * y + values[2] * z;
+    }
+
+    public void applyTo( float[] in, float[] out, int offset )
+    {
+        final float x = in[offset];
+        final float y = in[++offset];
+        final float z = in[++offset];
+        out[offset] = (float)( values[6] * x + values[7] * y + values[8] * z );
+        out[--offset] = (float)( values[3] * x + values[4] * y + values[5] * z );
+        out[--offset] = (float)( values[0] * x + values[1] * y + values[2] * z );
+    }
+
+    public void applyTo( double[] in, float[] out, int offset )
     {
         final double x = in[offset];
         final double y = in[++offset];
