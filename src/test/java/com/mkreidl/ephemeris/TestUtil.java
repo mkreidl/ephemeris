@@ -1,6 +1,11 @@
 package com.mkreidl.ephemeris;
 
-import static com.mkreidl.ephemeris.solarsystem.Body.MOON;
+import com.mkreidl.ephemeris.geometry.Angle;
+import com.mkreidl.ephemeris.solarsystem.Body;
+import com.mkreidl.ephemeris.solarsystem.Zodiac;
+
+import org.junit.runners.Parameterized.Parameters;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -20,10 +25,8 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.junit.runners.Parameterized.Parameters;
-import com.mkreidl.ephemeris.geometry.Angle;
-import com.mkreidl.ephemeris.solarsystem.Body;
-import com.mkreidl.ephemeris.solarsystem.Zodiac;
+
+import static com.mkreidl.ephemeris.solarsystem.Body.MOON;
 
 public class TestUtil
 {
@@ -42,12 +45,12 @@ public class TestUtil
 
     public static class EphemerisData
     {
-      public final Angle.Sexagesimal longitude = new Angle.Sexagesimal( Angle.Unit.DEGREES );
-      public final Angle.Sexagesimal latitude = new Angle.Sexagesimal( Angle.Unit.DEGREES );
-      public final Angle.Sexagesimal declination = new Angle.Sexagesimal( Angle.Unit.DEGREES );
-      public final Angle.Sexagesimal rightAscension = new Angle.Sexagesimal( Angle.Unit.HOURS );
-      public boolean retrograde = false;
-      public double phase = Double.POSITIVE_INFINITY;  // signifies an invalid value
+        public final Angle.Sexagesimal longitude = new Angle.Sexagesimal( Angle.Unit.DEGREES );
+        public final Angle.Sexagesimal latitude = new Angle.Sexagesimal( Angle.Unit.DEGREES );
+        public final Angle.Sexagesimal declination = new Angle.Sexagesimal( Angle.Unit.DEGREES );
+        public final Angle.Sexagesimal rightAscension = new Angle.Sexagesimal( Angle.Unit.HOURS );
+        public boolean retrograde = false;
+        public double phase = Double.POSITIVE_INFINITY;  // signifies an invalid value
     }
 
     private static EphemerisData parseNASAEphemeris( String LonLatRADecl )
@@ -91,7 +94,7 @@ public class TestUtil
     }
 
     @Parameters( name = "{0}" )
-    public static Iterable<Object[]> solarSystemData(Collection<Body> bodies)
+    public static Iterable<Object[]> solarSystemData( Collection<Body> bodies )
     {
         final LinkedList<Object[]> datasets = new LinkedList<>();
         final File[] files = new File( DIR_NASA.getFile() ).listFiles();
@@ -134,7 +137,7 @@ public class TestUtil
                         final Body body = Body.valueOf( objectName.toUpperCase() );
                         if ( body == MOON )
                             ephemeris.phase = ( moonPhase - 0.5 ) * 360;
-                        if ( bodies.contains(body) )
+                        if ( bodies.contains( body ) )
                             datasets.add( new Object[]{dateStr + " - geocentric - " + objectName, body, time, ephemeris} );
                     }
                     catch ( IllegalArgumentException | IllegalStateException | StringIndexOutOfBoundsException e )
@@ -197,5 +200,7 @@ public class TestUtil
         VSOP_DATE_PARSER.setTimeZone( TimeZone.getTimeZone( "UTC" ) );
     }
 
-    private TestUtil() {}
+    private TestUtil()
+    {
+    }
 }

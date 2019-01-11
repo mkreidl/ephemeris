@@ -1,11 +1,11 @@
 package com.mkreidl.ephemeris.geometry;
 
 import com.mkreidl.ephemeris.Distance;
-import com.mkreidl.ephemeris.Time;
-import com.mkreidl.ephemeris.solarsystem.Body;
 import com.mkreidl.ephemeris.Position;
-import com.mkreidl.ephemeris.solarsystem.SolarSystemVSOP87C;
+import com.mkreidl.ephemeris.Time;
 import com.mkreidl.ephemeris.sky.coordinates.Equatorial;
+import com.mkreidl.ephemeris.solarsystem.Body;
+import com.mkreidl.ephemeris.solarsystem.SolarSystemVSOP87C;
 
 import org.junit.Test;
 
