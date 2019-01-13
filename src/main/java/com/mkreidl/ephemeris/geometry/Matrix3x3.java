@@ -297,6 +297,28 @@ public class Matrix3x3
         return this;
     }
 
+    public Matrix3x3 postScale( double scaleX, double scaleY )
+    {
+        values[0] *= scaleX;
+        values[1] *= scaleX;
+        values[2] *= scaleX;
+        values[3] *= scaleY;
+        values[4] *= scaleY;
+        values[5] *= scaleY;
+        return this;
+    }
+
+    public Matrix3x3 preScale( double scaleX, double scaleY )
+    {
+        values[0] *= scaleX;
+        values[3] *= scaleX;
+        values[6] *= scaleX;
+        values[1] *= scaleY;
+        values[4] *= scaleY;
+        values[7] *= scaleY;
+        return this;
+    }
+
     public Matrix3x3 preScale( double scaleX, double scaleY, double scaleZ )
     {
         values[0] *= scaleX;
