@@ -90,7 +90,7 @@ final public class Stars
     public static void computeConstellationCenter( Constellation constellation, double[] starsCoordinates, Cartesian center )
     {
         center.set( 0, 0, 0 );
-        for ( int star : constellation.getStarSet() )
+        for ( int star : constellation.getStarList() )
         {
             int index = star * 3;
             center.add( starsCoordinates[index], starsCoordinates[++index], starsCoordinates[++index] );

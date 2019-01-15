@@ -13,7 +13,7 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-@RunWith(Parameterized.class)
+@RunWith( Parameterized.class )
 public class VSOP87CoordinateTransformationTest
 {
     private Map<VSOP87File.Version, Map<String, Vsop87AbstractTest.DataSet>> datasets;
@@ -62,7 +62,7 @@ public class VSOP87CoordinateTransformationTest
             }
             else
             {
-                final Matrix3x3 matrix = new PrecessionMatrix().compute( dataSetFirst.time );
+                final Matrix3x3 matrix = PrecessionMatrix.compute( dataSetFirst.time, new Matrix3x3() );
                 matrix.applyTo( dataSetFirst.model.getPosition( actualCartesian ) );
             }
             if ( second == VSOP87File.Version.B || second == VSOP87File.Version.D )
@@ -125,17 +125,17 @@ public class VSOP87CoordinateTransformationTest
     }
 
     public VSOP87CoordinateTransformationTest(
-    		VSOP87File.Planet planet, Map<VSOP87File.Version, Map<String, Vsop87AbstractTest.DataSet>> datasets )
+            VSOP87File.Planet planet, Map<VSOP87File.Version, Map<String, Vsop87AbstractTest.DataSet>> datasets )
     {
         this.datasets = datasets;
     }
 
-    @Parameters(name = "{0}")
+    @Parameters( name = "{0}" )
     public static Iterable<Object[]> data()
     {
-    	java.util.List<Object[]> parameters = new java.util.LinkedList<>();
+        java.util.List<Object[]> parameters = new java.util.LinkedList<>();
         for ( VSOP87File.Planet planet : Vsop87AbstractTest.fullData.keySet() )
-            parameters.add( new Object[] { planet, Vsop87AbstractTest.fullData.get( planet ) } );
+            parameters.add( new Object[]{planet, Vsop87AbstractTest.fullData.get( planet )} );
         return parameters;
     }
 }

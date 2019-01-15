@@ -1,6 +1,7 @@
 package com.mkreidl.ephemeris.solarsystem;
 
 import com.mkreidl.ephemeris.Distance;
+import com.mkreidl.ephemeris.Position;
 import com.mkreidl.ephemeris.TestUtil;
 import com.mkreidl.ephemeris.TestUtil.EphemerisData;
 import com.mkreidl.ephemeris.Time;
@@ -8,7 +9,6 @@ import com.mkreidl.ephemeris.geometry.Angle;
 import com.mkreidl.ephemeris.geometry.Spherical;
 import com.mkreidl.ephemeris.sky.coordinates.Ecliptical;
 import com.mkreidl.ephemeris.sky.coordinates.Equatorial;
-import com.mkreidl.ephemeris.Position;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,7 +19,6 @@ import java.util.Arrays;
 
 import static com.mkreidl.ephemeris.solarsystem.Body.EARTH;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Parses txt test data produced by http://ephemeris.com/ephemeris.php
@@ -84,6 +83,6 @@ public class PositionsMotionsTest
         assertEquals( expected.latitude.getRadians(), latitude.getRadians(), tol );
         assertEquals( expected.rightAscension.getRadians(), rightAscension.getRadians(), tol );
         assertEquals( expected.declination.getRadians(), declination.getRadians(), tol );
-        assertTrue( expected.retrograde == actual.isRetrograde() );
+        assertEquals( expected.retrograde, actual.isRetrograde() );
     }
 }
