@@ -60,12 +60,9 @@ public class Astrolabe extends Stereographic
     public synchronized boolean setTime( long timeInMillis, boolean force )
     {
         time.setTime( timeInMillis );
-        boolean tympanonWasTimedOut = false;
-        if ( force || tympanon.isTimedOut( tympanonTimeout ) )
-        {
-            tympanonWasTimedOut = true;
+        boolean tympanonWasTimedOut = force || tympanon.isTimedOut( tympanonTimeout );
+        if ( tympanonWasTimedOut )
             tympanon.synchronize();
-        }
         if ( force || rete.isTimedOut( reteTimeout ) )
             rete.synchronize();
         if ( force || planets.isTimedOut( planetsTimeout ) )

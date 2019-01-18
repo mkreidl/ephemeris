@@ -72,7 +72,7 @@ public class Rete extends AbstractPart
         SolarSystem.computeEclJ2000ToEquToDate( astrolabe.time, transformEclipticalJ2000ToEquatorial );
         Stars.computeEclipticalJ2000( astrolabe.time, starsEclipticalJ2000 );
         for ( int i = 0; i < StarsCatalog.SIZE; ++i )
-            transformEclipticalJ2000ToEquatorial.apply( starsEclipticalJ2000, starsEquatorialToDate, 3 * i );
+            transformEclipticalJ2000ToEquatorial.applyTo( starsEclipticalJ2000, starsEquatorialToDate, 3 * i );
         for ( Constellation constellation : Constellations.ALL )
         {
             final Cartesian constellationCenter = constellationCenterMap.get( constellation );
