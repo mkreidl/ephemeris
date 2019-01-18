@@ -18,7 +18,6 @@ public abstract class SolarSystem
     protected final Map<Body, Ecliptical.Cart> velocities = new EnumMap<>( Body.class );
     final Map<Body, OrbitalModel> models = new EnumMap<>( Body.class );
     private final Map<Body, Position> planetsEphemerides = new EnumMap<>( Body.class );
-    private final Cartesian cartesian = new Cartesian();
     private final EnumMap<Body, Double> geocentricDistances = new EnumMap<>( Body.class );
 
     SolarSystem()
@@ -103,7 +102,6 @@ public abstract class SolarSystem
 
     public void compute( final Time time )
     {
-        final Cartesian earth = positions.get( Body.EARTH );
         for ( final Body body : Body.values() )
         {
             final OrbitalModel model = models.get( body );
@@ -111,11 +109,12 @@ public abstract class SolarSystem
             positions.get( body ).scale( model.getDistanceUnit().toMeters() );
             velocities.get( body ).scale( model.getDistanceUnit().toMeters() );
         }
+        final Equatorial.Cart geocentric = new Equatorial.Cart();
         for ( final Body body : Body.values() )
         {
             getEphemerides( body, planetsEphemerides.get( body ) );
-            cartesian.set( positions.get( body ) ).sub( earth );
-            geocentricDistances.put( body, cartesian.length() );
+            planetsEphemerides.get( body ).get( geocentric, Position.CoordinatesCenter.GEOCENTRIC );
+            geocentricDistances.put( body, geocentric.length() );
         }
     }
 
