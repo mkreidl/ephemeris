@@ -8,9 +8,15 @@ public class Matrix3x3
 {
     public double[] values = new double[9];
 
-    public Matrix3x3()
+    public Matrix3x3( double... values )
     {
-        setIdentity();
+        if ( values.length == 0 )
+        {
+            Arrays.fill( this.values, 0 );
+            this.values[0] = this.values[4] = this.values[8] = 1.0;
+        }
+        else
+            System.arraycopy( values, 0, this.values, 0, 9 );
     }
 
     public Matrix3x3 set( double... values )
@@ -297,28 +303,6 @@ public class Matrix3x3
         return this;
     }
 
-    public Matrix3x3 postScale( double scaleX, double scaleY )
-    {
-        values[0] *= scaleX;
-        values[1] *= scaleX;
-        values[2] *= scaleX;
-        values[3] *= scaleY;
-        values[4] *= scaleY;
-        values[5] *= scaleY;
-        return this;
-    }
-
-    public Matrix3x3 preScale( double scaleX, double scaleY )
-    {
-        values[0] *= scaleX;
-        values[3] *= scaleX;
-        values[6] *= scaleX;
-        values[1] *= scaleY;
-        values[4] *= scaleY;
-        values[7] *= scaleY;
-        return this;
-    }
-
     public Matrix3x3 preScale( double scaleX, double scaleY, double scaleZ )
     {
         values[0] *= scaleX;
@@ -330,25 +314,6 @@ public class Matrix3x3
         values[2] *= scaleZ;
         values[5] *= scaleZ;
         values[8] *= scaleZ;
-        return this;
-    }
-
-    public Matrix3x3 postTranslate( double shiftX, double shiftY )
-    {
-        values[0] += values[6] * shiftX;
-        values[1] += values[7] * shiftX;
-        values[2] += values[8] * shiftX;
-        values[3] += values[6] * shiftY;
-        values[4] += values[7] * shiftY;
-        values[5] += values[8] * shiftY;
-        return this;
-    }
-
-    public Matrix3x3 preTranslate( double shiftX, double shiftY )
-    {
-        values[2] += values[0] * shiftX + values[1] * shiftY;
-        values[5] += values[3] * shiftX + values[4] * shiftY;
-        values[8] += values[6] * shiftX + values[7] * shiftY;
         return this;
     }
 }
