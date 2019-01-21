@@ -3,9 +3,6 @@ package com.mkreidl.ephemeris.solarsystem;
 import com.mkreidl.ephemeris.Time;
 import com.mkreidl.ephemeris.geometry.Matrix3x3;
 
-import static com.mkreidl.ephemeris.Time.DAYS_PER_MILLENNIUM;
-import static com.mkreidl.ephemeris.Time.J2000;
-
 public class PrecessionMatrix extends Matrix3x3
 {
     private PrecessionMatrix()
@@ -14,7 +11,7 @@ public class PrecessionMatrix extends Matrix3x3
 
     public static Matrix3x3 compute( final Time time, final Matrix3x3 matrix )
     {
-        final double t = time.julianDayNumberSince( J2000 ) / DAYS_PER_MILLENNIUM;
+        final double t = time.julianMillenniaSince( Time.J2000 );
 
         final double s11 = evaluatePolynomial( t, S11 );
         final double c11 = evaluatePolynomial( t, C11 );

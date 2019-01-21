@@ -5,8 +5,7 @@ import com.mkreidl.ephemeris.geometry.Cartesian;
 import com.mkreidl.ephemeris.geometry.Matrix3x3;
 import com.mkreidl.ephemeris.sky.coordinates.Ecliptical;
 import com.mkreidl.ephemeris.sky.coordinates.Equatorial;
-import com.mkreidl.ephemeris.solarsystem.SolarSystem;
-import com.mkreidl.ephemeris.solarsystem.SolarSystemVSOP87C;
+import com.mkreidl.ephemeris.solarsystem.Ecliptic;
 
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
@@ -18,7 +17,7 @@ final public class Stars
 
     static
     {
-        final Matrix3x3 equ2ecl = SolarSystemVSOP87C.getEqu2EclMatrix( Time.J2000, new Matrix3x3() );
+        final Matrix3x3 equ2ecl = Ecliptic.getEqu2EclMatrix( Time.J2000, new Matrix3x3() );
         final Matrix3x3 jacobian = new Matrix3x3();
         final Cartesian tmp = new Cartesian();
         final Equatorial.Cart velEquatorial = new Equatorial.Cart();
@@ -78,7 +77,7 @@ final public class Stars
     {
         final Matrix3x3 transformation = new Matrix3x3();
         final double yearsSince2000 = time.julianYearsSinceJ2000();
-        SolarSystem.computeEclJ2000ToEquToDate( time, transformation );
+        Ecliptic.computeEclJ2000ToEquToDate( time, transformation );
         // Compute ecliptical cartesian coordinates resp. to Y2000
         final int offset = 3 * starIndex;
         outputPosition.x = POS_J2000[offset] + VEL_J2000[offset] * yearsSince2000;

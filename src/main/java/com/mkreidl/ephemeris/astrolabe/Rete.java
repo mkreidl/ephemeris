@@ -11,7 +11,7 @@ import com.mkreidl.ephemeris.sky.Constellations;
 import com.mkreidl.ephemeris.sky.Stars;
 import com.mkreidl.ephemeris.sky.StarsCatalog;
 import com.mkreidl.ephemeris.sky.coordinates.Equatorial;
-import com.mkreidl.ephemeris.solarsystem.SolarSystem;
+import com.mkreidl.ephemeris.solarsystem.Ecliptic;
 import com.mkreidl.ephemeris.solarsystem.Zodiac;
 
 import java.util.EnumMap;
@@ -69,7 +69,7 @@ public class Rete extends AbstractPart
     {
         zodiac.compute( astrolabe.time );
         final Matrix3x3 transformEclipticalJ2000ToEquatorial = new Matrix3x3();
-        SolarSystem.computeEclJ2000ToEquToDate( astrolabe.time, transformEclipticalJ2000ToEquatorial );
+        Ecliptic.computeEclJ2000ToEquToDate( astrolabe.time, transformEclipticalJ2000ToEquatorial );
         Stars.computeEclipticalJ2000( astrolabe.time, starsEclipticalJ2000 );
         for ( int i = 0; i < StarsCatalog.SIZE; ++i )
             transformEclipticalJ2000ToEquatorial.applyTo( starsEclipticalJ2000, starsEquatorialToDate, 3 * i );

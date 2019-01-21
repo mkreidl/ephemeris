@@ -30,38 +30,6 @@ public abstract class SolarSystem
         }
     }
 
-    public static void computeEclJ2000ToEquToDate( Time time, Matrix3x3 transformation )
-    {
-        PrecessionMatrix.compute( time, transformation );
-        transformation.postRotateX( SolarSystemVSOP87C.getEcliptic( time ) );
-    }
-
-    /**
-     * Calculate the ecliptic of the ecliptic.
-     * <p>
-     * Reference: Astronomical Almanac (1984),
-     * https://de.wikipedia.org/wiki/Ekliptik
-     *
-     * @return Obliquity of the ecliptic in radians at the given date.
-     */
-    public static double getEcliptic( final Time date )
-    {
-        final double t = date.julianDayNumberSince( Time.J2000 ) / Time.DAYS_PER_CENTURY;
-        return Math.toRadians( 23.4392911111 - t * ( 1.30041667e-2 + t * ( 1.638888e-7 - t * 5.036111e-7 ) ) );
-    }
-
-    static Matrix3x3 getEcl2EquMatrix( Time time, Matrix3x3 output )
-    {
-        output.setRotation( getEcliptic( time ), Coordinates.Axis.X );
-        return output;
-    }
-
-    public static Matrix3x3 getEqu2EclMatrix( Time time, Matrix3x3 output )
-    {
-        output.setRotation( -getEcliptic( time ), Coordinates.Axis.X );
-        return output;
-    }
-
     public Cartesian getHeliocentric( final Body body, final Cartesian output )
     {
         output.set( positions.get( body ) );
@@ -121,7 +89,7 @@ public abstract class SolarSystem
     public void setTimeLocation( final Time time, double longitudeRad, double latitudeRad )
     {
         final double localSiderealTimeRad = time.getMeanSiderealTimeRadians() + longitudeRad;
-        final double currentEclipticRad = SolarSystem.getEcliptic( time );
+        final double currentEclipticRad = Ecliptic.getObliquity( time );
         setTimeLocation( currentEclipticRad, localSiderealTimeRad, latitudeRad );
     }
 

@@ -31,30 +31,19 @@ public class EclipticTest
     @Parameters
     public static Iterable<Object[]> data()
     {
-        return Arrays.asList( new Object[][]
-                {
-                        {
-                                -3000, 24.0266666667, 10e-3
-                        },
-                        {
-                                0, 23.695, 1e-3
-                        },
-                        {
-                                2000, 23.44, 1e-3
-                        },
-                        {
-                                2016, 23.43721, 0.1 / 3600,
-                        },
-                        {
-                                3000, 23.31, 1e-3
-                        },
-                } );
+        return Arrays.asList( new Object[][]{
+                {-3000, 24.0266666667, 10e-3},
+                {0, 23.695, 1e-3},
+                {2000, 23.44, 1e-3},
+                {2016, 23.43721, 0.1 / 3600,},
+                {3000, 23.31, 1e-3},
+        } );
     }
 
     @Test
     public void testEcliptic()
     {
-        assertEquals( this.ecliptic * DEG, SolarSystemVSOP87C.getEcliptic( julianDate ), this.tolerance );
+        assertEquals( this.ecliptic * DEG, Ecliptic.getObliquity( julianDate ), this.tolerance );
     }
 
 }

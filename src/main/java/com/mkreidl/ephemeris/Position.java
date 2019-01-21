@@ -8,7 +8,7 @@ import com.mkreidl.ephemeris.sky.coordinates.Ecliptical;
 import com.mkreidl.ephemeris.sky.coordinates.Equatorial;
 import com.mkreidl.ephemeris.sky.coordinates.Horizontal;
 import com.mkreidl.ephemeris.solarsystem.Body;
-import com.mkreidl.ephemeris.solarsystem.SolarSystemVSOP87C;
+import com.mkreidl.ephemeris.solarsystem.Ecliptic;
 
 
 public class Position
@@ -101,7 +101,7 @@ public class Position
 
     public void setTimeLocation( Time time, Spherical geographicLocation )
     {
-        currentEcliptic = SolarSystemVSOP87C.getEcliptic( time );
+        currentEcliptic = Ecliptic.getObliquity( time );
         angle.setRadians( geographicLocation.lon );
         final double localSiderealTime = time.getMeanSiderealTime( angle, angle ).getRadians();
         // current equatorial coordinates of zenith are used to compute current horizontal positions (in Planets)

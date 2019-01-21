@@ -15,12 +15,12 @@ public class Time
     public static final double TDT_OFFSET = 1.5; // Terrestrial dynamical Time
     public static final double TDT_EPOCH_DAY_NUMBER = STD_EPOCH_DAY_NUMBER - TDT_OFFSET;
 
-
     public static final long MILLIS_PER_HOUR = 3_600_000;
     public static final long MILLIS_PER_DAY = MILLIS_PER_HOUR * 24;
     public static final long DAYS_PER_CENTURY = 36_525;
     public static final long DAYS_PER_MILLENNIUM = 365_250;
     public static final long MILLIS_PER_CENTURY = MILLIS_PER_DAY * DAYS_PER_CENTURY;
+    public static final long MILLIS_PER_MILLENNIUM = MILLIS_PER_DAY * DAYS_PER_MILLENNIUM;
 
     public static final double SIDEREAL_PER_SOLAR = 1.00273790935;
     public static final double SOLAR_PER_SIDEREAL = 1.0 / SIDEREAL_PER_SOLAR;
@@ -74,6 +74,16 @@ public class Time
     public double julianDayNumberSince( Time instant )
     {
         return (double)( millisSinceEpoch - instant.millisSinceEpoch ) / MILLIS_PER_DAY;
+    }
+
+    public double julianCenturiesSince( Time instant )
+    {
+        return (double)( millisSinceEpoch - instant.millisSinceEpoch ) / MILLIS_PER_CENTURY;
+    }
+
+    public double julianMillenniaSince( Time instant )
+    {
+        return (double)( millisSinceEpoch - instant.millisSinceEpoch ) / MILLIS_PER_MILLENNIUM;
     }
 
     public double julianYearsSinceJ2000()
@@ -172,5 +182,4 @@ public class Time
     {
         millisSinceEpoch += millis;
     }
-
 }
