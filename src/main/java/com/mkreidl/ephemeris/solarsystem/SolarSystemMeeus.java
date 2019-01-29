@@ -14,14 +14,14 @@ public class SolarSystemMeeus extends SolarSystem
     public SolarSystemMeeus()
     {
         models.put( Body.SUN, new ModelSun() );
-        models.put( Body.MERCURY, new Mercury() );
-        models.put( Body.VENUS, new Venus() );
-        models.put( Body.EARTH, new Earth() );
-        models.put( Body.MARS, new Mars() );
-        models.put( Body.JUPITER, new Jupiter() );
-        models.put( Body.SATURN, new Saturn() );
-        models.put( Body.URANUS, new Uranus() );
-        models.put( Body.NEPTUNE, new Neptune() );
+        models.put( Body.MERCURY, new ModelVsop87.LBR(Mercury.Companion.getCoefficients()) );
+        models.put( Body.VENUS, new ModelVsop87.LBR(Venus.Companion.getCoefficients()) );
+        models.put( Body.EARTH, new ModelVsop87.LBR(Earth.Companion.getCoefficients()) );
+        models.put( Body.MARS, new ModelVsop87.LBR(Mars.Companion.getCoefficients()));
+        models.put( Body.JUPITER, new ModelVsop87.LBR(Jupiter.Companion.getCoefficients()));
+        models.put( Body.SATURN, new ModelVsop87.LBR(Saturn.Companion.getCoefficients()) );
+        models.put( Body.URANUS, new ModelVsop87.LBR(Uranus.Companion.getCoefficients()) );
+        models.put( Body.NEPTUNE, new ModelVsop87.LBR(Neptune.Companion.getCoefficients()) );
         models.put( Body.MOON, new ModelMoon() );
         models.put( Body.PLUTO, new ModelPluto() );
     }

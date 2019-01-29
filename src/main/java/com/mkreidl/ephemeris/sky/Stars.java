@@ -28,10 +28,14 @@ final public class Stars
         {
             final double ra = StarsCatalog.getRAscJ2000( i );
             final double decl = StarsCatalog.getDeclJ2000( i );
+            final double sinRa = sin(ra);
+            final double cosRa = cos(ra);
+            final double sinDecl = sin(decl);
+            final double cosDecl = cos(decl);
             jacobian.set(
-                    -sin( ra ) * cos( decl ), -cos( ra ) * sin( decl ), 0,
-                    cos( ra ) * cos( decl ), -sin( ra ) * sin( decl ), 0,
-                    0, cos( decl ), 0
+                    -sinRa * cosDecl, -cosRa * sinDecl, 0,
+                    cosRa * cosDecl, -sinRa * sinDecl, 0,
+                    0, cosDecl, 0
             );
             tmp.set( StarsCatalog.getVRAscJ2000( i ), StarsCatalog.getVDeclJ2000( i ), 0 );
             jacobian.applyTo( tmp, velEquatorial );
@@ -66,7 +70,7 @@ final public class Stars
         for ( int i = start; i < StarsCatalog.SIZE; i += delta )
         {
             final int offset = 3 * i;
-            // Compute ecliptical cartesian coordinates for Y2000 frame
+            // Compute ecliptical cartesian coordinates for J2000 frame
             eclipticalPositions[offset] = POS_J2000[offset] + VEL_J2000[offset] * yearsSince2000;
             eclipticalPositions[offset + 1] = POS_J2000[offset + 1] + VEL_J2000[offset + 1] * yearsSince2000;
             eclipticalPositions[offset + 2] = POS_J2000[offset + 2] + VEL_J2000[offset + 2] * yearsSince2000;
@@ -78,7 +82,7 @@ final public class Stars
         final Matrix3x3 transformation = new Matrix3x3();
         final double yearsSince2000 = time.julianYearsSinceJ2000();
         Ecliptic.computeEclJ2000ToEquToDate( time, transformation );
-        // Compute ecliptical cartesian coordinates resp. to Y2000
+        // Compute ecliptical cartesian coordinates in J2000 frame
         final int offset = 3 * starIndex;
         outputPosition.x = POS_J2000[offset] + VEL_J2000[offset] * yearsSince2000;
         outputPosition.y = POS_J2000[offset + 1] + VEL_J2000[offset + 1] * yearsSince2000;

@@ -41,18 +41,18 @@ public class PrecessionMatrix extends Matrix3x3
     {
         final int deg = polynomial.length;
         double result = polynomial[deg - 1];
-        for ( int i = polynomial.length - 2; i >= 0; i-- )
+        for ( int i = polynomial.length - 2; i >= 0; --i )
             result = result * t + polynomial[i];
         return result * 1e-12;
     }
 
-    private static final double[] S11 = new double[]{0.0, 0.0, -538867722.0, -270670.0, 1138205.0, 8604.0, -813.0};
-    private static final double[] C11 = new double[]{1e12, 0.0, -20728.0, -19147.0, -149390.0, -34.0, 617.0};
-    private static final double[] S12 = new double[]{-1e12, 0.0, 2575043.0, -56157.0, 140001.0, 383.0, -613.0};
-    private static final double[] C12 = new double[]{0.0, 0, -539329768.0, -479046.0, 1144883.0, 8884.0, -830.0};
-    private static final double[] S13 = new double[]{0.0, 2269380040.0, -24745348.0, -2422542.0, 78247.0, -468.0, 134.0};
-    private static final double[] C13 = new double[]{0.0, -203607820.0, -94040878.0, 2307025.0, 37729.0, -4862.0, 25.0};
-    private static final double[] A31 = new double[]{0.0, 203607820.0, 94040878.0, -1083606.0, -50218.0, 929.0, 11.0};
-    private static final double[] A32 = new double[]{0.0, 2269380040.0, -24745348.0, -2532307.0, 27473.0, 643.0, -1.0};
-    private static final double[] A33 = new double[]{1e12, 0.0, -2595771.0, 37009.0, 1236.0, -13.0, 0};
+    private static final double[] S11 = {0.0, 0.0, -538867722.0, -270670.0, 1138205.0, 8604.0, -813.0};
+    private static final double[] C11 = {1e12, 0.0, -20728.0, -19147.0, -149390.0, -34.0, 617.0};
+    private static final double[] S12 = {-1e12, 0.0, 2575043.0, -56157.0, 140001.0, 383.0, -613.0};
+    private static final double[] C12 = {0.0, 0, -539329768.0, -479046.0, 1144883.0, 8884.0, -830.0};
+    private static final double[] S13 = {0.0, 2269380040.0, -24745348.0, -2422542.0, 78247.0, -468.0, 134.0};
+    private static final double[] C13 = {0.0, -203607820.0, -94040878.0, 2307025.0, 37729.0, -4862.0, 25.0};
+    private static final double[] A31 = {0.0, 203607820.0, 94040878.0, -1083606.0, -50218.0, 929.0, 11.0};
+    private static final double[] A32 = {0.0, 2269380040.0, -24745348.0, -2532307.0, 27473.0, 643.0, -1.0};
+    private static final double[] A33 = {1e12, 0.0, -2595771.0, 37009.0, 1236.0, -13.0, 0};
 }

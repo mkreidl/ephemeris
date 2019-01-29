@@ -19,10 +19,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.Locale;
-import java.util.TimeZone;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -96,7 +93,7 @@ public class TestUtil
     @Parameters( name = "{0}" )
     public static Iterable<Object[]> solarSystemData( Collection<Body> bodies )
     {
-        final LinkedList<Object[]> datasets = new LinkedList<>();
+        final List<Object[]> dataSets = new LinkedList<>();
         final File[] files = new File( DIR_NASA.getFile() ).listFiles();
 
         for ( File file : files )
@@ -138,7 +135,7 @@ public class TestUtil
                         if ( body == MOON )
                             ephemeris.phase = ( moonPhase - 0.5 ) * 360;
                         if ( bodies.contains( body ) )
-                            datasets.add( new Object[]{dateStr + " - geocentric - " + objectName, body, time, ephemeris} );
+                            dataSets.add( new Object[]{dateStr + " - geocentric - " + objectName, body, time, ephemeris} );
                     }
                     catch ( IllegalArgumentException | IllegalStateException | StringIndexOutOfBoundsException e )
                     {
@@ -149,7 +146,7 @@ public class TestUtil
             {
             }
         }
-        return datasets;
+        return dataSets;
     }
 
     public static Time getAstronomicalTimeProlepticGregorian( String dateString )

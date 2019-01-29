@@ -14,6 +14,14 @@ public class Ecliptic {
     transformation.postRotateX(getObliquity(time));
   }
 
+  public static void computeEclJ2000ToEquToDateWithNutation(Time time, Matrix3x3 transformation) {
+    PrecessionMatrix.compute(time, transformation);
+    final Nutation nutation = new Nutation();
+    nutation.compute(time);
+    transformation.postRotateZ(nutation.getLongitude());
+    transformation.postRotateX(getObliquity(time) + nutation.getObliquity());
+  }
+
   /**
    * Calculate the obliquity of the ecliptic.
    * <p>
