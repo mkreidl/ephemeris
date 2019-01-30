@@ -77,7 +77,7 @@ public abstract class SolarSystem {
 
     public void setTimeLocation(final Time time, double longitudeRad, double latitudeRad) {
         final double localSiderealTimeRad = time.getMeanSiderealTimeRadians() + longitudeRad;
-        final double currentEclipticRad = new Ecliptic(time).getObliquity();
+        final double currentEclipticRad = new Ecliptic(time).getMeanObliquity();
         setTimeLocation(currentEclipticRad, localSiderealTimeRad, latitudeRad);
     }
 

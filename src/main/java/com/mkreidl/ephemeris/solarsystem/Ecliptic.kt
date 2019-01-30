@@ -12,11 +12,15 @@ class Ecliptic(val time: Time) {
     val trafoEcl2Equ by lazy {computeEcl2EquMatrix()}
     val trafoEqu2Ecl by lazy {computeEqu2EclMatrix()}
 
-    val obliquity by lazy { computeObliquity() }
-    val nutation by lazy { computeNutation() }
+    val meanObliquity by lazy { computeObliquity() }
+    val trueObliquity get() = meanObliquity + nutationInObliquity
 
+    val trueSiderealTimeRadians get() = time.meanSiderealTimeRadians + nutationInRightAscension
+
+    val nutation by lazy { computeNutation() }
     val nutationInLongitude get() = nutation.first
     val nutationInObliquity get() = nutation.second
+    val nutationInRightAscension get() = nutationInLongitude * Math.cos(trueObliquity)
 
     fun computeEclJ2000ToEquToDate() = computeEcl2EquMatrix() * computeTransformJ2000ToDate()
 
@@ -24,18 +28,18 @@ class Ecliptic(val time: Time) {
     }
 
     /**
-     * Calculate the obliquity of the ecliptic.
+     * Calculate the meanObliquity of the ecliptic.
      *
      * Reference: Astronomical Almanac (1984),
      * https://de.wikipedia.org/wiki/Ekliptik
      *
      * @return Obliquity of the ecliptic in radians at the given date.
      */
-    private fun computeObliquity() = Math.toRadians(23.4392911111 - julianCenturies * (1.30041667e-2 + julianCenturies * (1.638888e-7 - julianCenturies * 5.036111e-7)))
+    private fun computeObliquity() = MEAN_OBLIQUITY[julianCenturies]
 
-    private fun computeEcl2EquMatrix() = Matrix3x3.rotation(obliquity, Axis.X)
+    private fun computeEcl2EquMatrix() = Matrix3x3.rotation(meanObliquity, Axis.X)
 
-    private fun computeEqu2EclMatrix() = Matrix3x3.rotation(-obliquity, Axis.X)
+    private fun computeEqu2EclMatrix() = Matrix3x3.rotation(-meanObliquity, Axis.X)
 
     fun computeTransformJ2000ToDate(): Matrix3x3 {
         val t = time.julianMillenniaSince(Time.J2000)
@@ -77,7 +81,7 @@ class Ecliptic(val time: Time) {
     }
 
     companion object {
-        private fun evaluatePolynomial(t: Double, polynomial: DoubleArray) = polynomial.reduceRight { coeff, horner -> coeff + horner * t }
+        private val MEAN_OBLIQUITY = Polynomial(23.4392911111, - 1.30041667e-2, -1.638888e-7, 5.036111e-7) * Math.toRadians(1.0)
 
         private val S11 = Polynomial(0.0, 0.0, -538867722.0, -270670.0, 1138205.0, 8604.0, -813.0) * 1e-12
         private val C11 = Polynomial(1e12, 0.0, -20728.0, -19147.0, -149390.0, -34.0, 617.0) * 1e-12

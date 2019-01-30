@@ -9,7 +9,7 @@ import com.mkreidl.ephemeris.sky.coordinates.Ecliptical;
 public class Zodiac {
     public double obliquity;
     public final Spherical pole = new Spherical(
-            1.0, -Math.PI / 2, Math.PI / 2 - new Ecliptic(new Time()).getObliquity());
+            1.0, -Math.PI / 2, Math.PI / 2 - new Ecliptic(new Time()).getMeanObliquity());
 
     public static Sign getSign(Angle lon) {
         return Sign.values()[(int) lon.get(Angle.Unit.DEGREES) / 30];
@@ -31,7 +31,7 @@ public class Zodiac {
     }
 
     public double compute(Time time) {
-        obliquity = new Ecliptic(time).getObliquity();
+        obliquity = new Ecliptic(time).getMeanObliquity();
         pole.lat = Math.PI / 2 - obliquity;
         return obliquity;
     }

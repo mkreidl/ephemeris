@@ -17,7 +17,7 @@ public class EclipticTest {
         calendar.set(1992, 9, 13, 0, 0, 0);
         final Time time = new Time(calendar.getTimeInMillis());
         final double radians = Angle.standardize(new Sun(time).getEquationOfTime());
-        Assert.assertEquals(13 + 42.6 / 60, Math.toDegrees(radians) * 4, 0.02);
+        Assert.assertEquals(13 + 42.6 / 60, Math.toDegrees(radians) * 4, 0.002);
     }
 
     @Test
@@ -44,6 +44,6 @@ public class EclipticTest {
     private double getObliquity(int year) {
         final GregorianCalendar cal = new GregorianCalendar(year, Calendar.JANUARY, 1, 12, 0, 0);
         final Time julianDate = new Time(cal.getTime().getTime());
-        return new Ecliptic(julianDate).getObliquity();
+        return new Ecliptic(julianDate).getMeanObliquity();
     }
 }

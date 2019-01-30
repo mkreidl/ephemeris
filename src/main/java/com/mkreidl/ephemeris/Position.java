@@ -90,7 +90,7 @@ public class Position {
     }
 
     public void setTimeLocation(Time time, Spherical geographicLocation) {
-        currentEcliptic = new Ecliptic(time).getObliquity();
+        currentEcliptic = new Ecliptic(time).getMeanObliquity();
         angle.setRadians(geographicLocation.lon);
         final double localSiderealTime = time.getMeanSiderealTime(angle, angle).getRadians();
         // current equatorial coordinates of zenith are used to compute current horizontal positions (in Planets)
