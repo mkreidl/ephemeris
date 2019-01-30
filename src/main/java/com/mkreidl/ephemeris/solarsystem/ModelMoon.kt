@@ -2,12 +2,10 @@ package com.mkreidl.ephemeris.solarsystem
 
 import com.mkreidl.ephemeris.Distance
 import com.mkreidl.ephemeris.Time
-import com.mkreidl.ephemeris.geometry.Cartesian
-import com.mkreidl.ephemeris.geometry.ClassicalOrbitalElements
-import com.mkreidl.ephemeris.geometry.Spherical
-
 import com.mkreidl.ephemeris.geometry.Angle.DEG
-import com.mkreidl.ephemeris.geometry.OrbitalElements
+import com.mkreidl.ephemeris.geometry.ClassicalOrbitalElements
+import com.mkreidl.math.Sphe
+import com.mkreidl.math.Vector3
 import java.lang.Math.cos
 import java.lang.Math.sin
 
@@ -38,16 +36,19 @@ class ModelMoon : OrbitalModel() {
      */
 
     private val orbitalElements = ClassicalOrbitalElements()
-    private val posSpherical = Spherical()
-    private val posCartesian = Cartesian()
+    private var posSpherical = Sphe.ZERO
+    private var posCartesian = Vector3.ZERO
 
-    override fun computeSpherical(time: Time) = computeCartesian(time).toSpherical()
+    override fun computeSpherical(time: Time): PhaseSpherical {
+        compute(time)
+        return PhaseSpherical(posSpherical, Sphe.ZERO)
+    }
 
     override fun computeCartesian(time: Time): PhaseCartesian {
         compute(time)
         return PhaseCartesian(
-                Cart(posCartesian.x, posCartesian.y, posCartesian.z),
-                Cart(-posCartesian.y, posCartesian.x, 0.0) * velocityScale)
+                posCartesian,
+                Vector3(-posCartesian.y, posCartesian.x, 0.0) * velocityScale)
     }
 
     fun computeOrbitalElements(time: Time): ClassicalOrbitalElements {
@@ -68,18 +69,20 @@ class ModelMoon : OrbitalModel() {
         orbitalElements.add(orbElMoonSeries[0])
 
         orbitalElements.computePosition()
-        orbitalElements.getPosition(posSpherical)
+        posSpherical = orbitalElements.positionSpherical
 
         orbElSun.set(orbElSunSeries[1])
         orbElSun.times(t)
         orbElSun.add(orbElSunSeries[0])
 
-        posSpherical.lon += longitudeCorrection()
-        posSpherical.lat += latitudeCorrection()
-        posSpherical.dst += distanceCorrection()
+        posSpherical = Sphe(
+                lon = posSpherical.lon + longitudeCorrection(),
+                lat = posSpherical.lat + latitudeCorrection(),
+                dst = posSpherical.dst + distanceCorrection()
+        )
 
-        posSpherical.standardize()
-        posSpherical.transform(posCartesian)
+        posSpherical = posSpherical.standardized()
+        posCartesian = posSpherical.toCartesian()
     }
 
     private fun D(): Double {

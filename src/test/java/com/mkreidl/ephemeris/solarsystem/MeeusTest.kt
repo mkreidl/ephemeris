@@ -3,21 +3,12 @@ package com.mkreidl.ephemeris.solarsystem
 import com.mkreidl.ephemeris.Time
 import com.mkreidl.ephemeris.geometry.Spherical
 import com.mkreidl.ephemeris.geometry.VSOP87File
-import com.mkreidl.ephemeris.solarsystem.meeus.Earth
-import com.mkreidl.ephemeris.solarsystem.meeus.Jupiter
-import com.mkreidl.ephemeris.solarsystem.meeus.Mars
-import com.mkreidl.ephemeris.solarsystem.meeus.Mercury
-import com.mkreidl.ephemeris.solarsystem.meeus.Neptune
-import com.mkreidl.ephemeris.solarsystem.meeus.Saturn
-import com.mkreidl.ephemeris.solarsystem.meeus.Uranus
-import com.mkreidl.ephemeris.solarsystem.meeus.Venus
-
+import com.mkreidl.ephemeris.solarsystem.meeus.*
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import org.junit.runners.Parameterized.Parameters
-
-import org.junit.Assert.assertEquals
 
 @RunWith(Parameterized::class)
 class MeeusTest(planet: VSOP87File.Planet, timeStr: String, dataSet: Vsop87AbstractTest.DataSet) : Vsop87AbstractTest(planet, timeStr, dataSet) {

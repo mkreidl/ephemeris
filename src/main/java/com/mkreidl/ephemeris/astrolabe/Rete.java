@@ -68,8 +68,7 @@ public class Rete extends AbstractPart
     protected void onSynchronize()
     {
         zodiac.compute( astrolabe.time );
-        final Matrix3x3 transformEclipticalJ2000ToEquatorial = new Matrix3x3();
-        Ecliptic.computeEclJ2000ToEquToDate( astrolabe.time, transformEclipticalJ2000ToEquatorial );
+        final Matrix3x3 transformEclipticalJ2000ToEquatorial = new Matrix3x3(new Ecliptic(astrolabe.time).computeEclJ2000ToEquToDate());
         Stars.computeEclipticalJ2000( astrolabe.time, starsEclipticalJ2000 );
         for ( int i = 0; i < StarsCatalog.SIZE; ++i )
             transformEclipticalJ2000ToEquatorial.applyTo( starsEclipticalJ2000, starsEquatorialToDate, 3 * i );

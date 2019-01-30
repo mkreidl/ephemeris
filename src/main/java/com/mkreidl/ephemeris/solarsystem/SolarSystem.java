@@ -6,11 +6,13 @@ import com.mkreidl.ephemeris.geometry.Cartesian;
 import com.mkreidl.ephemeris.sky.coordinates.Ecliptical;
 import com.mkreidl.ephemeris.sky.coordinates.Equatorial;
 import com.mkreidl.ephemeris.sky.coordinates.Horizontal;
+import com.mkreidl.math.Vector3;
 
 import java.util.EnumMap;
 import java.util.Map;
 
 public abstract class SolarSystem {
+    
     protected final Map<Body, Ecliptical.Cart> positions = new EnumMap<>(Body.class);
     private final Map<Body, Ecliptical.Cart> velocities = new EnumMap<>(Body.class);
     private final Map<Body, Position> planetsEphemerides = new EnumMap<>(Body.class);
@@ -55,8 +57,8 @@ public abstract class SolarSystem {
     public void compute(final Time time, final Body body) {
         final OrbitalModel model = models.get(body);
         final PhaseCartesian phase = model.computeCartesian(time);
-        final Cart pos = phase.getPosition().times(model.getDistanceUnit().toMeters());
-        final Cart vel = phase.getVelocity().times(model.getDistanceUnit().toMeters());
+        final Vector3 pos = phase.getPosition().times(model.getDistanceUnit().toMeters());
+        final Vector3 vel = phase.getVelocity().times(model.getDistanceUnit().toMeters());
         positions.get(body).set(pos.getX(), pos.getY(), pos.getZ());
         velocities.get(body).set(vel.getX(), vel.getY(), vel.getZ());
     }
@@ -75,7 +77,7 @@ public abstract class SolarSystem {
 
     public void setTimeLocation(final Time time, double longitudeRad, double latitudeRad) {
         final double localSiderealTimeRad = time.getMeanSiderealTimeRadians() + longitudeRad;
-        final double currentEclipticRad = Ecliptic.getObliquity(time);
+        final double currentEclipticRad = new Ecliptic(time).getObliquity();
         setTimeLocation(currentEclipticRad, localSiderealTimeRad, latitudeRad);
     }
 

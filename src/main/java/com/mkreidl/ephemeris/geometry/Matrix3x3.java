@@ -8,6 +8,10 @@ public class Matrix3x3
 {
     public double[] values = new double[9];
 
+    public Matrix3x3(com.mkreidl.math.Matrix3x3 original) {
+        this(original.toDoubleArray());
+    }
+
     public Matrix3x3( double... values )
     {
         if ( values.length == 0 )

@@ -2,17 +2,11 @@ package com.mkreidl.ephemeris.solarsystem;
 
 import com.mkreidl.ephemeris.TestUtil;
 import com.mkreidl.ephemeris.Time;
-import com.mkreidl.ephemeris.geometry.Cartesian;
 import com.mkreidl.ephemeris.geometry.ClassicalOrbitalElements;
-import com.mkreidl.ephemeris.geometry.OrbitalElements;
 import com.mkreidl.ephemeris.geometry.Spherical;
-
 import org.junit.Test;
 
-import static com.mkreidl.ephemeris.geometry.Angle.DEG;
-import static com.mkreidl.ephemeris.geometry.Angle.MIN;
-import static com.mkreidl.ephemeris.geometry.Angle.SEC;
-import static com.mkreidl.ephemeris.geometry.Angle.standardize;
+import static com.mkreidl.ephemeris.geometry.Angle.*;
 import static org.junit.Assert.assertEquals;
 
 public class ModelMoonTest {

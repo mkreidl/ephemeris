@@ -1,6 +1,7 @@
 package com.mkreidl.ephemeris.solarsystem
 
 import com.mkreidl.ephemeris.Time
+import com.mkreidl.math.Sphe
 
 class ModelPluto : OrbitalModel() {
 

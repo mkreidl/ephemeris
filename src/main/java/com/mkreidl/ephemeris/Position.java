@@ -11,10 +11,8 @@ import com.mkreidl.ephemeris.solarsystem.Body;
 import com.mkreidl.ephemeris.solarsystem.Ecliptic;
 
 
-public class Position
-{
-    public enum CoordinatesCenter
-    {
+public class Position {
+    public enum CoordinatesCenter {
         HELIOCENTRIC, GEOCENTRIC, TOPOCENTRIC
     }
 
@@ -38,172 +36,150 @@ public class Position
     private final Equatorial.Cart tmpEquatorialCartesian = new Equatorial.Cart();
     private final Horizontal.Cart tmpHorizontalCartesian = new Horizontal.Cart();
 
-    public void setHelioGeocentric( Ecliptical.Cart pos, Ecliptical.Cart earth )
-    {
-        helioCart.set( pos );
-        geoCart.set( pos );
-        posSun.set( earth ).scale( -1 );
+    public void setHelioGeocentric(Ecliptical.Cart pos, Ecliptical.Cart earth) {
+        helioCart.set(pos);
+        geoCart.set(pos);
+        posSun.set(earth).scale(-1);
     }
 
-    public void setHeliocentricPosition( Ecliptical.Cart heliocentric, Ecliptical.Cart earth )
-    {
-        helioCart.set( heliocentric );
-        geoCart.set( heliocentric ).sub( earth );
-        posSun.set( earth ).scale( -1 );
+    public void setHeliocentricPosition(Ecliptical.Cart heliocentric, Ecliptical.Cart earth) {
+        helioCart.set(heliocentric);
+        geoCart.set(heliocentric).sub(earth);
+        posSun.set(earth).scale(-1);
     }
 
-    public void setGeocentricPosition( Ecliptical.Cart geocentric, Ecliptical.Cart earth )
-    {
-        geoCart.set( geocentric );
-        helioCart.set( geocentric ).add( earth );
-        posSun.set( earth ).scale( -1 );
+    public void setGeocentricPosition(Ecliptical.Cart geocentric, Ecliptical.Cart earth) {
+        geoCart.set(geocentric);
+        helioCart.set(geocentric).add(earth);
+        posSun.set(earth).scale(-1);
     }
 
-    public void setHeliocentricVelocity( Ecliptical.Cart velBody, Ecliptical.Cart velEarth )
-    {
-        velocityHeliocentric.set( velBody );
-        velocityGeocentric.set( velBody ).sub( velEarth );
-        velocitySun.set( velEarth ).scale( -1 );
+    public void setHeliocentricVelocity(Ecliptical.Cart velBody, Ecliptical.Cart velEarth) {
+        velocityHeliocentric.set(velBody);
+        velocityGeocentric.set(velBody).sub(velEarth);
+        velocitySun.set(velEarth).scale(-1);
     }
 
-    public void setGeocentricVelocity( Ecliptical.Cart velBody, Ecliptical.Cart velEarth )
-    {
-        velocityGeocentric.set( velBody );
-        velocityHeliocentric.set( velBody ).add( velEarth );
-        velocitySun.set( velEarth ).scale( -1 );
+    public void setGeocentricVelocity(Ecliptical.Cart velBody, Ecliptical.Cart velEarth) {
+        velocityGeocentric.set(velBody);
+        velocityHeliocentric.set(velBody).add(velEarth);
+        velocitySun.set(velEarth).scale(-1);
     }
 
-    public void correctAberration()
-    {
-        final double timeLightTravel = geoCart.distance( Distance.m ) / Distance.ls.toMeters();
-        tmpEclipticalCartesian.set( velocityGeocentric ).scale( -timeLightTravel );
-        geoCart.add( tmpEclipticalCartesian );
-        final double timeLightTravelSun = posSun.distance( Distance.m ) / Distance.ls.toMeters();
-        tmpEclipticalCartesian.set( velocitySun ).scale( -timeLightTravelSun );
-        posSun.add( tmpEclipticalCartesian );
+    public void correctAberration() {
+        final double timeLightTravel = geoCart.distance(Distance.m) / Distance.ls.toMeters();
+        tmpEclipticalCartesian.set(velocityGeocentric).scale(-timeLightTravel);
+        geoCart.add(tmpEclipticalCartesian);
+        final double timeLightTravelSun = posSun.distance(Distance.m) / Distance.ls.toMeters();
+        tmpEclipticalCartesian.set(velocitySun).scale(-timeLightTravelSun);
+        posSun.add(tmpEclipticalCartesian);
     }
 
-    public void setTimeLocation( double currentEclipticRadians, double localSiderealTimeRadians, double latitudeRadians )
-    {
+    public void setTimeLocation(double currentEclipticRadians, double localSiderealTimeRadians, double latitudeRadians) {
         currentEcliptic = currentEclipticRadians;
         // current equatorial coordinates of zenith are used to compute current horizontal positions (in Planets)
-        toposEquatorialSpherical.set( Body.EARTH.RADIUS_MEAN_M, localSiderealTimeRadians, latitudeRadians );
-        toposEquatorialSpherical.transform( toposEquatorial );
+        toposEquatorialSpherical.set(Body.EARTH.RADIUS_MEAN_M, localSiderealTimeRadians, latitudeRadians);
+        toposEquatorialSpherical.transform(toposEquatorial);
         // The following stores the current observer position in geocentric ecliptical coordinates
-        toposEcliptical.set( toposEquatorial ).rotate( Coordinates.Axis.X, -currentEcliptic );
+        toposEcliptical.set(toposEquatorial).rotate(Coordinates.Axis.X, -currentEcliptic);
     }
 
-    public void setTimeLocation( Time time, double lonRad, double latRad )
-    {
-        toposEquatorialSpherical.set( 1, lonRad, latRad );
-        setTimeLocation( time, toposEquatorialSpherical );
+    public void setTimeLocation(Time time, double lonRad, double latRad) {
+        toposEquatorialSpherical.set(1, lonRad, latRad);
+        setTimeLocation(time, toposEquatorialSpherical);
     }
 
-    public void setTimeLocation( Time time, Spherical geographicLocation )
-    {
-        currentEcliptic = Ecliptic.getObliquity( time );
-        angle.setRadians( geographicLocation.lon );
-        final double localSiderealTime = time.getMeanSiderealTime( angle, angle ).getRadians();
+    public void setTimeLocation(Time time, Spherical geographicLocation) {
+        currentEcliptic = new Ecliptic(time).getObliquity();
+        angle.setRadians(geographicLocation.lon);
+        final double localSiderealTime = time.getMeanSiderealTime(angle, angle).getRadians();
         // current equatorial coordinates of zenith are used to compute current horizontal positions (in Planets)
-        toposEquatorialSpherical.set( Body.EARTH.RADIUS_MEAN_M, localSiderealTime, geographicLocation.lat );
-        toposEquatorialSpherical.transform( toposEquatorial );
+        toposEquatorialSpherical.set(Body.EARTH.RADIUS_MEAN_M, localSiderealTime, geographicLocation.lat);
+        toposEquatorialSpherical.transform(toposEquatorial);
         // The following stores the current observer position in geocentric ecliptical coordinates
-        toposEcliptical.set( toposEquatorial ).rotate( Coordinates.Axis.X, -currentEcliptic );
+        toposEcliptical.set(toposEquatorial).rotate(Coordinates.Axis.X, -currentEcliptic);
     }
 
-    public Cartesian get( Ecliptical.Cart cartesian, CoordinatesCenter coordinatesCenter )
-    {
-        switch ( coordinatesCenter )
-        {
+    public Cartesian get(Ecliptical.Cart cartesian, CoordinatesCenter coordinatesCenter) {
+        switch (coordinatesCenter) {
             case GEOCENTRIC:
-                return cartesian.set( geoCart );
+                return cartesian.set(geoCart);
             case TOPOCENTRIC:
-                return cartesian.set( geoCart ).sub( toposEcliptical );
+                return cartesian.set(geoCart).sub(toposEcliptical);
             default:
-                return cartesian.set( helioCart );
+                return cartesian.set(helioCart);
         }
     }
 
-    public Cartesian get( Equatorial.Cart cartesian, CoordinatesCenter coordinatesCenter )
-    {
-        switch ( coordinatesCenter )
-        {
+    public Cartesian get(Equatorial.Cart cartesian, CoordinatesCenter coordinatesCenter) {
+        switch (coordinatesCenter) {
             case GEOCENTRIC:
-                return geoCart.toEquatorial( currentEcliptic, cartesian );
+                return geoCart.toEquatorial(currentEcliptic, cartesian);
             case TOPOCENTRIC:
-                return geoCart.toEquatorial( currentEcliptic, cartesian ).sub( toposEquatorial );
+                return geoCart.toEquatorial(currentEcliptic, cartesian).sub(toposEquatorial);
             default:
-                return helioCart.toEquatorial( currentEcliptic, cartesian );
+                return helioCart.toEquatorial(currentEcliptic, cartesian);
         }
     }
 
-    public Cartesian get( Horizontal.Cart cartesian, CoordinatesCenter coordinatesCenter )
-    {
-        switch ( coordinatesCenter )
-        {
+    public Cartesian get(Horizontal.Cart cartesian, CoordinatesCenter coordinatesCenter) {
+        switch (coordinatesCenter) {
             case GEOCENTRIC:
-                return geoCart.toHorizontal( currentEcliptic, toposEquatorialSpherical, cartesian );
+                return geoCart.toHorizontal(currentEcliptic, toposEquatorialSpherical, cartesian);
             case TOPOCENTRIC:
-                get( tmpEquatorialCartesian, CoordinatesCenter.TOPOCENTRIC );
-                return tmpEquatorialCartesian.toHorizontal( toposEquatorialSpherical, cartesian );
+                get(tmpEquatorialCartesian, CoordinatesCenter.TOPOCENTRIC);
+                return tmpEquatorialCartesian.toHorizontal(toposEquatorialSpherical, cartesian);
             default:
-                return helioCart.toHorizontal( currentEcliptic, toposEquatorialSpherical, cartesian );
+                return helioCart.toHorizontal(currentEcliptic, toposEquatorialSpherical, cartesian);
         }
     }
 
-    public Spherical get( Ecliptical.Sphe spherical, CoordinatesCenter coordinatesCenter )
-    {
-        switch ( coordinatesCenter )
-        {
+    public Spherical get(Ecliptical.Sphe spherical, CoordinatesCenter coordinatesCenter) {
+        switch (coordinatesCenter) {
             case GEOCENTRIC:
-                return geoCart.transform( spherical );
+                return geoCart.transform(spherical);
             case TOPOCENTRIC:
-                return get( tmpEclipticalCartesian, CoordinatesCenter.TOPOCENTRIC ).transform( spherical );
+                return get(tmpEclipticalCartesian, CoordinatesCenter.TOPOCENTRIC).transform(spherical);
             default:
-                return helioCart.transform( spherical );
+                return helioCart.transform(spherical);
         }
     }
 
-    public Spherical get( Equatorial.Sphe spherical, CoordinatesCenter coordinatesCenter )
-    {
-        switch ( coordinatesCenter )
-        {
+    public Spherical get(Equatorial.Sphe spherical, CoordinatesCenter coordinatesCenter) {
+        switch (coordinatesCenter) {
             case GEOCENTRIC:
-                geoCart.transform( tmpEclipticalSpherical );
-                return tmpEclipticalSpherical.toEquatorial( currentEcliptic, spherical );
+                geoCart.transform(tmpEclipticalSpherical);
+                return tmpEclipticalSpherical.toEquatorial(currentEcliptic, spherical);
             case TOPOCENTRIC:
-                return get( tmpEquatorialCartesian, CoordinatesCenter.TOPOCENTRIC ).transform( spherical );
+                return get(tmpEquatorialCartesian, CoordinatesCenter.TOPOCENTRIC).transform(spherical);
             default:
-                helioCart.transform( tmpEclipticalSpherical );
-                return tmpEclipticalSpherical.toEquatorial( currentEcliptic, spherical );
+                helioCart.transform(tmpEclipticalSpherical);
+                return tmpEclipticalSpherical.toEquatorial(currentEcliptic, spherical);
         }
     }
 
-    public Spherical get( Horizontal.Sphe spherical, CoordinatesCenter coordinatesCenter )
-    {
-        switch ( coordinatesCenter )
-        {
+    public Spherical get(Horizontal.Sphe spherical, CoordinatesCenter coordinatesCenter) {
+        switch (coordinatesCenter) {
             case GEOCENTRIC:
-                geoCart.transform( tmpEclipticalSpherical );
-                return tmpEclipticalSpherical.toHorizontal( currentEcliptic, toposEquatorialSpherical, spherical );
+                geoCart.transform(tmpEclipticalSpherical);
+                return tmpEclipticalSpherical.toHorizontal(currentEcliptic, toposEquatorialSpherical, spherical);
             case TOPOCENTRIC:
-                return get( tmpHorizontalCartesian, coordinatesCenter ).transform( spherical );
+                return get(tmpHorizontalCartesian, coordinatesCenter).transform(spherical);
             default:
-                return helioCart.toHorizontal( currentEcliptic, toposEquatorialSpherical, spherical );
+                return helioCart.toHorizontal(currentEcliptic, toposEquatorialSpherical, spherical);
         }
     }
 
     /**
      * Compute the phase angle
      */
-    public Angle getPhase( Angle phase )
-    {
+    public Angle getPhase(Angle phase) {
         // This computes the angle between the three bodies:
-        final double cosPhase = helioCart.dot( geoCart ) / ( geoCart.length() * helioCart.length() );
+        final double cosPhase = helioCart.dot(geoCart) / (geoCart.length() * helioCart.length());
         final double det = helioCart.x * geoCart.y - helioCart.y * geoCart.x;
-        final double angle = Math.acos( cosPhase );
-        return phase.set( ( angle < 0 && det < 0 || angle > 0 && det > 0 ) ?
-                angle : -angle, Angle.Unit.RADIANS );
+        final double angle = Math.acos(cosPhase);
+        return phase.set((angle < 0 && det < 0 || angle > 0 && det > 0) ?
+                angle : -angle, Angle.Unit.RADIANS);
         // This, in contrast, computes the difference in equatorial longitude, which
         // seems to be the correct thing to do according to reference values from
         // www.ephemeris.com:
@@ -215,11 +191,10 @@ public class Position
     /**
      * Compute the fraction of the disk which is lighted by the sun
      */
-    public double getIlluminatedFraction()
-    {
-        final double gh = helioCart.dot( geoCart );
-        final double cosPhase = gh / ( geoCart.length() * helioCart.length() );
-        return ( 1 + cosPhase ) / 2;
+    public double getIlluminatedFraction() {
+        final double gh = helioCart.dot(geoCart);
+        final double cosPhase = gh / (geoCart.length() * helioCart.length());
+        return (1 + cosPhase) / 2;
     }
 
     /**
@@ -228,27 +203,23 @@ public class Position
      *
      * @return Angle in radians
      */
-    public double getElongationRadians( CoordinatesCenter coordinatesCenter )
-    {
-        get( tmpEclipticalCartesian, coordinatesCenter );
-        final double ce = tmpEclipticalCartesian.dot( posSun ) / ( tmpEclipticalCartesian.length() * posSun.length() );
-        return Math.acos( ce ) * getElongationSign();
+    public double getElongationRadians(CoordinatesCenter coordinatesCenter) {
+        get(tmpEclipticalCartesian, coordinatesCenter);
+        final double ce = tmpEclipticalCartesian.dot(posSun) / (tmpEclipticalCartesian.length() * posSun.length());
+        return Math.acos(ce) * getElongationSign();
     }
 
-    private double getElongationSign()
-    {
-        return Math.signum( posSun.x * tmpEclipticalCartesian.y - posSun.y * tmpEclipticalCartesian.x );
+    private double getElongationSign() {
+        return Math.signum(posSun.x * tmpEclipticalCartesian.y - posSun.y * tmpEclipticalCartesian.x);
     }
 
-    public boolean isVisible()
-    {
+    public boolean isVisible() {
         final Horizontal.Sphe horizSpherical = new Horizontal.Sphe();
-        get( horizSpherical, CoordinatesCenter.TOPOCENTRIC );
-        return horizSpherical.getHeight( new Angle() ).get( Angle.Unit.RADIANS ) > 0.0;
+        get(horizSpherical, CoordinatesCenter.TOPOCENTRIC);
+        return horizSpherical.getHeight(new Angle()).get(Angle.Unit.RADIANS) > 0.0;
     }
 
-    public boolean isRetrograde()
-    {
+    public boolean isRetrograde() {
         // compute the z-coordinate of the cross produce r x v (with r and v geocentric)
         return geoCart.x * velocityGeocentric.y - geoCart.y * velocityGeocentric.x < 0;
     }

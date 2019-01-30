@@ -17,7 +17,7 @@ final public class Stars
 
     static
     {
-        final Matrix3x3 equ2ecl = Ecliptic.getEqu2EclMatrix( Time.J2000, new Matrix3x3() );
+        final Matrix3x3 equ2ecl = new Matrix3x3(new Ecliptic(Time.J2000).getTrafoEqu2Ecl() );
         final Matrix3x3 jacobian = new Matrix3x3();
         final Cartesian tmp = new Cartesian();
         final Equatorial.Cart velEquatorial = new Equatorial.Cart();
@@ -79,9 +79,8 @@ final public class Stars
 
     public static void computeEquatorial( int starIndex, Time time, Equatorial.Cart outputPosition )
     {
-        final Matrix3x3 transformation = new Matrix3x3();
         final double yearsSince2000 = time.julianYearsSinceJ2000();
-        Ecliptic.computeEclJ2000ToEquToDate( time, transformation );
+        final Matrix3x3 transformation = new Matrix3x3(new Ecliptic(time).computeEclJ2000ToEquToDate());
         // Compute ecliptical cartesian coordinates in J2000 frame
         final int offset = 3 * starIndex;
         outputPosition.x = POS_J2000[offset] + VEL_J2000[offset] * yearsSince2000;

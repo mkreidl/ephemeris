@@ -1,6 +1,8 @@
 package com.mkreidl.ephemeris.solarsystem
 
 import com.mkreidl.ephemeris.Time
+import com.mkreidl.math.Sphe
+import com.mkreidl.math.Vector3
 
 abstract class ModelVsop87(private val coefficients: Array<Array<Array<DoubleArray>>>) : OrbitalModel() {
 
@@ -38,8 +40,8 @@ abstract class ModelVsop87(private val coefficients: Array<Array<Array<DoubleArr
         override fun computeCartesian(time: Time): PhaseCartesian {
             compute(time)
             return PhaseCartesian(
-                    Cart(results[0], results[1], results[2]),
-                    Cart(results[3], results[4], results[5])
+                    Vector3(results[0], results[1], results[2]),
+                    Vector3(results[3], results[4], results[5])
             )
         }
     }
