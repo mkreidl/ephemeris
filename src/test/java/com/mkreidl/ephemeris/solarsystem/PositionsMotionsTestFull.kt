@@ -95,6 +95,7 @@ class PositionsMotionsTestFull(testname: String, private val body: Body, private
         println(String.format("%s  | equatorial longitude |  %s", expected.rightAscension, rightAscension))
         println(String.format("%s  | equatorial latitude  |  %s", expected.declination, declination))
         println("expected: " + (if (expected.retrograde) "R" else "-") + "  |  actual: " + if (solarSystem.isRetrograde(body)) "R" else "-")
+        println("Angular velocity [sec]: ${solarSystem.getAngularVelocity(body) * 3_600}")
 
         assertEquals(expected.longitude.radians, longitude.radians, tol)
         assertEquals(expected.latitude.radians, latitude.radians, tol)

@@ -72,6 +72,11 @@ class FullSolarSystem(private val models: Map<Body, OrbitalModel>) {
         return phase.position.x * phase.velocity.y - phase.position.y * phase.velocity.x < 0
     }
 
+    fun getAngularVelocity(body: Body): Double {
+        val phase = eclipticalGeocentric.getValue(body)
+        return (phase.position.x * phase.velocity.y - phase.position.y * phase.velocity.x) / (phase.position * phase.position)
+    }
+
     /**
      * Compute the fraction of the disk which is lighted by the sun
      */

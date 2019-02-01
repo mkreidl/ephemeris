@@ -24,7 +24,8 @@ import static org.junit.Assert.assertEquals;
  */
 @RunWith(Parameterized.class)
 public class PositionsMotionsTest {
-    private static final double TOL_PLANET = 0.58 * Angle.MIN;
+    private static final double TOL_PLANET = 0.5 * Angle.MIN;
+    private static final double TOL_PLUTO = 0.6 * Angle.MIN;
     private static final double TOL_MOON = 4 * Angle.MIN;
 
     private final SolarSystem solarSystem = new SolarSystemMeeus();
@@ -72,7 +73,12 @@ public class PositionsMotionsTest {
         System.out.println(String.format("%s  | equatorial latitude  |  %s", expected.declination, declination));
         System.out.println("expected: " + (expected.retrograde ? "R" : "-") + "  |  actual: " + (actual.isRetrograde() ? "R" : "-"));
 
-        final double tol = body == Body.MOON ? TOL_MOON : TOL_PLANET;
+        final double tol;
+        switch (body) {
+            case MOON: tol = TOL_MOON; break;
+            case PLUTO: tol = TOL_PLUTO; break;
+            default: tol = TOL_PLANET; break;
+        }
 
         assertEquals(expected.longitude.getRadians(), longitude.getRadians(), tol);
         assertEquals(expected.latitude.getRadians(), latitude.getRadians(), tol);
