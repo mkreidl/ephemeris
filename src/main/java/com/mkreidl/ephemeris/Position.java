@@ -70,6 +70,7 @@ public class Position {
         final double timeLightTravel = geoCart.distance(Distance.m) / Distance.ls.toMeters();
         tmpEclipticalCartesian.set(velocityGeocentric).scale(-timeLightTravel);
         geoCart.add(tmpEclipticalCartesian);
+
         final double timeLightTravelSun = posSun.distance(Distance.m) / Distance.ls.toMeters();
         tmpEclipticalCartesian.set(velocitySun).scale(-timeLightTravelSun);
         posSun.add(tmpEclipticalCartesian);

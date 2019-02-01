@@ -4,6 +4,8 @@ import com.mkreidl.math.Matrix3x3
 import com.mkreidl.math.Sphe
 import com.mkreidl.math.Vector3
 
+operator fun Matrix3x3.times(phase: PhaseCartesian) = PhaseCartesian(this * phase.position, this * phase.velocity)
+
 data class PhaseCartesian(val position: Vector3, val velocity: Vector3) {
 
     fun jacobian(): Matrix3x3 {
@@ -20,4 +22,8 @@ data class PhaseCartesian(val position: Vector3, val velocity: Vector3) {
     operator fun plus(other: PhaseCartesian) = PhaseCartesian(position + other.position, velocity + other.velocity)
 
     operator fun minus(other: PhaseCartesian) = PhaseCartesian(position - other.position, velocity - other.velocity)
+
+    companion object {
+        val ZERO = PhaseCartesian(Vector3.ZERO, Vector3.ZERO)
+    }
 }

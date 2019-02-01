@@ -5,60 +5,52 @@ import com.mkreidl.math.Axis
 import com.mkreidl.math.Matrix3x3
 import com.mkreidl.math.Polynomial
 
-class Ecliptic(val time: Time) {
+class Ecliptic(private val time: Time) {
 
-    val julianCenturies = time.julianCenturiesSince(Time.J2000)
+    private val julianCenturies = time.julianCenturiesSince(Time.J2000)
+    private val julianMillennia = julianCenturies * 0.1
 
-    val trafoEcl2Equ by lazy {computeEcl2EquMatrix()}
-    val trafoEqu2Ecl by lazy {computeEqu2EclMatrix()}
-
-    val meanObliquity by lazy { computeObliquity() }
-    val trueObliquity get() = meanObliquity + nutationInObliquity
-
-    val trueSiderealTimeRadians get() = time.meanSiderealTimeRadians + nutationInRightAscension
-
+    /**
+     * MeanObliquity of the ecliptic.
+     *
+     * Reference: Astronomical Almanac (1984),
+     * https://de.wikipedia.org/wiki/Ekliptik
+     */
+    val meanObliquity by lazy { MEAN_OBLIQUITY[julianCenturies] }
     val nutation by lazy { computeNutation() }
+
+    val trafoEcl2MeanEqu by lazy { Matrix3x3.rotation(meanObliquity, Axis.X) }
+    val trafoMeanEqu2Ecl by lazy { Matrix3x3.rotation(-meanObliquity, Axis.X) }
+
+    val trafoMeanEcl2TrueEcl by lazy { Matrix3x3.rotation(nutationInLongitude, Axis.Z) }
+    val trafoMeanEcl2TrueEqu by lazy { Matrix3x3.rotation(trueObliquity, Axis.X) * trafoMeanEcl2TrueEcl }
+
+    val trafoEclJ2000ToEclToDate by lazy { computeTransformJ2000ToDate() }
+    val trafoEclJ2000ToMeanEquToDate by lazy { trafoEcl2MeanEqu * trafoEclJ2000ToEclToDate }
+    val trafoEclJ2000ToTrueEquToDate by lazy { trafoMeanEcl2TrueEqu * trafoEclJ2000ToEclToDate }
+
+    val trueObliquity get() = meanObliquity + nutationInObliquity
+    val trueSiderealTimeRadians get() = time.meanSiderealTimeRadians + nutationInRightAscension
     val nutationInLongitude get() = nutation.first
     val nutationInObliquity get() = nutation.second
     val nutationInRightAscension get() = nutationInLongitude * Math.cos(trueObliquity)
 
-    fun computeEclJ2000ToEquToDate() = computeEcl2EquMatrix() * computeTransformJ2000ToDate()
-
-    fun computeEclJ2000ToEquToDateWithNutation(time: Time, transformation: Matrix3x3) {
-    }
-
-    /**
-     * Calculate the meanObliquity of the ecliptic.
-     *
-     * Reference: Astronomical Almanac (1984),
-     * https://de.wikipedia.org/wiki/Ekliptik
-     *
-     * @return Obliquity of the ecliptic in radians at the given date.
-     */
-    private fun computeObliquity() = MEAN_OBLIQUITY[julianCenturies]
-
-    private fun computeEcl2EquMatrix() = Matrix3x3.rotation(meanObliquity, Axis.X)
-
-    private fun computeEqu2EclMatrix() = Matrix3x3.rotation(-meanObliquity, Axis.X)
-
     fun computeTransformJ2000ToDate(): Matrix3x3 {
-        val t = time.julianMillenniaSince(Time.J2000)
+        val s11 = S11[julianMillennia]
+        val c11 = C11[julianMillennia]
+        val s12 = S12[julianMillennia]
+        val c12 = C12[julianMillennia]
+        val s13 = S13[julianMillennia]
+        val c13 = C13[julianMillennia]
 
-        val s11 = S11[t]
-        val c11 = C11[t]
-        val s12 = S12[t]
-        val c12 = C12[t]
-        val s13 = S13[t]
-        val c13 = C13[t]
-
-        val xi = 0.243817483530 * t
+        val xi = 0.243817483530 * julianMillennia
         val cosXi = Math.cos(xi)
         val sinXi = Math.sin(xi)
 
         return Matrix3x3(
                 s11 * sinXi + c11 * cosXi, s12 * sinXi + c12 * cosXi, s13 * sinXi + c13 * cosXi,
                 c11 * sinXi - s11 * cosXi, c12 * sinXi - s12 * cosXi, c13 * sinXi - s13 * cosXi,
-                A31[t], A32[t], A33[t]
+                A31[julianMillennia], A32[julianMillennia], A33[julianMillennia]
         )
     }
 
@@ -81,7 +73,7 @@ class Ecliptic(val time: Time) {
     }
 
     companion object {
-        private val MEAN_OBLIQUITY = Polynomial(23.4392911111, - 1.30041667e-2, -1.638888e-7, 5.036111e-7) * Math.toRadians(1.0)
+        private val MEAN_OBLIQUITY = Polynomial(23.4392911111, -1.30041667e-2, -1.638888e-7, 5.036111e-7) * Math.toRadians(1.0)
 
         private val S11 = Polynomial(0.0, 0.0, -538867722.0, -270670.0, 1138205.0, 8604.0, -813.0) * 1e-12
         private val C11 = Polynomial(1e12, 0.0, -20728.0, -19147.0, -149390.0, -34.0, 617.0) * 1e-12
@@ -97,11 +89,11 @@ class Ecliptic(val time: Time) {
 
         private val TO_RAD = Math.toRadians(1 / 3.6e7)
 
-        private val D = Polynomial(1072260.703692, 1602961601.2090, -6.3706, 0.006593, -0.00003169) * Math.toRadians(1.0/ 3600.0)
-        private val M = Polynomial(1287104.793048, 129596581.0481, -0.5532, 0.000136, -0.00001149) * Math.toRadians(1.0/ 3600.0)
-        private val MP = Polynomial(485868.249036, 1717915923.2178, 31.8792, 0.051635, -0.00024470) * Math.toRadians(1.0/ 3600.0)
-        private val F = Polynomial(335779.526232, 1739527262.8478, -12.7512, -0.001037, 0.00000417) * Math.toRadians(1.0/ 3600.0)
-        private val OMEGA = Polynomial(450160.398036, -6962890.5431, 7.4722, 0.007702, -0.00005939) * Math.toRadians(1.0/ 3600.0)
+        private val D = Polynomial(1072260.703692, 1602961601.2090, -6.3706, 0.006593, -0.00003169) * Math.toRadians(1.0 / 3600.0)
+        private val M = Polynomial(1287104.793048, 129596581.0481, -0.5532, 0.000136, -0.00001149) * Math.toRadians(1.0 / 3600.0)
+        private val MP = Polynomial(485868.249036, 1717915923.2178, 31.8792, 0.051635, -0.00024470) * Math.toRadians(1.0 / 3600.0)
+        private val F = Polynomial(335779.526232, 1739527262.8478, -12.7512, -0.001037, 0.00000417) * Math.toRadians(1.0 / 3600.0)
+        private val OMEGA = Polynomial(450160.398036, -6962890.5431, 7.4722, 0.007702, -0.00005939) * Math.toRadians(1.0 / 3600.0)
 
         private val SUMMANDS = arrayOf(
                 doubleArrayOf(0.0, 0.0, 0.0, 0.0, 1.0, -171996.0, -174.2, 92025.0, 8.9),

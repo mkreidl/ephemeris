@@ -1,0 +1,24 @@
+package com.mkreidl.ephemeris.solarsystem
+
+import com.mkreidl.ephemeris.Time
+import com.mkreidl.ephemeris.geometry.Angle
+import com.mkreidl.math.Axis
+import com.mkreidl.math.Matrix3x3
+import com.mkreidl.math.Sphe
+
+data class Topos(val longitude: Double, val latitude: Double, val time: Time) {
+
+    private val ecliptic = Ecliptic(time)
+
+    val localMeanSiderealTimeRad = Angle.standardizePositive(time.meanSiderealTimeRadians + longitude)
+    val localTrueSiderealTimeRad = Angle.standardizePositive(ecliptic.trueSiderealTimeRadians + longitude)
+
+    val equatorialMeanSphe = Sphe(Body.EARTH.RADIUS_MEAN_M, localMeanSiderealTimeRad, latitude)
+    val equatorialTrueSphe = Sphe(Body.EARTH.RADIUS_MEAN_M, localTrueSiderealTimeRad, latitude)
+
+    val meanEquatorial = equatorialMeanSphe.toCartesian()
+    val trueEquatorial = equatorialTrueSphe.toCartesian()
+
+    val meanEcliptical = Matrix3x3.rotation(ecliptic.meanObliquity, Axis.X) * meanEquatorial
+    val trueEcliptical = Matrix3x3.rotation(ecliptic.trueObliquity, Axis.X) * trueEquatorial
+}
