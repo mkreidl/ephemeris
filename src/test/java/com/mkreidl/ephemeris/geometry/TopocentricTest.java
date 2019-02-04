@@ -23,7 +23,7 @@ public class TopocentricTest {
     private final Spherical actual = new Spherical();
 
     private final Spherical geographicLocation = new Spherical(
-            Body.EARTH.RADIUS_MEAN_M, 11.5 * Angle.DEG, 48.0 * Angle.DEG
+            Body.EARTH.getRADIUS_MEAN_M(), 11.5 * Angle.DEG, 48.0 * Angle.DEG
     );
     private final Stereographic camera = new Stereographic(1.0);
 
@@ -44,12 +44,12 @@ public class TopocentricTest {
         for (Body object : Body.values()) {
             ephemerides.get(object).get(topoCart, Position.CoordinatesCenter.TOPOCENTRIC);
             topoCart.transform(expected);
-            final double radExpected = object.RADIUS_EQUATORIAL_M / topoCart.distance(Distance.m);
+            final double radExpected = object.getRADIUS_EQUATORIAL_M() / topoCart.distance(Distance.m);
             camera.project(expected, radExpected, diskExpected);
 
             ephemerides.get(object).get(topoSphe, Position.CoordinatesCenter.TOPOCENTRIC);
             actual.set(topoSphe);
-            final double radActual = object.RADIUS_EQUATORIAL_M / topoSphe.distance(Distance.m);
+            final double radActual = object.getRADIUS_EQUATORIAL_M() / topoSphe.distance(Distance.m);
             camera.project(actual, radActual, diskActual);
 
             assertEquals(radExpected, radActual, 10e-15);

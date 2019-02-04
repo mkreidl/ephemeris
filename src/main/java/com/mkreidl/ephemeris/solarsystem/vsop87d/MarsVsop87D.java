@@ -1,10 +1,11 @@
 package com.mkreidl.ephemeris.solarsystem.vsop87d;
 
-public class Mars
+import com.mkreidl.ephemeris.solarsystem.ModelVsop87;
+
+public class MarsVsop87D extends ModelVsop87.XYZ
 {
-    public static double[][][][] getCoefficients()
-    {
-        return classCoeff;
+    public MarsVsop87D() {
+        super(classCoeff);
     }
 
     private static double[][][][] classCoeff = new double[3][][][];

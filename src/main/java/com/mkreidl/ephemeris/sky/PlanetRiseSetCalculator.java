@@ -85,7 +85,7 @@ public class PlanetRiseSetCalculator extends RiseSetCalculator
         solarSystem.getEphemerides( body, position );
         position.setTimeLocation( time, geographicLocation );
         position.get( topocentric, Position.CoordinatesCenter.TOPOCENTRIC );
-        final double apparentRadius = body.RADIUS_MEAN_M / topocentric.distance( Distance.m );
+        final double apparentRadius = body.getRADIUS_MEAN_M() / topocentric.distance( Distance.m );
         virtualHorizonDeg = OPTICAL_HORIZON_DEG - Math.toDegrees( apparentRadius );
         isVisibleNow = topocentric.lat >= virtualHorizonDeg;
         isCrossing = isCrossing();

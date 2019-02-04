@@ -1,29 +1,21 @@
 package com.mkreidl.ephemeris.solarsystem;
 
-import com.mkreidl.ephemeris.solarsystem.meeus.Jupiter;
-import com.mkreidl.ephemeris.solarsystem.meeus.Mars;
-import com.mkreidl.ephemeris.solarsystem.meeus.Mercury;
-import com.mkreidl.ephemeris.solarsystem.meeus.Neptune;
-import com.mkreidl.ephemeris.solarsystem.meeus.Saturn;
-import com.mkreidl.ephemeris.solarsystem.meeus.Uranus;
-import com.mkreidl.ephemeris.solarsystem.meeus.Venus;
-import com.mkreidl.ephemeris.solarsystem.vsop87c.Earth;
+import com.mkreidl.ephemeris.solarsystem.meeus.*;
+import com.mkreidl.ephemeris.solarsystem.vsop87c.EarthVsop87C;
 
-public class SolarSystemMeeus extends SolarSystem
-{
-    public SolarSystemMeeus()
-    {
-        models.put( Body.EARTH, new ModelVsop87.XYZ(Earth.getCoefficients()) );
+public class SolarSystemMeeus extends SolarSystem {
+    public SolarSystemMeeus() {
+        models.put(Body.EARTH, new EarthVsop87C());
 
-        models.put( Body.SUN, new ModelSun() );
-        models.put( Body.MERCURY, new ModelVsop87.LBR(Mercury.Companion.getCoefficients()) );
-        models.put( Body.VENUS, new ModelVsop87.LBR(Venus.Companion.getCoefficients()) );
-        models.put( Body.MARS, new ModelVsop87.LBR(Mars.Companion.getCoefficients()));
-        models.put( Body.JUPITER, new ModelVsop87.LBR(Jupiter.Companion.getCoefficients()));
-        models.put( Body.SATURN, new ModelVsop87.LBR(Saturn.Companion.getCoefficients()) );
-        models.put( Body.URANUS, new ModelVsop87.LBR(Uranus.Companion.getCoefficients()) );
-        models.put( Body.NEPTUNE, new ModelVsop87.LBR(Neptune.Companion.getCoefficients()) );
-        models.put( Body.MOON, new ModelMoon() );
-        models.put( Body.PLUTO, new ModelPluto() );
+        models.put(Body.SUN, new ModelSun());
+        models.put(Body.MERCURY, new MercuryMeeus());
+        models.put(Body.VENUS, new VenusMeeus());
+        models.put(Body.MARS, new MarsMeeus());
+        models.put(Body.JUPITER, new JupiterMeeus());
+        models.put(Body.SATURN, new SaturnMeeus());
+        models.put(Body.URANUS, new UranusMeeus());
+        models.put(Body.NEPTUNE, new NeptuneMeeus());
+        models.put(Body.MOON, new ModelMoon());
+        models.put(Body.PLUTO, new ModelPluto());
     }
 }

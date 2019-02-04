@@ -28,7 +28,7 @@ public class PositionsMotionsTest {
     private static final double TOL_PLUTO = 0.6 * Angle.MIN;
     private static final double TOL_MOON = 4 * Angle.MIN;
 
-    private final SolarSystem solarSystem = new SolarSystemMeeus();
+    private final SolarSystem solarSystem = new SolarSystemVSOP87C();
     private final Time time;
     private final Body body;
     private final EphemerisData expected;

@@ -26,7 +26,7 @@ public class Planets extends AbstractPart
     private final Map<Body, Equatorial.Sphe> topocentricPositions = new EnumMap<>( Body.class );
     private final Map<Body, Cartesian> projectedPositions = new EnumMap<>( Body.class );
 
-    public List<Body> sortedByDistance = new ArrayList<>( Body.EXTRA_TERRESTRIAL );
+    public List<Body> sortedByDistance = new ArrayList<>(Body.Companion.getEXTRA_TERRESTRIAL());
 
     Planets( Astrolabe astrolabe )
     {
@@ -86,7 +86,7 @@ public class Planets extends AbstractPart
         solarSystem.getEphemerides( object, position );
         position.get( topocentric, Position.CoordinatesCenter.TOPOCENTRIC ).transform( onUnitSphere ).normalize();
         astrolabe.project( onUnitSphere, projectedPositions.get( object ) );
-        final double apparentRadius = object.RADIUS_EQUATORIAL_M / topocentric.distance( Distance.m );
+        final double apparentRadius = object.getRADIUS_EQUATORIAL_M() / topocentric.distance( Distance.m );
         astrolabe.project( topocentric, apparentRadius, apparentDisks.get( object ) );
     }
 

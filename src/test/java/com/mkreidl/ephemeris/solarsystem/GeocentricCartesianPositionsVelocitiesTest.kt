@@ -5,7 +5,7 @@ import com.mkreidl.ephemeris.TestUtil.EphemerisData
 import com.mkreidl.ephemeris.Time
 import com.mkreidl.ephemeris.geometry.Angle
 import com.mkreidl.ephemeris.solarsystem.meeus.*
-import com.mkreidl.ephemeris.solarsystem.vsop87c.Earth
+import com.mkreidl.ephemeris.solarsystem.vsop87c.*
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -17,32 +17,32 @@ import java.util.*
  * Parses txt test data produced by http://ephemeris.com/ephemeris.php
  */
 @RunWith(Parameterized::class)
-class PositionsMotionsTestFull(testname: String, private val body: Body, private val time: Time, private val expected: EphemerisData) {
+class GeocentricCartesianPositionsVelocitiesTest(testname: String, private val body: Body, private val time: Time, private val expected: EphemerisData) {
 
     private val modelsMeeus = mapOf(
-            Body.EARTH to ModelVsop87.XYZ(Earth.getCoefficients()),
+            Body.EARTH to EarthVsop87C(),
             Body.SUN to ModelSun(),
-            Body.MERCURY to ModelVsop87.LBR(Mercury.getCoefficients()),
-            Body.VENUS to ModelVsop87.LBR(Venus.getCoefficients()),
-            Body.MARS to ModelVsop87.LBR(Mars.getCoefficients()),
-            Body.JUPITER to ModelVsop87.LBR(Jupiter.getCoefficients()),
-            Body.SATURN to ModelVsop87.LBR(Saturn.getCoefficients()),
-            Body.URANUS to ModelVsop87.LBR(Uranus.getCoefficients()),
-            Body.NEPTUNE to ModelVsop87.LBR(Neptune.getCoefficients()),
+            Body.MERCURY to MercuryMeeus(),
+            Body.VENUS to VenusMeeus(),
+            Body.MARS to MarsMeeus(),
+            Body.JUPITER to JupiterMeeus(),
+            Body.SATURN to SaturnMeeus(),
+            Body.URANUS to UranusMeeus(),
+            Body.NEPTUNE to NeptuneMeeus(),
             Body.MOON to ModelMoon(),
             Body.PLUTO to ModelPluto()
     )
 
     private val modelsVsop87 = mapOf(
-            Body.EARTH to ModelVsop87.XYZ(Earth.getCoefficients()),
+            Body.EARTH to EarthVsop87C(),
             Body.SUN to ModelSun(),
-            Body.MERCURY to ModelVsop87.XYZ(com.mkreidl.ephemeris.solarsystem.vsop87c.Mercury.getCoefficients()),
-            Body.VENUS to ModelVsop87.XYZ(com.mkreidl.ephemeris.solarsystem.vsop87c.Venus.getCoefficients()),
-            Body.MARS to ModelVsop87.XYZ(com.mkreidl.ephemeris.solarsystem.vsop87c.Mars.getCoefficients()),
-            Body.JUPITER to ModelVsop87.XYZ(com.mkreidl.ephemeris.solarsystem.vsop87c.Jupiter.getCoefficients()),
-            Body.SATURN to ModelVsop87.XYZ(com.mkreidl.ephemeris.solarsystem.vsop87c.Saturn.getCoefficients()),
-            Body.URANUS to ModelVsop87.XYZ(com.mkreidl.ephemeris.solarsystem.vsop87c.Uranus.getCoefficients()),
-            Body.NEPTUNE to ModelVsop87.XYZ(com.mkreidl.ephemeris.solarsystem.vsop87c.Neptune.getCoefficients()),
+            Body.MERCURY to MercuryVsop87C(),
+            Body.VENUS to VenusVsop87C(),
+            Body.MARS to MarsVsop87C(),
+            Body.JUPITER to JupiterVsop87C(),
+            Body.SATURN to SaturnVsop87C(),
+            Body.URANUS to UranusVsop87C(),
+            Body.NEPTUNE to NeptuneVsop87C(),
             Body.MOON to ModelMoon(),
             Body.PLUTO to ModelPluto()
     )
@@ -107,8 +107,6 @@ class PositionsMotionsTestFull(testname: String, private val body: Body, private
     companion object {
         @JvmStatic
         @Parameters(name = "{0}")
-        fun data(): Iterable<Array<Any>> {
-            return TestUtil.solarSystemData(Arrays.asList(*Body.values()))
-        }
+        fun data(): Iterable<Array<Any>> = TestUtil.solarSystemData(Arrays.asList(*Body.values()))
     }
 }

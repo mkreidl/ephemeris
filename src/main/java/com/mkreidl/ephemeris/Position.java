@@ -79,7 +79,7 @@ public class Position {
     public void setTimeLocation(double currentEclipticRadians, double localSiderealTimeRadians, double latitudeRadians) {
         currentEcliptic = currentEclipticRadians;
         // current equatorial coordinates of zenith are used to compute current horizontal positions (in Planets)
-        toposEquatorialSpherical.set(Body.EARTH.RADIUS_MEAN_M, localSiderealTimeRadians, latitudeRadians);
+        toposEquatorialSpherical.set(Body.EARTH.getRADIUS_MEAN_M(), localSiderealTimeRadians, latitudeRadians);
         toposEquatorialSpherical.transform(toposEquatorial);
         // The following stores the current observer position in geocentric ecliptical coordinates
         toposEcliptical.set(toposEquatorial).rotate(Coordinates.Axis.X, -currentEcliptic);
@@ -95,7 +95,7 @@ public class Position {
         angle.setRadians(geographicLocation.lon);
         final double localSiderealTime = time.getMeanSiderealTime(angle, angle).getRadians();
         // current equatorial coordinates of zenith are used to compute current horizontal positions (in Planets)
-        toposEquatorialSpherical.set(Body.EARTH.RADIUS_MEAN_M, localSiderealTime, geographicLocation.lat);
+        toposEquatorialSpherical.set(Body.EARTH.getRADIUS_MEAN_M(), localSiderealTime, geographicLocation.lat);
         toposEquatorialSpherical.transform(toposEquatorial);
         // The following stores the current observer position in geocentric ecliptical coordinates
         toposEcliptical.set(toposEquatorial).rotate(Coordinates.Axis.X, -currentEcliptic);

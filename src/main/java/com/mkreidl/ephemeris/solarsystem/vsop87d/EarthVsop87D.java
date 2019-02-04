@@ -1,10 +1,11 @@
 package com.mkreidl.ephemeris.solarsystem.vsop87d;
 
-public class Earth
+import com.mkreidl.ephemeris.solarsystem.ModelVsop87;
+
+public class EarthVsop87D extends ModelVsop87.XYZ
 {
-    public static double[][][][] getCoefficients()
-    {
-        return classCoeff;
+    public EarthVsop87D() {
+        super(classCoeff);
     }
 
     private static double[][][][] classCoeff = new double[3][][][];

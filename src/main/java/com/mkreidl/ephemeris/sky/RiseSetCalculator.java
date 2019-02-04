@@ -30,7 +30,7 @@ public abstract class RiseSetCalculator
     private static final double RAD_TO_SIDEREAL_MILLIS = Time.MILLIS_PER_SIDEREAL_DAY / ( 2 * Math.PI );
 
     protected final Equatorial.Sphe topocentric = new Equatorial.Sphe();
-    protected final Spherical geographicLocation = new Spherical( Body.EARTH.RADIUS_MEAN_M, 0, 0 );
+    protected final Spherical geographicLocation = new Spherical(Body.EARTH.getRADIUS_MEAN_M(), 0, 0 );
     protected final Time time = new Time();
     protected EventType mode = EventType.SET;
 

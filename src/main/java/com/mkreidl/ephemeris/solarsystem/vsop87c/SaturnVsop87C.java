@@ -1,10 +1,11 @@
 package com.mkreidl.ephemeris.solarsystem.vsop87c;
 
-public class Saturn
+import com.mkreidl.ephemeris.solarsystem.ModelVsop87;
+
+public class SaturnVsop87C extends ModelVsop87.XYZ
 {
-    public static double[][][][] getCoefficients()
-    {
-        return classCoeff;
+    public SaturnVsop87C() {
+        super(classCoeff);
     }
 
     private static double[][][][] classCoeff = new double[3][][][];

@@ -14,7 +14,6 @@ data class Sphe(val dst: Double = 0.0, val lon: Double = 0.0, val lat: Double = 
             z = dst * Math.sin(lat)
     )
 
-
     fun standardized(): Sphe {
         var lat = Angle.standardize(lat)
         var lon = lon

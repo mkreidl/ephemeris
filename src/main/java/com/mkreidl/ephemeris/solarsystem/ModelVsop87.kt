@@ -33,7 +33,7 @@ abstract class ModelVsop87(private val coefficients: Array<Array<Array<DoubleArr
 
     private fun sinSeries(dim: Int, n: Int, time: Double) = coefficients[dim][n].map { -it[0] * it[2] * Math.sin(it[1] + it[2] * time) }.sum()
 
-    class XYZ(coefficients: Array<Array<Array<DoubleArray>>>) : ModelVsop87(coefficients) {
+    open class XYZ(coefficients: Array<Array<Array<DoubleArray>>>) : ModelVsop87(coefficients) {
 
         override fun computeSpherical(time: Time) = computeCartesian(time).toSpherical()
 
@@ -46,7 +46,7 @@ abstract class ModelVsop87(private val coefficients: Array<Array<Array<DoubleArr
         }
     }
 
-    class LBR(coefficients: Array<Array<Array<DoubleArray>>>) : ModelVsop87(coefficients) {
+    open class LBR(coefficients: Array<Array<Array<DoubleArray>>>) : ModelVsop87(coefficients) {
 
         override fun computeSpherical(time: Time): PhaseSpherical {
             compute(time)

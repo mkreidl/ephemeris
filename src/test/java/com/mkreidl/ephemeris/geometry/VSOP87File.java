@@ -27,7 +27,6 @@ import static com.mkreidl.ephemeris.geometry.Angle.standardize;
  */
 public class VSOP87File
 {
-
     public static VSOP87File getModel( URL url )
     {
         VSOP87File newModel = new VSOP87File();

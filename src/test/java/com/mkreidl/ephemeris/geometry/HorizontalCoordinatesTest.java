@@ -27,7 +27,7 @@ public class HorizontalCoordinatesTest {
     private final Horizontal.Sphe spherical = new Horizontal.Sphe();
 
     private final Spherical geographicLocation = new Spherical(
-            Body.EARTH.RADIUS_MEAN_M,
+            Body.EARTH.getRADIUS_MEAN_M(),
             11.5820 * Angle.DEG, 48.1351 * Angle.DEG
     );
 
@@ -109,7 +109,7 @@ public class HorizontalCoordinatesTest {
         locationSphe.toHorizontal(locationSphe, spherical);
         System.out.println(cartesian);
         System.out.println(spherical);
-        assertEquals(cartesian.z, Body.EARTH.RADIUS_MEAN_M, 1e-16);
+        assertEquals(cartesian.z, Body.EARTH.getRADIUS_MEAN_M(), 1e-16);
         assertEquals(spherical.getHeight(angle).get(Angle.Unit.DEGREES), 90, 1e-16);
         System.out.println("================================");
     }
