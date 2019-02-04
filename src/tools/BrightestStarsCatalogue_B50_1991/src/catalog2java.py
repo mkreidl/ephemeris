@@ -5,9 +5,9 @@ Created on 24.01.2017
 '''
 
 
-CATALOG = r"/home/martin/Projekte/Ephemeris/src/tools/BrightestStarsCatalogue_B50_1991/catalog"
-NAMES = r"/home/martin/Projekte/Ephemeris/src/tools/BrightestStarsCatalogue_B50_1991/names.dat"
-IAU_NAMES = r"/home/martin/Projekte/Ephemeris/src/tools/IAU_starnames_2017.txt"
+CATALOG = r"/Users/martinkreidl/workspace/ephemeris/src/tools/BrightestStarsCatalogue_B50_1991/catalog"
+NAMES = r"/Users/martinkreidl/workspace/ephemeris/src/tools/BrightestStarsCatalogue_B50_1991/names.dat"
+IAU_NAMES = r"/Users/martinkreidl/workspace/ephemeris/src/tools/IAU_starnames_2017.txt"
 
 INDEX_VARIABLE = "BRIGHT_STAR_NUMBER"
 INDEX_LOOKUP_VARIABLE = "INDEX_LOOKUP"
@@ -93,17 +93,17 @@ def parse( catalog_iterable, names_dict, java_output ):
             except:
                 continue
             try:
-                r_v_kmsec = "{0:.2e}f".format( float( line[166:170] ) )
+                r_v_kmsec = "{0:.3e}f".format( float( line[166:170] ) )
             except:
                 r_v_kmsec = "Float.NaN"
             try:
                 ra_v_arcsec = float( line[148:154] )
-                ra_v_rad = "{0:.2e}f".format( ra_v_arcsec / 3600 * math.pi / 180 )
+                ra_v_rad = "{0:.4e}f".format( ra_v_arcsec / 3600 * math.pi / 180 )
             except:
                 ra_v_rad = "Float.NaN"
             try:
                 de_v_arcsec = float( line[154:160] )
-                de_v_rad = "{0:.2e}f".format( de_v_arcsec / 3600 * math.pi / 180 )
+                de_v_rad = "{0:.4e}f".format( de_v_arcsec / 3600 * math.pi / 180 )
             except:
                 de_v_rad = "Float.NaN"
 
@@ -119,8 +119,8 @@ def parse( catalog_iterable, names_dict, java_output ):
                 par = "Float.NaN"
                 dist = "Float.NaN"
 
-            ra_j2000_rad = "{0:.2e}f".format( ( ra_j2000_h + ra_j2000_m / 60 + ra_j2000_s / 3600 ) * math.pi / 12 )
-            de_j2000_rad = "{0:.2e}f".format( de_j2000_sign * ( de_j2000_d + de_j2000_m / 60 + de_j2000_s / 3600 ) * math.pi / 180 )
+            ra_j2000_rad = "{0:.6f}f".format( ( ra_j2000_h + ra_j2000_m / 60 + ra_j2000_s / 3600 ) * math.pi / 12 )
+            de_j2000_rad = "{0:.6f}f".format( de_j2000_sign * ( de_j2000_d + de_j2000_m / 60 + de_j2000_s / 3600 ) * math.pi / 180 )
 
             #===============================================================================
             # Note on pmRA:
@@ -140,7 +140,7 @@ def parse( catalog_iterable, names_dict, java_output ):
             java_file.write( "{0}[{1}] = {2}{3};\n".format( MAG_VARIABLE, count, mag, "f" if type( mag ) is float else "" ) )
             java_file.write( "{0}[{1}] = {2}{3};\n".format( PAR_VARIABLE, count, par, "f" if type( par ) is float else "" ) )
             
-            java_file.write( "{0}[{1}] = new float[]{{{dst}, {ra}, {de}, {vdst}, {vra}, {vde}}};\n".format(
+            java_file.write( "{0}[{1}] = {{{dst}, {ra}, {de}, {vdst}, {vra}, {vde}}};\n".format(
                 PHASE_VARIABLE, count, dst=dist, ra=ra_j2000_rad, de=de_j2000_rad, vdst=r_v_kmsec, vra=ra_v_rad, vde=de_v_rad
             ) )
             java_file.write( "{0}[{1}] = '{2}';\n".format( "SPECTRAL_TYPE", count, spectral_type ) )
