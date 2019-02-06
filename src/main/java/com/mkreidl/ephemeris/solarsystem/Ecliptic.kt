@@ -11,7 +11,7 @@ class Ecliptic(private val time: Time) {
     private val julianMillennia = julianCenturies * 0.1
 
     /**
-     * MeanObliquity of the ecliptic.
+     * Mean obliquity of the ecliptic.
      *
      * Reference: Astronomical Almanac (1984),
      * https://de.wikipedia.org/wiki/Ekliptik
