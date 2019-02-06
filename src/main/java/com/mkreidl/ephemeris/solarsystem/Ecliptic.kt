@@ -8,7 +8,8 @@ import com.mkreidl.math.Polynomial
 
 class Ecliptic(internal val instant: Instant) {
 
-    constructor(time: Time) : this(Instant.ofEpochMilli(time.time))
+    @Deprecated("Ecliptic should be constructed from an abstract Instant, not from a value of milliseconds since the Unix epoch")
+    constructor(epochMilli: Long) : this(Instant.ofEpochMilli(epochMilli))
 
     /**
      * Mean obliquity of the ecliptic.
@@ -75,6 +76,8 @@ class Ecliptic(internal val instant: Instant) {
     }
 
     companion object {
+        val J2000 = Ecliptic(Instant.J2000)
+
         private val meanObliquityPolynomial = Polynomial(23.4392911111, -1.30041667e-2, -1.638888e-7, 5.036111e-7) * Math.toRadians(1.0)
 
         private val S11 = Polynomial(0.0, 0.0, -538867722.0, -270670.0, 1138205.0, 8604.0, -813.0) * 1e-12

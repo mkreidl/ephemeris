@@ -15,7 +15,7 @@ class FullSolarSystem(private val models: Map<Body, OrbitalModel>) {
     lateinit var ecliptic: Ecliptic private set
 
     fun compute(time: Time) {
-        ecliptic = Ecliptic(time)
+        ecliptic = Ecliptic(time.time)
         eclipticalHeliocentric[Body.EARTH] = models.getValue(Body.EARTH).computeCartesian(time) * toMetersEarth
         Body.EXTRA_TERRESTRIAL.forEach { compute(it, time) }
     }

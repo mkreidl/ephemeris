@@ -1,8 +1,8 @@
 package com.mkreidl.ephemeris
 
-import com.mkreidl.ephemeris.Time.MILLIS_PER_HOUR
 import com.mkreidl.ephemeris.geometry.Angle
 import com.mkreidl.ephemeris.solarsystem.Ecliptic
+import com.mkreidl.ephemeris.solarsystem.Sun
 import com.mkreidl.math.Polynomial
 import java.util.*
 
@@ -50,8 +50,20 @@ fun Instant.getMeanSolarTime(longitude: Angle, solarTime: Angle): Angle {
     return solarTime.set(standardize24(hours), Angle.Unit.HOURS)
 }
 
-private infix fun Instant.hoursFrom(instant: Instant) = (epochMilli - instant.epochMilli) / MILLIS_PER_HOUR
-private infix fun Instant.siderealDaysFrom(instant: Instant) = (epochMilli - instant.epochMilli) / MILLIS_PER_SIDEREAL_DAY
+fun Instant.getMeanSolarTimeHours(): Double {
+    val hours = this hoursFrom midnightAtGreenwichSameDate()
+    return if (hours < 0) hours + 24.0 else hours
+}
+
+fun Instant.getMeanSolarTimeRadians(): Double {
+    val rad = (this hoursFrom midnightAtGreenwichSameDate()) * Math.PI / 12
+    return if (rad < 0) rad + 2 * Math.PI else rad
+}
+
+fun Sun.getTrueSolarTimeRadians() = ecliptic.instant.getMeanSolarTimeRadians() + equationOfTime
+
+private infix fun Instant.hoursFrom(instant: Instant) = (epochMilli - instant.epochMilli) * Instant.HOURS_PER_MILLI
+private infix fun Instant.siderealDaysFrom(instant: Instant) = (epochMilli - instant.epochMilli) * Instant.DAYS_PER_MILLI * SIDEREAL_PER_SOLAR
 
 private fun standardize24(hours: Double): Double {
     val hoursReduced = hours % 24
@@ -62,4 +74,9 @@ private val UTC = TimeZone.getTimeZone("UTC")
 private const val SIDEREAL_PER_SOLAR = 1.00273790935
 private const val SOLAR_PER_SIDEREAL = 1.0 / SIDEREAL_PER_SOLAR
 private const val MILLIS_PER_SIDEREAL_DAY = Instant.MILLIS_PER_DAY * SOLAR_PER_SIDEREAL
-private val siderealDaysAtMidnightUTC = Polynomial(100.46061837, 36000.770053608, 0.000387933, 1.0 / 38710000.0) * (1.0 / 360)
+private val siderealDaysAtMidnightUTC = Polynomial(
+        100.46061837,
+        36000.770053608,
+        0.000387933,
+        1.0 / 38710000.0
+) * (1.0 / 360)

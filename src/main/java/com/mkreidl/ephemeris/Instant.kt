@@ -35,6 +35,7 @@ class Instant internal constructor(val epochMilli: Long) {
         const val MILLIS_PER_CENTURY = MILLIS_PER_YEAR * 100
         const val MILLIS_PER_MILLENNIUM = MILLIS_PER_YEAR * 1_000
 
+        const val HOURS_PER_MILLI = 1.0 / MILLIS_PER_HOUR
         const val DAYS_PER_MILLI = 1.0 / MILLIS_PER_DAY
         const val YEARS_PER_MILLI = 1.0 / MILLIS_PER_YEAR
         const val CENTURIES_PER_MILLI = 1.0 / MILLIS_PER_CENTURY

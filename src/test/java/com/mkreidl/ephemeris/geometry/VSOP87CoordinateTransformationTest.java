@@ -50,7 +50,7 @@ public class VSOP87CoordinateTransformationTest {
                 dataSetFirst.model.getPosition(origCartesian);
                 origCartesian.transform(actualSpherical);
             } else {
-                final Matrix3x3 matrix = new Matrix3x3(new Ecliptic(dataSetFirst.time).computeTransformJ2000ToDate( ));
+                final Matrix3x3 matrix = new Matrix3x3(new Ecliptic(dataSetFirst.time.getTime()).computeTransformJ2000ToDate( ));
                 matrix.applyTo(dataSetFirst.model.getPosition(actualCartesian));
             }
             if (second == VSOP87File.Version.B || second == VSOP87File.Version.D) {

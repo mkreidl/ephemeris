@@ -1,15 +1,13 @@
 package com.mkreidl.ephemeris.solarsystem
 
-import com.mkreidl.ephemeris.Time
+import com.mkreidl.ephemeris.Instant
 import com.mkreidl.ephemeris.geometry.Angle
 import com.mkreidl.math.Polynomial
 
-class Sun(val time: Time) {
+class Sun(instant: Instant, internal val ecliptic: Ecliptic = Ecliptic(instant)) {
 
-    private val ecliptic = Ecliptic(time)
-
-    private val julianCenturies = time.julianCenturiesSince(Time.J2000)
-    private val julianMillennia = time.julianMillenniaSince(Time.J2000)
+    private val julianCenturies = instant.julianCenturiesSinceJ2000
+    private val julianMillennia = instant.julianMillenniaSinceJ2000
 
     val equationOfTime by lazy { computeEquationOfTime() }
 
@@ -38,8 +36,19 @@ class Sun(val time: Time) {
 
     companion object {
         private val aberrationCorrection = Math.toRadians(0.005_718_3)
-
-        private val L0 = Polynomial(280.466_456_7, 360_000.769_827_79, 0.030_320_28, 1.0 / 49_931, -1.0 / 15_299, -1.0 / 198_800) * Math.toRadians(1.0)
-        private val M = Polynomial(357.529_1, 35_999.050_3, -0.000_155_9, -0.000_000_48) * Math.toRadians(1.0)
+        private val L0 = Polynomial(
+                280.466_456_7,
+                360_000.769_827_79,
+                0.030_320_28,
+                1.0 / 49_931,
+                -1.0 / 15_299,
+                -1.0 / 198_800
+        ) * Math.toRadians(1.0)
+        private val M = Polynomial(
+                357.529_1,
+                35_999.050_3,
+                -0.000_155_9,
+                -0.000_000_48
+        ) * Math.toRadians(1.0)
     }
 }
