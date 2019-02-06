@@ -143,6 +143,8 @@ data class Matrix3x3(
             a21 * vector.x + a22 * vector.y + a23 * vector.z,
             a31 * vector.x + a32 * vector.y + a33 * vector.z)
 
+    operator fun invoke(vector: Vector3) = times(vector)
+
     override operator fun div(divisor: Matrix3x3) = (divisor.transpose() leftdiv this.transpose()).transpose()
 
     override fun toDoubleArray() = doubleArrayOf(a11, a12, a13, a21, a22, a23, a31, a32, a33)

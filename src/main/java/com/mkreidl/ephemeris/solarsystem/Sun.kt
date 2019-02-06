@@ -13,8 +13,8 @@ class Sun(val time: Time) {
 
     val equationOfTime by lazy { computeEquationOfTime() }
 
-    private val meanLongitude by lazy { L0[julianMillennia] }
-    private val meanAnomaly by lazy { M[julianCenturies] }
+    private val meanLongitude by lazy { L0(julianMillennia) }
+    private val meanAnomaly by lazy { M(julianCenturies) }
     private val apparentRightAscension by lazy { computeApparentRightAscension() }
     private val equationOfCenter by lazy { computeEquationOfCenter() }
 

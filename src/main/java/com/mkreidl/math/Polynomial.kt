@@ -6,5 +6,5 @@ class Polynomial(private vararg val coefficients: Double) {
 
     operator fun div(divisor: Double) = times(1 / divisor)
 
-    operator fun get(x: Double) = coefficients.reduceRight { coefficient, horner -> coefficient + horner * x }
+    operator fun invoke(x: Double) = coefficients.reduceRight { coefficient, horner -> coefficient + horner * x }
 }

@@ -1,5 +1,6 @@
 package com.mkreidl.ephemeris.solarsystem;
 
+import com.mkreidl.ephemeris.Instant;
 import com.mkreidl.ephemeris.TestUtil;
 import com.mkreidl.ephemeris.Time;
 import com.mkreidl.ephemeris.geometry.VSOP87File;
@@ -20,11 +21,13 @@ public abstract class Vsop87AbstractTest {
     protected final VSOP87File.Planet planet;
     protected final Time time;
     protected final double julianDate;
+    protected final Instant instant;
 
     public Vsop87AbstractTest(Planet planet, String timeStr, DataSet dataSet) {
         this.planet = planet;
         this.time = dataSet.time;
         this.julianDate = dataSet.julianDate;
+        instant = Instant.ofEpochMilli(time.getTime());
     }
 
     public static class DataSet {

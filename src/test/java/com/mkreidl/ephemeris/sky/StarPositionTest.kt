@@ -1,6 +1,6 @@
 package com.mkreidl.ephemeris.sky
 
-import com.mkreidl.ephemeris.Time
+import com.mkreidl.ephemeris.Instant
 import com.mkreidl.ephemeris.solarsystem.Ecliptic
 import com.mkreidl.math.Vector3
 import org.junit.Assert
@@ -46,13 +46,13 @@ class StarPositionTest {
 
     @Test
     fun testThetaPersei2028November13() {
-        val julianYears = (epoch - Time.J2000.julianDayNumber()) / Time.DAYS_PER_YEAR
+        val julianYears = Instant.ofJulianDayFraction(epoch).julianYearsSinceJ2000
         val output = DoubleArray(3 * StarsCatalog.SIZE)
         Stars.computeEclipticalJ2000(julianYears, output, 0, 1)
 
         val offset = 3 * thetaPersei
         val cartesian = Vector3(output[offset], output[offset + 1], output[offset + 2])
-        val spherical = (Ecliptic(Time.J2000).trafoEcl2MeanEqu * cartesian).toSpherical()
+        val spherical = (Ecliptic(Instant.J2000).trafoEcl2MeanEqu * cartesian).toSpherical()
 
         Assert.assertEquals(raEpoch, spherical.lon, tolPos)
         Assert.assertEquals(deEpoch, spherical.lat, tolPos)
