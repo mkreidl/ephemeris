@@ -1,14 +1,13 @@
 package com.mkreidl.ephemeris.solarsystem
 
 import com.mkreidl.ephemeris.Instant
-import com.mkreidl.ephemeris.Time
 import com.mkreidl.math.Axis
 import com.mkreidl.math.Matrix3x3
 import com.mkreidl.math.Polynomial
 
 class Ecliptic(internal val instant: Instant) {
 
-    @Deprecated("Ecliptic should be constructed from an abstract Instant, not from a value of milliseconds since the Unix epoch")
+    @Deprecated("Ecliptic should be constructed from an abstract Instant, not from milliseconds since the Unix epoch")
     constructor(epochMilli: Long) : this(Instant.ofEpochMilli(epochMilli))
 
     /**
@@ -37,6 +36,8 @@ class Ecliptic(internal val instant: Instant) {
 
     private val julianCenturies = instant.julianCenturiesSinceJ2000
     private val julianMillennia = julianCenturies * 0.1
+
+    override fun equals(other: Any?) = other is Ecliptic && other.instant == instant
 
     fun computeTransformJ2000ToDate(): Matrix3x3 {
         val s11 = S11(julianMillennia)
@@ -72,11 +73,21 @@ class Ecliptic(internal val instant: Instant) {
             psi += (summand[5] + summand[6] * julianCenturies) * Math.sin(arg)
             eps += (summand[7] + summand[8] * julianCenturies) * Math.cos(arg)
         }
-        return Pair(psi * TO_RAD, eps * TO_RAD)
+        return Pair(standardize(psi * TO_RAD), standardize(eps * TO_RAD))
     }
 
     companion object {
+
         val J2000 = Ecliptic(Instant.J2000)
+
+        private fun standardize(radians: Double): Double {
+            val reduced = radians % (2 * Math.PI)
+            return when {
+                reduced <= -Math.PI -> reduced + 2 * Math.PI
+                reduced > Math.PI -> reduced - 2 * Math.PI
+                else -> reduced
+            }
+        }
 
         private val meanObliquityPolynomial = Polynomial(23.4392911111, -1.30041667e-2, -1.638888e-7, 5.036111e-7) * Math.toRadians(1.0)
 

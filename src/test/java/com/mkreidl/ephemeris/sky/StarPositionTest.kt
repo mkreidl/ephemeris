@@ -73,11 +73,4 @@ class StarPositionTest {
         Assert.assertEquals(raEpochToDate, output.lon, tolPos)
         Assert.assertEquals(deEpochToDate, output.lat, tolPos)
     }
-
-    @Test
-    fun testNutation() {
-        val (deltaPsi, deltaEps) = Ecliptic(november13_2028).nutation
-        Assert.assertEquals(Math.toRadians(14.861 / 3_600), deltaPsi, 1e-7)
-        Assert.assertEquals(Math.toRadians(2.705 / 3_600), deltaEps, 1e-7)
-    }
 }

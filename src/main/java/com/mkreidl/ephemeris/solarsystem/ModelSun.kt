@@ -6,7 +6,7 @@ import com.mkreidl.math.Vector3
 
 class ModelSun : OrbitalModel() {
 
-    override fun computeCartesian(time: Time): PhaseCartesian = PhaseCartesian(Vector3.ZERO, Vector3.ZERO)
+    override fun computeCartesian(time: Time) = PhaseCartesian.ZERO
 
-    override fun computeSpherical(time: Time): PhaseSpherical = PhaseSpherical(Sphe.ZERO, Sphe.ZERO)
+    override fun computeSpherical(time: Time) = PhaseSpherical.ZERO
 }

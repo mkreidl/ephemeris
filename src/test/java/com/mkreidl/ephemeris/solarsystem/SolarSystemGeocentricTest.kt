@@ -17,10 +17,10 @@ import java.util.*
  * Parses txt test data produced by http://ephemeris.com/ephemeris.php
  */
 @RunWith(Parameterized::class)
-class GeocentricCartesianPositionsVelocitiesTest(testname: String, private val body: Body, private val time: Time, private val expected: EphemerisData) {
+class SolarSystemGeocentricTest(testname: String, private val body: Body, private val time: Time, private val expected: EphemerisData) {
 
     private val modelsMeeus = mapOf(
-            Body.EARTH to EarthVsop87C(),
+            Body.EARTH to EarthMeeus(),
             Body.SUN to ModelSun(),
             Body.MERCURY to MercuryMeeus(),
             Body.VENUS to VenusMeeus(),
@@ -54,7 +54,7 @@ class GeocentricCartesianPositionsVelocitiesTest(testname: String, private val b
         tol = when (body) {
             Body.MOON -> 4 * Angle.MIN
             Body.PLUTO -> 0.8 * Angle.MIN
-            else -> 0.58 * Angle.MIN
+            else -> 0.8 * Angle.MIN
         }
         val solarSystem = FullSolarSystem(modelsMeeus)
         solarSystem.compute(time)
@@ -107,6 +107,6 @@ class GeocentricCartesianPositionsVelocitiesTest(testname: String, private val b
     companion object {
         @JvmStatic
         @Parameters(name = "{0}")
-        fun data(): Iterable<Array<Any>> = TestUtil.solarSystemData(Arrays.asList(*Body.values()))
+        fun data() = TestUtil.solarSystemData(Arrays.asList(*Body.values()))
     }
 }

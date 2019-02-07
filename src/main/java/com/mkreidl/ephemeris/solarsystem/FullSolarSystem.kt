@@ -6,13 +6,13 @@ import com.mkreidl.math.Vector3
 
 class FullSolarSystem(private val models: Map<Body, OrbitalModel>) {
 
-    private val eclipticalHeliocentric = mutableMapOf(Body.SUN to PhaseCartesian(Vector3.ZERO, Vector3.ZERO))
-    private val eclipticalGeocentric = mutableMapOf(Body.EARTH to PhaseCartesian(Vector3.ZERO, Vector3.ZERO))
+    private val eclipticalHeliocentric = mutableMapOf(Body.SUN to PhaseCartesian.ZERO)
+    private val eclipticalGeocentric = mutableMapOf(Body.EARTH to PhaseCartesian.ZERO)
     private val geocentricDistances = mutableMapOf(Body.EARTH to 0.0)
 
     private val toMetersEarth = models.getValue(Body.EARTH).distanceUnit.toMeters()
 
-    lateinit var ecliptic: Ecliptic private set
+    private lateinit var ecliptic: Ecliptic
 
     fun compute(time: Time) {
         ecliptic = Ecliptic(time.time)

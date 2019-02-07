@@ -8,8 +8,8 @@ operator fun Matrix3x3.times(phase: PhaseCartesian) = PhaseCartesian(this * phas
 
 data class PhaseCartesian(val position: Vector3, val velocity: Vector3) {
 
-    fun jacobian(): Matrix3x3 {
-        throw NotImplementedError("The Jacobian matrix for transformation from Cartesian to Spherical coordinates is not yet implemented")
+    companion object {
+        val ZERO = PhaseCartesian(Vector3.ZERO, Vector3.ZERO)
     }
 
     fun toSpherical(): PhaseSpherical {
@@ -17,13 +17,13 @@ data class PhaseCartesian(val position: Vector3, val velocity: Vector3) {
         return PhaseSpherical(position.toSpherical(), Sphe(sphe.x, sphe.y, sphe.z))
     }
 
+    private fun jacobian(): Matrix3x3 {
+        throw NotImplementedError("The Jacobian matrix for transformation from Cartesian to Spherical coordinates is not yet implemented")
+    }
+
     operator fun times(factor: Double) = PhaseCartesian(position * factor, velocity * factor)
 
     operator fun plus(other: PhaseCartesian) = PhaseCartesian(position + other.position, velocity + other.velocity)
 
     operator fun minus(other: PhaseCartesian) = PhaseCartesian(position - other.position, velocity - other.velocity)
-
-    companion object {
-        val ZERO = PhaseCartesian(Vector3.ZERO, Vector3.ZERO)
-    }
 }

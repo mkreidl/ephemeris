@@ -2,7 +2,7 @@ package com.mkreidl.ephemeris
 
 import com.mkreidl.ephemeris.geometry.Angle
 import com.mkreidl.ephemeris.solarsystem.Ecliptic
-import com.mkreidl.ephemeris.solarsystem.Sun
+import com.mkreidl.ephemeris.solarsystem.SunLowPrecision
 import com.mkreidl.math.Polynomial
 import java.util.*
 
@@ -60,7 +60,7 @@ fun Instant.getMeanSolarTimeRadians(): Double {
     return if (rad < 0) rad + 2 * Math.PI else rad
 }
 
-fun Sun.getTrueSolarTimeRadians() = ecliptic.instant.getMeanSolarTimeRadians() + equationOfTime
+fun SunLowPrecision.getTrueSolarTimeRadians() = ecliptic.instant.getMeanSolarTimeRadians() + equationOfTime
 
 private infix fun Instant.hoursFrom(instant: Instant) = (epochMilli - instant.epochMilli) * Instant.HOURS_PER_MILLI
 private infix fun Instant.siderealDaysFrom(instant: Instant) = (epochMilli - instant.epochMilli) * Instant.DAYS_PER_MILLI * SIDEREAL_PER_SOLAR

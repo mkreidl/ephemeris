@@ -4,11 +4,11 @@ operator fun Double.times(vector: Vector3) = vector * this
 
 data class Vector3(val x: Double, val y: Double, val z: Double) {
 
+    constructor(x: Float, y: Float, z: Float) : this(x.toDouble(), y.toDouble(), z.toDouble())
+
     companion object {
         val ZERO = Vector3(0.0, 0.0, 0.0)
     }
-
-    constructor(x: Float, y: Float, z: Float) : this(x.toDouble(), y.toDouble(), z.toDouble())
 
     operator fun plus(other: Vector3) = Vector3(
             x + other.x,

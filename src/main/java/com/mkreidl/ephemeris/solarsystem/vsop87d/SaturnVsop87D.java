@@ -2,7 +2,7 @@ package com.mkreidl.ephemeris.solarsystem.vsop87d;
 
 import com.mkreidl.ephemeris.solarsystem.ModelVsop87;
 
-public class SaturnVsop87D extends ModelVsop87.XYZ
+public class SaturnVsop87D extends ModelVsop87.LBR
 {
     public SaturnVsop87D() {
         super(classCoeff);

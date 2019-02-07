@@ -1,34 +1,24 @@
 package com.mkreidl.ephemeris.solarsystem
 
 import com.mkreidl.ephemeris.Instant
-import com.mkreidl.ephemeris.geometry.Angle
 import org.junit.Assert
 import org.junit.Test
 import java.util.*
 
 class EclipticTest {
 
-    @Test
-    fun testEquationOfTimeMeeusChap28() {
-        val calendar = GregorianCalendar(TimeZone.getTimeZone("UTC"))
-                .apply {
-                    set(1992, 9, 13,
-                            0, 0, 0)
-                }
-        val instant = Instant.ofEpochMilli(calendar.timeInMillis)
-        val radians = Angle.standardize(Sun(instant).equationOfTime)
-        Assert.assertEquals(13 + 42.6 / 60, Math.toDegrees(radians) * 4, 0.002)
-    }
+    private val november13_2028 = Instant.ofJulianDayFraction(2_462_088.69)  // November 13.19, 2028
+    private val april10_1987 = Instant.ofEpochMilli(GregorianCalendar(TimeZone.getTimeZone("UTC"))
+            .apply {
+                set(1987, 3, 10,
+                        0, 0, 0)
+            }.timeInMillis)
 
     @Test
     fun testNutationMeeusChap22() {
-        val calendar = GregorianCalendar(TimeZone.getTimeZone("UTC"))
-                .apply {
-                    set(1987, 3, 10, 0, 0, 0)
-                }
-        val ecliptic = Ecliptic(Instant.ofEpochMilli(calendar.timeInMillis))
-        val longitude = Angle.standardize(ecliptic.nutationInLongitude)
-        val obliquity = Angle.standardize(ecliptic.nutationInObliquity)
+        val ecliptic = Ecliptic(april10_1987)
+        val longitude = ecliptic.nutationInLongitude
+        val obliquity = ecliptic.nutationInObliquity
         Assert.assertEquals(-3.788, Math.toDegrees(longitude) * 3600, 0.02)
         Assert.assertEquals(9.443, Math.toDegrees(obliquity) * 3600, 0.02)
     }
@@ -40,6 +30,16 @@ class EclipticTest {
         Assert.assertEquals(Math.toRadians(23.44), getObliquity(2000), 1e-3)
         Assert.assertEquals(Math.toRadians(23.43721), getObliquity(2016), 1e-3)
         Assert.assertEquals(Math.toRadians(23.31), getObliquity(3000), 1e-3)
+    }
+
+    @Test
+    fun testNovember2028() {
+        val ecliptic = Ecliptic(november13_2028)
+        Assert.assertEquals(Math.toRadians(23.436), ecliptic.meanObliquity, 1e-5)
+
+        val (deltaPsi, deltaEps) = ecliptic.nutation
+        Assert.assertEquals(14.861, Math.toDegrees(deltaPsi) * 3600, 0.02)
+        Assert.assertEquals(2.705, Math.toDegrees(deltaEps * 3600), 0.02)
     }
 
     private fun getObliquity(year: Int) = Ecliptic(

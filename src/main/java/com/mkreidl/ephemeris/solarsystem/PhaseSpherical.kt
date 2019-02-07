@@ -7,7 +7,19 @@ import com.mkreidl.math.Vector3
 
 data class PhaseSpherical(val position: Sphe, val velocity: Sphe) {
 
-    fun jacobian(): Matrix3x3 {
+    companion object {
+        val ZERO = PhaseSpherical(Sphe.ZERO, Sphe.ZERO)
+    }
+
+    fun toCartesian(): PhaseCartesian {
+
+        return PhaseCartesian(
+                position.toCartesian(),
+                jacobian() * Vector3(velocity.dst, velocity.lon, velocity.lat) * (1.0 / Time.SECONDS_PER_DAY)
+        )
+    }
+
+    private fun jacobian(): Matrix3x3 {
         val r = position.dst
         val sl = Math.sin(position.lon)
         val sb = Math.sin(position.lat)
@@ -17,14 +29,6 @@ data class PhaseSpherical(val position: Sphe, val velocity: Sphe) {
                 cl * cb, -r * sl * cb, -r * cl * sb,
                 sl * cb, r * cl * cb, -r * sl * sb,
                 sb, 0.0, r * cb
-        )
-    }
-
-    fun toCartesian(): PhaseCartesian {
-
-        return PhaseCartesian(
-                position.toCartesian(),
-                jacobian() * Vector3(velocity.dst, velocity.lon, velocity.lat) * (1.0 / Time.SECONDS_PER_DAY)
         )
     }
 }

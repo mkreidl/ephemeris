@@ -16,6 +16,8 @@ class Instant internal constructor(val epochMilli: Long) {
     fun julianCenturiesSince(instant: Instant) = (epochMilli - instant.epochMilli) * CENTURIES_PER_MILLI
     fun julianMillenniaSince(instant: Instant) = (epochMilli - instant.epochMilli) * MILLENNIA_PER_MILLI
 
+    override fun equals(other: Any?) = other is Instant && other.epochMilli == epochMilli
+
     companion object {
         val J2000 = Instant.ofEpochMilli(946_728_000_000L)
         const val J2000_DAY_NUMBER = 2_451_545.0
