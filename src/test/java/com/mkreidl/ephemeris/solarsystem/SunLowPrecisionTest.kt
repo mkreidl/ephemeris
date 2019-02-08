@@ -39,7 +39,7 @@ class SunLowPrecisionTest {
 
     @Test
     fun testTrueLongitude() {
-        Assert.assertEquals(Math.toRadians(199.909_87 - 360.0), sun.trueLongitude, 1e-7)
+        Assert.assertEquals(Math.toRadians(199.909_87 - 360.0), sun.geometricLongitude, 1e-7)
     }
 
     @Test
@@ -60,6 +60,6 @@ class SunLowPrecisionTest {
     @Test
     fun testTrueLongitudeNovember2028() {
         val november13_2028 = Instant.ofJulianDayFraction(2_462_088.69)  // November 13.19, 2028
-        Assert.assertEquals(Math.toRadians(231.328 - 360.0), SunLowPrecision(november13_2028).trueLongitude, 1e-5)
+        Assert.assertEquals(Math.toRadians(231.328 - 360.0), SunLowPrecision(november13_2028).geometricLongitude, 1e-5)
     }
 }

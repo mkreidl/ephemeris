@@ -30,4 +30,11 @@ class SunHighPrecisionTest {
     fun testApparentRightAscension() {
         Assert.assertEquals(Math.toRadians(-11 + 13.0 / 60 + 30.763 / 3_600) * 15, sun.apparentRightAscension, 1e-6)
     }
+
+    // Meeus Example 27.a
+
+    @Test
+    fun testEquationOfTime() {
+        Assert.assertEquals(Math.toRadians(3.427_351), sun.equationOfTime, 1e-6)
+    }
 }
