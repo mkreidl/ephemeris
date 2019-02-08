@@ -62,14 +62,12 @@ object Stars {
     }
 
     fun computeEclipticalJ2000(yearsSince2000: Double, eclipticalPositions: DoubleArray, start: Int, delta: Int) {
-        var i = start
-        while (i < StarsCatalog.SIZE) {
+        for (i in start until StarsCatalog.SIZE step delta) {
             val offset = 3 * i
             // Compute ecliptical cartesian coordinates for J2000 frame
             eclipticalPositions[offset] = POS_J2000[offset] + VEL_J2000[offset] * yearsSince2000
             eclipticalPositions[offset + 1] = POS_J2000[offset + 1] + VEL_J2000[offset + 1] * yearsSince2000
             eclipticalPositions[offset + 2] = POS_J2000[offset + 2] + VEL_J2000[offset + 2] * yearsSince2000
-            i += delta
         }
     }
 
@@ -87,9 +85,9 @@ object Stars {
     }
 
     fun computeConstellationCenter(constellation: Constellation, starsCoordinates: DoubleArray): Vector3 {
-        val x = constellation.starList.map { starsCoordinates[it * 3] }.sum()
-        val y = constellation.starList.map { starsCoordinates[it * 3 + 1] }.sum()
-        val z = constellation.starList.map { starsCoordinates[it * 3 + 2] }.sum()
+        val x = constellation.map { starsCoordinates[it * 3] }.sum()
+        val y = constellation.map { starsCoordinates[it * 3 + 1] }.sum()
+        val z = constellation.map { starsCoordinates[it * 3 + 2] }.sum()
         return Vector3(x, y, z).normalize()
     }
 

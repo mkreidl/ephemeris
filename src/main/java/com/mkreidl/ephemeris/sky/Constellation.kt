@@ -1,25 +1,20 @@
 package com.mkreidl.ephemeris.sky
 
-class Constellation internal constructor(val name: String, vararg paths: IntArray) {
-
-    val paths = paths.toList()
-    val starList = paths.flatMap { it.toList() }.distinct().sorted()
-    val brightestStar = starList[0]
-
-    val hemisphere = computeHemisphere()
+class Constellation internal constructor(val name: String, vararg paths: IntArray) : Iterable<Int> {
 
     enum class Hemisphere {
         NORTHERN, SOUTHERN, ZODIAC
     }
 
-    private fun computeHemisphere(): Hemisphere? {
-        val hasStarNorthern = starList.any { Stars.POS_J2000[3 * it + 2] > 0 }
-        val hasStarSouthern = starList.any { Stars.POS_J2000[3 * it + 2] < 0 }
-        return when {
-            hasStarNorthern && hasStarSouthern -> Hemisphere.ZODIAC
-            hasStarNorthern -> Hemisphere.NORTHERN
-            hasStarSouthern -> Hemisphere.SOUTHERN
-            else -> null
-        }
+    val paths = paths.toList()
+    val starList = paths.flatMap { it.toList() }.distinct().sorted()
+
+    val brightestStar = starList[0]
+    val hemisphere = when {
+        all { Stars.POS_J2000[3 * it + 2] > 0 } -> Hemisphere.NORTHERN
+        all { Stars.POS_J2000[3 * it + 2] < 0 } -> Hemisphere.SOUTHERN
+        else -> Hemisphere.ZODIAC
     }
+
+    override fun iterator() = starList.iterator()
 }

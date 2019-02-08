@@ -23,7 +23,8 @@ class Ecliptic(internal val instant: Instant) {
     val trafoMeanEqu2Ecl by lazy { Matrix3x3.rotation(-meanObliquity, Axis.X) }
 
     val trafoMeanEcl2TrueEcl by lazy { Matrix3x3.rotation(nutationInLongitude, Axis.Z) }
-    val trafoMeanEcl2TrueEqu by lazy { Matrix3x3.rotation(trueObliquity, Axis.X) * trafoMeanEcl2TrueEcl }
+    val trafoTrueEcl2TrueEqu by lazy {  Matrix3x3.rotation(trueObliquity, Axis.X) }
+    val trafoMeanEcl2TrueEqu by lazy { trafoTrueEcl2TrueEqu * trafoMeanEcl2TrueEcl }
 
     val trafoEclJ2000ToEclToDate by lazy { computeTransformJ2000ToDate() }
     val trafoEclJ2000ToMeanEquToDate by lazy { trafoEcl2MeanEqu * trafoEclJ2000ToEclToDate }

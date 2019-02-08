@@ -26,4 +26,6 @@ data class PhaseCartesian(val position: Vector3, val velocity: Vector3) {
     operator fun plus(other: PhaseCartesian) = PhaseCartesian(position + other.position, velocity + other.velocity)
 
     operator fun minus(other: PhaseCartesian) = PhaseCartesian(position - other.position, velocity - other.velocity)
+
+    operator fun unaryMinus() = PhaseCartesian(-position, -velocity)
 }

@@ -20,10 +20,9 @@ import java.util.*
 class SolarSystemGeocentricTest(testname: String, private val body: Body, private val time: Time, private val expected: EphemerisData) {
 
     private val modelsMeeus = mapOf(
-            Body.EARTH to EarthMeeus(),
-            Body.SUN to ModelSun(),
             Body.MERCURY to MercuryMeeus(),
             Body.VENUS to VenusMeeus(),
+            Body.EARTH to EarthMeeus(),
             Body.MARS to MarsMeeus(),
             Body.JUPITER to JupiterMeeus(),
             Body.SATURN to SaturnMeeus(),
@@ -34,10 +33,9 @@ class SolarSystemGeocentricTest(testname: String, private val body: Body, privat
     )
 
     private val modelsVsop87 = mapOf(
-            Body.EARTH to EarthVsop87C(),
-            Body.SUN to ModelSun(),
             Body.MERCURY to MercuryVsop87C(),
             Body.VENUS to VenusVsop87C(),
+            Body.EARTH to EarthVsop87C(),
             Body.MARS to MarsVsop87C(),
             Body.JUPITER to JupiterVsop87C(),
             Body.SATURN to SaturnVsop87C(),

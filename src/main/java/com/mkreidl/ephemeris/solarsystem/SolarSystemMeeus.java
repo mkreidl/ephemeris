@@ -6,8 +6,6 @@ import com.mkreidl.ephemeris.solarsystem.vsop87c.EarthVsop87C;
 public class SolarSystemMeeus extends SolarSystem {
     public SolarSystemMeeus() {
         models.put(Body.EARTH, new EarthVsop87C());
-
-        models.put(Body.SUN, new ModelSun());
         models.put(Body.MERCURY, new MercuryMeeus());
         models.put(Body.VENUS, new VenusMeeus());
         models.put(Body.MARS, new MarsMeeus());

@@ -2,7 +2,6 @@ package com.mkreidl.ephemeris.solarsystem
 
 import com.mkreidl.ephemeris.Distance
 import com.mkreidl.ephemeris.Time
-import com.mkreidl.math.Vector3
 
 class FullSolarSystem(private val models: Map<Body, OrbitalModel>) {
 
@@ -17,7 +16,9 @@ class FullSolarSystem(private val models: Map<Body, OrbitalModel>) {
     fun compute(time: Time) {
         ecliptic = Ecliptic(time.time)
         eclipticalHeliocentric[Body.EARTH] = models.getValue(Body.EARTH).computeCartesian(time) * toMetersEarth
-        Body.EXTRA_TERRESTRIAL.forEach { compute(it, time) }
+        eclipticalGeocentric[Body.SUN] = -correctAberration(eclipticalHeliocentric.getValue(Body.EARTH))
+        geocentricDistances[Body.SUN] = eclipticalGeocentric.getValue(Body.SUN).position.norm
+        models.keys.forEach { compute(it, time) }
     }
 
     private fun compute(body: Body, time: Time) {

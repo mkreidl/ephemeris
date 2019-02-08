@@ -4,7 +4,6 @@ import com.mkreidl.ephemeris.solarsystem.vsop87c.*;
 
 public class SolarSystemVSOP87C extends SolarSystem {
     public SolarSystemVSOP87C() {
-        models.put(Body.SUN, new ModelSun());
         models.put(Body.MERCURY, new MercuryVsop87C());
         models.put(Body.VENUS, new VenusVsop87C());
         models.put(Body.EARTH, new EarthVsop87C());
