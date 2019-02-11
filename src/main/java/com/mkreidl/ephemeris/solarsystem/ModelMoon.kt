@@ -81,7 +81,7 @@ class ModelMoon : OrbitalModel() {
                 dst = posSpherical.dst + distanceCorrection()
         )
 
-        posSpherical = posSpherical.standardized()
+        posSpherical = posSpherical.reduce()
         posCartesian = posSpherical.toCartesian()
     }
 

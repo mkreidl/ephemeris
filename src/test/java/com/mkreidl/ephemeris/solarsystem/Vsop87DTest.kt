@@ -35,7 +35,7 @@ class Vsop87DTest(
             else -> throw IllegalArgumentException("Planet not found")
         }
         var (actualPos, actualVel) = model.computeSpherical(time)
-        actualPos = actualPos.standardized()
+        actualPos = actualPos.reduce()
         assertEquals(expectedPos.dst, actualPos.dst, 1e-9)
         assertEquals(expectedPos.lon, actualPos.lon, 1e-9)
         assertEquals(expectedPos.lat, actualPos.lat, 1e-9)

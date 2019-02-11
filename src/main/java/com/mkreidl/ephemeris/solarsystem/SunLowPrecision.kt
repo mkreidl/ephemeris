@@ -1,16 +1,17 @@
 package com.mkreidl.ephemeris.solarsystem
 
+import com.mkreidl.ephemeris.Angle
 import com.mkreidl.ephemeris.Instant
 
 class SunLowPrecision(instant: Instant, ecliptic: Ecliptic = Ecliptic(instant)) : Sun(instant, ecliptic) {
 
-    val meanAnomaly by lazy { standardize(M(julianCenturies)) }
+    val meanAnomaly by lazy { Angle.reduce(M(julianCenturies)) }
     val excentricity by lazy { E(julianCenturies) }
-    val equationOfCenter by lazy { standardize(computeEquationOfCenter()) }
-    val trueAnomaly by lazy { standardize(meanAnomaly + equationOfCenter) }
-    val omega = standardize(Math.toRadians(125.04 - 1_934.136 * julianCenturies))
+    val equationOfCenter by lazy { Angle.reduce(computeEquationOfCenter()) }
+    val trueAnomaly by lazy { Angle.reduce(meanAnomaly + equationOfCenter) }
+    val omega = Angle.reduce(Math.toRadians(125.04 - 1_934.136 * julianCenturies))
 
-    override val geometricLongitude by lazy { standardize(meanLongitude + equationOfCenter) }
+    override val geometricLongitude by lazy { Angle.reduce(meanLongitude + equationOfCenter) }
     override val apparentLongitude by lazy { geometricLongitude - Math.toRadians(0.005_69 + 0.004_78 * Math.sin(omega)) }
     override val apparentRightAscension by lazy { computeApparentRightAscension() }
 

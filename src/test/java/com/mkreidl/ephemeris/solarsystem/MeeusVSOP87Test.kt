@@ -35,7 +35,7 @@ class MeeusVSOP87Test(
             else -> throw IllegalArgumentException("Planet not found")
         }
         var (actualPos, actualVel) = model.computeSpherical(time)
-        actualPos = actualPos.standardized()
+        actualPos = actualPos.reduce()
         assertEquals(expectedPos.dst, actualPos.dst, 1.2e-4)  // 1.2e-4 AU = 18 km
         assertEquals(expectedPos.lon, actualPos.lon, 1e-5)  // 1e-5 rad = 2 arcsec
         assertEquals(expectedPos.lat, actualPos.lat, 1e-5)

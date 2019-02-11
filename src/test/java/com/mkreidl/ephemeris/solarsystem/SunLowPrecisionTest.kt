@@ -1,5 +1,6 @@
 package com.mkreidl.ephemeris.solarsystem
 
+import com.mkreidl.ephemeris.Angle
 import com.mkreidl.ephemeris.Instant
 import org.junit.Assert
 import org.junit.Test
@@ -24,42 +25,42 @@ class SunLowPrecisionTest {
 
     @Test
     fun testMeanLongitude() {
-        Assert.assertEquals(Math.toRadians(201.807_193 - 360.0), sun.meanLongitude, 1e-8)
+        Assert.assertEquals(Angle.ofDeg(201.807_193).radians, sun.meanLongitude, 1e-8)
     }
 
     @Test
     fun testMeanAnomaly() {
-        Assert.assertEquals(Math.toRadians(278.993_96 - 360.0), sun.meanAnomaly, 1e-7)
+        Assert.assertEquals(Angle.ofDeg(278.993_96).radians, sun.meanAnomaly, 1e-7)
     }
 
     @Test
     fun testEquationOfCenter() {
-        Assert.assertEquals(Math.toRadians(-1.897_32), sun.equationOfCenter, 1e-7)
+        Assert.assertEquals(Angle.ofDeg(-1.897_32).radians, sun.equationOfCenter, 1e-7)
     }
 
     @Test
     fun testTrueLongitude() {
-        Assert.assertEquals(Math.toRadians(199.909_87 - 360.0), sun.geometricLongitude, 1e-7)
+        Assert.assertEquals(Angle.ofDeg(199.909_87).radians, sun.geometricLongitude, 1e-7)
     }
 
     @Test
     fun testNode() {
-        Assert.assertEquals(Math.toRadians(264.65 - 360.0), sun.omega, 1e-4)
+        Assert.assertEquals(Angle.ofDeg(264.65).radians, sun.omega, 1e-4)
     }
 
     @Test
     fun testApparentLongitude() {
-        Assert.assertEquals(Math.toRadians(199.908_94 - 360.0), sun.apparentLongitude, 1e-7)
+        Assert.assertEquals(Angle.ofDeg(199.908_94).radians, sun.apparentLongitude, 1e-7)
     }
 
     @Test
     fun testApparentRightAscension() {
-        Assert.assertEquals(Math.toRadians(-161.619_18), sun.apparentRightAscension, 1e-6)
+        Assert.assertEquals(Angle.ofDeg(-161.619_18).radians, sun.apparentRightAscension, 1e-6)
     }
 
     @Test
     fun testTrueLongitudeNovember2028() {
         val november13_2028 = Instant.ofJulianDayFraction(2_462_088.69)  // November 13.19, 2028
-        Assert.assertEquals(Math.toRadians(231.328 - 360.0), SunLowPrecision(november13_2028).geometricLongitude, 1e-5)
+        Assert.assertEquals(Angle.ofDeg(231.328).radians, SunLowPrecision(november13_2028).geometricLongitude, 1e-5)
     }
 }

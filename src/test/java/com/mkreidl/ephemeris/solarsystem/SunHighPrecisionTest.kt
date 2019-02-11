@@ -1,5 +1,6 @@
 package com.mkreidl.ephemeris.solarsystem
 
+import com.mkreidl.ephemeris.Angle
 import com.mkreidl.ephemeris.Instant
 import org.junit.Assert
 import org.junit.Test
@@ -13,28 +14,28 @@ class SunHighPrecisionTest {
 
     @Test
     fun testGeometricLongitude() {
-        Assert.assertEquals(Math.toRadians(199 + 54.0 / 60 + 26.45 / 3_600 - 360), sun.geometricLongitude, 5e-7)
+        Assert.assertEquals(Angle.ofDeg(199, 54, 26.45).radians, sun.geometricLongitude, 5e-7)
     }
 
     @Test
     fun testGeometricLatitude() {
-        Assert.assertEquals(Math.toRadians(0.62 / 3_600), sun.geometricLatitude, 2e-7)
+        Assert.assertEquals(Angle.ofDeg(0, 0, 0.62).radians, sun.geometricLatitude, 2e-7)
     }
 
     @Test
     fun testApparentLongitude() {
-        Assert.assertEquals(Math.toRadians(199 + 54.0 / 60 + 21.82 / 3_600 - 360), sun.apparentLongitude, 1e-6)
+        Assert.assertEquals(Angle.ofDeg(199, 54, 21.82).radians, sun.apparentLongitude, 1e-6)
     }
 
     @Test
     fun testApparentRightAscension() {
-        Assert.assertEquals(Math.toRadians(-11 + 13.0 / 60 + 30.763 / 3_600) * 15, sun.apparentRightAscension, 1e-6)
+        Assert.assertEquals(Angle.ofHrs(13, 13, 30.763).radians, sun.apparentRightAscension, 1e-6)
     }
 
     // Meeus Example 27.a
 
     @Test
     fun testEquationOfTime() {
-        Assert.assertEquals(Math.toRadians(3.427_351), sun.equationOfTime, 1e-6)
+        Assert.assertEquals(Angle.ofDeg(3.427_351).radians, sun.equationOfTime, 1e-6)
     }
 }

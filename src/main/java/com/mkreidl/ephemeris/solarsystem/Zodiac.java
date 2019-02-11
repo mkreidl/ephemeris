@@ -22,6 +22,10 @@ public class Zodiac {
         return Sign.values()[signIndex];
     }
 
+    public static double getLongitude(Sign sign) {
+        return sign.enterAngle.getRadians();
+    }
+
     public static double getLongitude(Sign sign, Angle.Unit unit) {
         return sign.enterAngle.get(unit);
     }
