@@ -72,13 +72,12 @@ class SolarSystemGeocentricTest(testname: String, private val body: Body, privat
     private fun test(solarSystem: FullSolarSystem) {
         val ecliptical = solarSystem.getTrueEclipticalGeocentric(body).position.toSpherical()
         val equatorial = solarSystem.getTrueEquatorialGeocentric(body).position.toSpherical()
-        //val horizontal = solarSystem.getTrueEclipticalGeocentric(body).position.toSpherical()
 
-        val longitude = Angle.reducePositive(ecliptical.lon)
-        val latitude = ecliptical.lat
+        val longitude = Angle.ofRad(ecliptical.lon)
+        val latitude = Angle.ofRad(ecliptical.lat)
 
-        val rightAscension = Angle.reducePositive(equatorial.lon)
-        val declination = equatorial.lat
+        val rightAscension = Angle.ofRad(equatorial.lon)
+        val declination = Angle.ofRad(equatorial.lat)
 
         println("-------------------------------------")
         println("$time -- $body")
@@ -86,17 +85,17 @@ class SolarSystemGeocentricTest(testname: String, private val body: Body, privat
         println("-------------------------------------")
 
         println("Distance: " + solarSystem.getGeocentricDistance(body))
-        println(String.format("%s  | ecliptical longitude |  %s", expected.longitude, Sexagesimal.of(Angle.ofRad(longitude).degreesNonNeg)))
-        println(String.format("%s  | ecliptical latitude  |  %s", expected.latitude, latitude))
-        println(String.format("%s  | equatorial longitude |  %s", expected.rightAscension, rightAscension))
-        println(String.format("%s  | equatorial latitude  |  %s", expected.declination, declination))
-        println("expected: " + (if (expected.retrograde) "R" else "-") + "  |  actual: " + if (solarSystem.isRetrograde(body)) "R" else "-")
+        println("${Sexagesimal.of(expected.longitude.degreesNonNeg)}  | ecliptical longitude |  ${Sexagesimal.of(longitude.degreesNonNeg)}")
+        println("${Sexagesimal.of(expected.latitude.degreesNonNeg)}  | ecliptical latitude  |  ${Sexagesimal.of(latitude.degreesNonNeg)}")
+        println("${Sexagesimal.of(expected.rightAscension.hoursNonNeg)}  | equatorial longitude |  ${Sexagesimal.of(rightAscension.hoursNonNeg)}")
+        println("${Sexagesimal.of(expected.declination.degreesNonNeg)}  | equatorial latitude  |  ${Sexagesimal.of(declination.degreesNonNeg)}")
+        println("expected: ${if (expected.retrograde) "R" else "-"}  |  actual: ${if (solarSystem.isRetrograde(body)) "R" else "-"}")
         println("Angular velocity [sec]: ${solarSystem.getAngularVelocity(body) * 3_600}")
 
-        assertEquals(expected.longitude.radians, longitude, tol)
-        assertEquals(expected.latitude.radians, latitude, tol)
-        assertEquals(expected.rightAscension.radians, rightAscension, tol)
-        assertEquals(expected.declination.radians, declination, tol)
+        assertEquals(expected.longitude.radians, longitude.radians, tol)
+        assertEquals(expected.latitude.radians, latitude.radians, tol)
+        assertEquals(expected.rightAscension.radians, rightAscension.radians, tol)
+        assertEquals(expected.declination.radians, declination.radians, tol)
         assertEquals(expected.retrograde, solarSystem.isRetrograde(body))
     }
 
