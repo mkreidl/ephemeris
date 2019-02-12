@@ -1,5 +1,6 @@
 package com.mkreidl.ephemeris.solarsystem;
 
+import com.mkreidl.ephemeris.Instant;
 import com.mkreidl.ephemeris.Position;
 import com.mkreidl.ephemeris.Time;
 import com.mkreidl.ephemeris.geometry.Cartesian;
@@ -12,7 +13,7 @@ import java.util.EnumMap;
 import java.util.Map;
 
 public abstract class SolarSystem {
-    
+
     protected final Map<Body, Ecliptical.Cart> positions = new EnumMap<>(Body.class);
     private final Map<Body, Ecliptical.Cart> velocities = new EnumMap<>(Body.class);
     private final Map<Body, Position> planetsEphemerides = new EnumMap<>(Body.class);
@@ -56,7 +57,7 @@ public abstract class SolarSystem {
 
     public void compute(final Time time, final Body body) {
         final OrbitalModel model = models.get(body);
-        final PhaseCartesian phase = model.computeCartesian(time);
+        final PhaseCartesian phase = model.computeCartesian(Instant.ofEpochMilli(time.getTime()));
         final Vector3 pos = phase.getPosition().times(model.getDistanceUnit().toMeters());
         final Vector3 vel = phase.getVelocity().times(model.getDistanceUnit().toMeters());
         positions.get(body).set(pos.getX(), pos.getY(), pos.getZ());

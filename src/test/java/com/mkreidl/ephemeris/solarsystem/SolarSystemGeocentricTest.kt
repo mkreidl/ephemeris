@@ -15,7 +15,7 @@ import java.util.*
  * Parses txt test data produced by http://ephemeris.com/ephemeris.php
  */
 @RunWith(Parameterized::class)
-class SolarSystemGeocentricTest(testname: String, private val body: Body, private val time: Time, private val expected: EphemerisData) {
+class SolarSystemGeocentricTest(testname: String, private val body: Body, private val instant: Instant, private val expected: EphemerisData) {
 
     private val modelsMeeus = mapOf(
             Body.MERCURY to MercuryMeeus(),
@@ -53,7 +53,7 @@ class SolarSystemGeocentricTest(testname: String, private val body: Body, privat
             else -> 0.8 * Angle.minute
         }.radians
         val solarSystem = FullSolarSystem(modelsMeeus)
-        solarSystem.compute(time)
+        solarSystem.compute(instant)
         test(solarSystem)
     }
 
@@ -65,7 +65,7 @@ class SolarSystemGeocentricTest(testname: String, private val body: Body, privat
             else -> 12.0 * Angle.second  // = 12 sec
         }.radians
         val solarSystem = FullSolarSystem(modelsVsop87)
-        solarSystem.compute(time)
+        solarSystem.compute(instant)
         test(solarSystem)
     }
 
@@ -80,8 +80,8 @@ class SolarSystemGeocentricTest(testname: String, private val body: Body, privat
         val declination = Angle.ofRad(equatorial.lat)
 
         println("-------------------------------------")
-        println("$time -- $body")
-        println(time.julianDayNumber())
+        println("$instant -- $body")
+        println(instant.julianDayFraction)
         println("-------------------------------------")
 
         println("Distance: " + solarSystem.getGeocentricDistance(body))

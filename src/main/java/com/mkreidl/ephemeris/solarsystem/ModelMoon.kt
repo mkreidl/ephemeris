@@ -1,6 +1,7 @@
 package com.mkreidl.ephemeris.solarsystem
 
 import com.mkreidl.ephemeris.Distance
+import com.mkreidl.ephemeris.Instant
 import com.mkreidl.ephemeris.Time
 import com.mkreidl.ephemeris.geometry.Angle.DEG
 import com.mkreidl.ephemeris.geometry.ClassicalOrbitalElements
@@ -39,20 +40,20 @@ class ModelMoon : OrbitalModel() {
     private var posSpherical = Sphe.ZERO
     private var posCartesian = Vector3.ZERO
 
-    override fun computeSpherical(time: Time): PhaseSpherical {
-        compute(time)
+    override fun computeSpherical(instant: Instant): PhaseSpherical {
+        compute(instant)
         return PhaseSpherical(posSpherical, Sphe.ZERO)
     }
 
-    override fun computeCartesian(time: Time): PhaseCartesian {
-        compute(time)
+    override fun computeCartesian(instant: Instant): PhaseCartesian {
+        compute(instant)
         return PhaseCartesian(
                 posCartesian,
                 Vector3(-posCartesian.y, posCartesian.x, 0.0) * velocityScale)
     }
 
-    fun computeOrbitalElements(time: Time): ClassicalOrbitalElements {
-        compute(time)
+    fun computeOrbitalElements(instant: Instant): ClassicalOrbitalElements {
+        compute(instant)
         return ClassicalOrbitalElements().set(orbitalElements)
     }
 
@@ -61,8 +62,8 @@ class ModelMoon : OrbitalModel() {
      *
      * @param time Time object.
      */
-    private fun compute(time: Time) {
-        val t = time.terrestrialDynamicalTime()
+    private fun compute(instant: Instant) {
+        val t = instant.terrestrialDynamicalTime
 
         orbitalElements.set(orbElMoonSeries[1])
         orbitalElements.times(t)

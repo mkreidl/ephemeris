@@ -8,7 +8,7 @@ import com.mkreidl.math.Vector3
 import org.junit.Assert
 import org.junit.Test
 
-class StarPositionTest {
+class StarPositionTestMeeusvsMeeus {
 
     private val thetaPersei = 588  // index in StarsCatalog
 

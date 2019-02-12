@@ -1,5 +1,6 @@
 package com.mkreidl.ephemeris.sky;
 
+import com.mkreidl.ephemeris.solarsystem.SolarSystemMeeus;
 import org.junit.Assert;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -9,7 +10,6 @@ import org.junit.Test;
 import com.mkreidl.ephemeris.sky.RiseSetCalculator.EventType;
 import com.mkreidl.ephemeris.sky.RiseSetCalculator.LookupDirection;
 import com.mkreidl.ephemeris.solarsystem.Body;
-import com.mkreidl.ephemeris.solarsystem.SolarSystemMeeus;
 
 public class TransitTest {
 

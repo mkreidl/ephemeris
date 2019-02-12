@@ -3,8 +3,8 @@ package com.mkreidl.ephemeris.sky;
 import com.mkreidl.ephemeris.geometry.Spherical;
 import com.mkreidl.ephemeris.sky.RiseSetCalculator.EventType;
 import com.mkreidl.ephemeris.solarsystem.Body;
-import com.mkreidl.ephemeris.solarsystem.SolarSystemMeeus;
 
+import com.mkreidl.ephemeris.solarsystem.SolarSystemMeeus;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;

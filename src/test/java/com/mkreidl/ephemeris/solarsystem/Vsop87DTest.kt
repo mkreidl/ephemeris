@@ -1,5 +1,6 @@
 package com.mkreidl.ephemeris.solarsystem
 
+import com.mkreidl.ephemeris.Instant
 import com.mkreidl.ephemeris.Time
 import com.mkreidl.ephemeris.geometry.Spherical
 import com.mkreidl.ephemeris.geometry.VSOP87File
@@ -34,7 +35,7 @@ class Vsop87DTest(
             VSOP87File.Planet.NEP -> NeptuneVsop87D()
             else -> throw IllegalArgumentException("Planet not found")
         }
-        var (actualPos, actualVel) = model.computeSpherical(time)
+        var (actualPos, actualVel) = model.computeSpherical(Instant.ofEpochMilli(time.time))
         actualPos = actualPos.reduce()
         assertEquals(expectedPos.dst, actualPos.dst, 1e-9)
         assertEquals(expectedPos.lon, actualPos.lon, 1e-9)

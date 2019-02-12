@@ -89,19 +89,20 @@ public class TestUtil {
             String dateStr = "";
             boolean geocentric = false;
             double moonPhase = Double.POSITIVE_INFINITY;
-            Time time = null;
+            com.mkreidl.ephemeris.Instant instant = null;
 
             try {
                 lineReader = new BufferedReader(new FileReader(file.getAbsolutePath()));
                 while ((line = lineReader.readLine()) != null) {
                     if (line.startsWith("Date/Time")) {
                         dateStr = line.substring(11, 30);
-                        time = TestUtil.getAstronomicalTime(dateStr);
+                        final Time time = TestUtil.getAstronomicalTime(dateStr);
                         if (time == null)  // dateStr could not be parsed
                         {
                             System.err.println("String '" + dateStr + "' does not represent a valid date.");
                             continue;
                         }
+                        instant = com.mkreidl.ephemeris.Instant.ofEpochMilli(time.getTime());
                     }
                     if (line.equals("Geocentric positions"))
                         geocentric = true;
@@ -116,7 +117,7 @@ public class TestUtil {
                         if (body == MOON)
                             ephemeris.phase = (moonPhase - 0.5) * 360;
                         if (bodies.contains(body))
-                            dataSets.add(new Object[]{dateStr + " - geocentric - " + objectName, body, time, ephemeris});
+                            dataSets.add(new Object[]{dateStr + " - geocentric - " + objectName, body, instant, ephemeris});
                     } catch (IllegalArgumentException | IllegalStateException | StringIndexOutOfBoundsException e) {
                     }
                 }
@@ -126,17 +127,17 @@ public class TestUtil {
         return dataSets;
     }
 
-    public static Time getAstronomicalTimeProlepticGregorian(String dateString) {
+    public static com.mkreidl.ephemeris.Instant getAstronomicalTimeProlepticGregorian(String dateString) {
         try {
             final LocalDateTime dateTime = LocalDateTime.parse(dateString, NASA_DATE_FORMATTER);
             final ZonedDateTime zonedDateTime = ZonedDateTime.of(dateTime, UTC);
-            return new Time(Instant.from(zonedDateTime).toEpochMilli());
+            return com.mkreidl.ephemeris.Instant.ofEpochMilli(Instant.from(zonedDateTime).toEpochMilli());
         } catch (DateTimeParseException e) {
         }
         try {
             final LocalDateTime dateTime = LocalDateTime.parse(dateString, VSOP_DATE_FORMATTER);
             final ZonedDateTime zonedDateTime = ZonedDateTime.of(dateTime, UTC);
-            return new Time(Instant.from(zonedDateTime).toEpochMilli());
+            return com.mkreidl.ephemeris.Instant.ofEpochMilli(Instant.from(zonedDateTime).toEpochMilli());
         } catch (DateTimeParseException e) {
         }
         return null;

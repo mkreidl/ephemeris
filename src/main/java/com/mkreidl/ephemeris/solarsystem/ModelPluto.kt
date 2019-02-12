@@ -1,7 +1,7 @@
 package com.mkreidl.ephemeris.solarsystem
 
 import com.mkreidl.ephemeris.DAYS_PER_SECOND
-import com.mkreidl.ephemeris.Time
+import com.mkreidl.ephemeris.Instant
 import com.mkreidl.math.Sphe
 
 class ModelPluto : OrbitalModel() {
@@ -12,16 +12,16 @@ class ModelPluto : OrbitalModel() {
     private var s1: Double = 0.toDouble()
     private var p1: Double = 0.toDouble()
 
-    override fun computeCartesian(time: Time) =
-            computeSpherical(time).toCartesian().scaleVelocity(DAYS_PER_SECOND)
+    override fun computeCartesian(instant: Instant) =
+            computeSpherical(instant).toCartesian().scaleVelocity(DAYS_PER_SECOND)
 
-    override fun computeSpherical(time: Time): PhaseSpherical {
-        computeTime(time)
+    override fun computeSpherical(instant: Instant): PhaseSpherical {
+        computeTime(instant)
         return PhaseSpherical(computePosition(), computeVelocity())
     }
 
-    private fun computeTime(time: Time) {
-        d = time.terrestrialDynamicalTime()
+    private fun computeTime(instant: Instant) {
+        d = instant.terrestrialDynamicalTime
         s1 = Math.toRadians(0.033459652)
         p1 = Math.toRadians(0.003968789)
         s = S0 + s1 * d

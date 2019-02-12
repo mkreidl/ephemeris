@@ -1,5 +1,6 @@
 package com.mkreidl.ephemeris.solarsystem
 
+import com.mkreidl.ephemeris.Instant
 import com.mkreidl.ephemeris.Time
 import com.mkreidl.ephemeris.geometry.Cartesian
 import com.mkreidl.ephemeris.geometry.VSOP87File
@@ -34,7 +35,7 @@ class Vsop87CTest(
             VSOP87File.Planet.NEP -> NeptuneVsop87C()
             else -> throw IllegalArgumentException("Planet not found")
         }
-        var (actualPos, actualVel) = model.computeCartesian(time)
+        var (actualPos, actualVel) = model.computeCartesian(Instant.ofEpochMilli(time.time))
         assertEquals(expectedPos.x, actualPos.x, 1e-10)
         assertEquals(expectedPos.y, actualPos.y, 1e-10)
         assertEquals(expectedPos.z, actualPos.z, 1e-10)

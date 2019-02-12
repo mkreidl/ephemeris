@@ -1,7 +1,7 @@
 package com.mkreidl.ephemeris.solarsystem
 
 import com.mkreidl.ephemeris.Distance
-import com.mkreidl.ephemeris.Time
+import com.mkreidl.ephemeris.Instant
 
 abstract class OrbitalModel {
 
@@ -13,7 +13,7 @@ abstract class OrbitalModel {
 
     open val distanceUnit = Distance.AU
 
-    abstract fun computeCartesian(time: Time): PhaseCartesian
+    abstract fun computeCartesian(instant: Instant): PhaseCartesian
 
-    abstract fun computeSpherical(time: Time): PhaseSpherical
+    abstract fun computeSpherical(instant: Instant): PhaseSpherical
 }

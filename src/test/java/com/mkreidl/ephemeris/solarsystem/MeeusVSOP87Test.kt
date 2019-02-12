@@ -1,5 +1,6 @@
 package com.mkreidl.ephemeris.solarsystem
 
+import com.mkreidl.ephemeris.Instant
 import com.mkreidl.ephemeris.Time
 import com.mkreidl.ephemeris.geometry.Spherical
 import com.mkreidl.ephemeris.geometry.VSOP87File
@@ -34,7 +35,7 @@ class MeeusVSOP87Test(
             VSOP87File.Planet.NEP -> NeptuneMeeus()
             else -> throw IllegalArgumentException("Planet not found")
         }
-        var (actualPos, actualVel) = model.computeSpherical(time)
+        var (actualPos, actualVel) = model.computeSpherical(Instant.ofEpochMilli(time.time))
         actualPos = actualPos.reduce()
         assertEquals(expectedPos.dst, actualPos.dst, 1.2e-4)  // 1.2e-4 AU = 18 km
         assertEquals(expectedPos.lon, actualPos.lon, 1e-5)  // 1e-5 rad = 2 arcsec

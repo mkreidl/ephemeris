@@ -1,5 +1,6 @@
 package com.mkreidl.ephemeris.solarsystem
 
+import com.mkreidl.ephemeris.Instant
 import com.mkreidl.ephemeris.TestUtil
 import com.mkreidl.ephemeris.geometry.Angle.*
 import com.mkreidl.ephemeris.geometry.Spherical
@@ -17,8 +18,8 @@ class MoonOrbitalElementsTest {
 
     @Test
     fun testCalculate() {
-        val (position) = modelMoon.computeSpherical(time!!)
-        val orbitalEl = modelMoon.computeOrbitalElements(time)
+        val (position) = modelMoon.computeSpherical(Instant.ofEpochMilli(time.time))
+        val orbitalEl = modelMoon.computeOrbitalElements(Instant.ofEpochMilli(time.time))
 
         assertEquals(standardize(312.7381 * DEG), orbitalEl.node, 1.0 * SEC)
         assertEquals(standardize(5.1454 * DEG), orbitalEl.incl, 1.0 * SEC)

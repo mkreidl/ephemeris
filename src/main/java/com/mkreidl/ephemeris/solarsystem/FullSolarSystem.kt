@@ -1,7 +1,8 @@
 package com.mkreidl.ephemeris.solarsystem
 
 import com.mkreidl.ephemeris.Distance
-import com.mkreidl.ephemeris.Time
+import com.mkreidl.ephemeris.Instant
+import com.mkreidl.ephemeris.solarsystem.meeus.*
 
 class FullSolarSystem(private val models: Map<Body, OrbitalModel>) {
 
@@ -13,24 +14,24 @@ class FullSolarSystem(private val models: Map<Body, OrbitalModel>) {
 
     private lateinit var ecliptic: Ecliptic
 
-    fun compute(time: Time) {
-        ecliptic = Ecliptic(time.time)
-        eclipticalHeliocentric[Body.EARTH] = models.getValue(Body.EARTH).computeCartesian(time) * toMetersEarth
+    fun compute(instant: Instant, ecliptic: Ecliptic = Ecliptic(instant)) {
+        this.ecliptic = ecliptic
+        eclipticalHeliocentric[Body.EARTH] = models.getValue(Body.EARTH).computeCartesian(instant) * toMetersEarth
         eclipticalGeocentric[Body.SUN] = -correctAberration(eclipticalHeliocentric.getValue(Body.EARTH))
         geocentricDistances[Body.SUN] = eclipticalGeocentric.getValue(Body.SUN).position.norm
-        models.keys.forEach { compute(it, time) }
+        models.keys.forEach { compute(it, instant) }
     }
 
-    private fun compute(body: Body, time: Time) {
+    private fun compute(body: Body, instant: Instant) {
         val model = models.getValue(body)
         val earth = eclipticalHeliocentric.getValue(Body.EARTH)
         val toMeters = models.getValue(body).distanceUnit.toMeters()
         if (models.getValue(body).type == OrbitalModel.Type.GEOCENTRIC) {
-            val geometricGeocentric = model.computeCartesian(time) * toMeters
+            val geometricGeocentric = model.computeCartesian(instant) * toMeters
             eclipticalHeliocentric[body] = geometricGeocentric + earth
             eclipticalGeocentric[body] = correctAberration(geometricGeocentric)
         } else {
-            val geometricHeliocentric = model.computeCartesian(time) * toMeters
+            val geometricHeliocentric = model.computeCartesian(instant) * toMeters
             eclipticalHeliocentric[body] = geometricHeliocentric
             eclipticalGeocentric[body] = correctAberration(geometricHeliocentric - earth)
         }
@@ -92,7 +93,22 @@ class FullSolarSystem(private val models: Map<Body, OrbitalModel>) {
     fun getElongationRadians(body: Body, topos: Topos) =
             getMeanEclipticalTopocentric(Body.SUN, topos) angle getMeanEclipticalTopocentric(body, topos)
 
-    private fun getElongationSign(body: Body) = Math.signum(getElongationRadians(body))
+    private fun getElongationSign(body: Body) = Math.signum(getElongationRadians(body).radians)
 
-    private fun getElongationSign(body: Body, topos: Topos) = Math.signum(getElongationRadians(body, topos))
+    private fun getElongationSign(body: Body, topos: Topos) = Math.signum(getElongationRadians(body, topos).radians)
+
+    companion object {
+        fun createFromMeeus() = FullSolarSystem(mapOf(
+                Body.MERCURY to MercuryMeeus(),
+                Body.VENUS to VenusMeeus(),
+                Body.EARTH to EarthMeeus(),
+                Body.MARS to MarsMeeus(),
+                Body.JUPITER to JupiterMeeus(),
+                Body.SATURN to SaturnMeeus(),
+                Body.URANUS to UranusMeeus(),
+                Body.NEPTUNE to NeptuneMeeus(),
+                Body.MOON to ModelMoon(),
+                Body.PLUTO to ModelPluto()
+        ))
+    }
 }

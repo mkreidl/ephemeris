@@ -1,5 +1,7 @@
 package com.mkreidl.math
 
+import com.mkreidl.ephemeris.Angle
+
 operator fun Double.times(vector: Vector3) = vector * this
 
 data class Vector3(val x: Double, val y: Double, val z: Double) {
@@ -48,7 +50,7 @@ data class Vector3(val x: Double, val y: Double, val z: Double) {
             z * other.x, z * other.y, z * other.z
     )
 
-    infix fun angle(other: Vector3) = Math.atan2((this x other).norm, this * other)
+    infix fun angle(other: Vector3) = Angle(Math.atan2((this x other).norm, this * other))
 
     val norm get() = Math.sqrt(this * this)
 
