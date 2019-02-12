@@ -1,5 +1,7 @@
 package com.mkreidl.ephemeris.sky
 
+import com.mkreidl.math.Vector3
+
 class Constellation internal constructor(val name: String, vararg paths: IntArray) : Iterable<Int> {
 
     enum class Hemisphere {
@@ -7,7 +9,10 @@ class Constellation internal constructor(val name: String, vararg paths: IntArra
     }
 
     val paths = paths.toList()
-    val starList = paths.flatMap { it.toList() }.distinct().sorted()
+    val starList = paths
+            .flatMap { it.toList() }
+            .distinct()
+            .sorted()
 
     val brightestStar = starList[0]
     val hemisphere = when {
@@ -17,4 +22,11 @@ class Constellation internal constructor(val name: String, vararg paths: IntArra
     }
 
     override fun iterator() = starList.iterator()
+
+    fun computeCenter(starsCoordinates: DoubleArray): Vector3 {
+        val x = map { starsCoordinates[it * 3] }.sum()
+        val y = map { starsCoordinates[it * 3 + 1] }.sum()
+        val z = map { starsCoordinates[it * 3 + 2] }.sum()
+        return Vector3(x, y, z).normalize()
+    }
 }

@@ -6,8 +6,10 @@ import com.mkreidl.ephemeris.geometry.Matrix3x3
 import com.mkreidl.ephemeris.sky.coordinates.Ecliptical
 import com.mkreidl.ephemeris.sky.coordinates.Equatorial
 import com.mkreidl.ephemeris.solarsystem.Ecliptic
+import com.mkreidl.ephemeris.solarsystem.Sun
+import com.mkreidl.ephemeris.solarsystem.SunLowPrecision
+import com.mkreidl.math.Sphe
 import com.mkreidl.math.Vector3
-
 import java.lang.Math.cos
 import java.lang.Math.sin
 
@@ -57,38 +59,49 @@ object Stars {
         computeEclipticalJ2000(instant.julianYearsSinceJ2000, eclipticalPositions, 0, 1)
     }
 
-    fun computeEclipticalJ2000(timeInMillis: Long, eclipticalPositions: DoubleArray, start: Int, delta: Int) {
-        computeEclipticalJ2000(Instant.ofEpochMilli(timeInMillis).julianYearsSinceJ2000, eclipticalPositions, start, delta)
-    }
-
     fun computeEclipticalJ2000(yearsSince2000: Double, eclipticalPositions: DoubleArray, start: Int, delta: Int) {
         for (i in start until StarsCatalog.SIZE step delta) {
             val offset = 3 * i
-            // Compute ecliptical cartesian coordinates for J2000 frame
             eclipticalPositions[offset] = POS_J2000[offset] + VEL_J2000[offset] * yearsSince2000
             eclipticalPositions[offset + 1] = POS_J2000[offset + 1] + VEL_J2000[offset + 1] * yearsSince2000
             eclipticalPositions[offset + 2] = POS_J2000[offset + 2] + VEL_J2000[offset + 2] * yearsSince2000
         }
     }
 
-    @JvmOverloads
-    fun computeEquatorial(starIndex: Int, instant: Instant, ecliptic: Ecliptic = Ecliptic(instant)): Vector3 {
+    fun computeEclipticalJ2000(starIndex: Int, instant: Instant): Vector3 {
         val yearsSince2000 = instant.julianYearsSinceJ2000
-        // Compute ecliptical cartesian coordinates in J2000 frame
         val offset = 3 * starIndex
-        return ecliptic.trafoEclJ2000ToMeanEquToDate(
-                Vector3(
-                        POS_J2000[offset] + VEL_J2000[offset] * yearsSince2000,
-                        POS_J2000[offset + 1] + VEL_J2000[offset + 1] * yearsSince2000,
-                        POS_J2000[offset + 2] + VEL_J2000[offset + 2] * yearsSince2000
-                )).normalize()
+        return Vector3(
+                POS_J2000[offset] + VEL_J2000[offset] * yearsSince2000,
+                POS_J2000[offset + 1] + VEL_J2000[offset + 1] * yearsSince2000,
+                POS_J2000[offset + 2] + VEL_J2000[offset + 2] * yearsSince2000
+        )
     }
 
-    fun computeConstellationCenter(constellation: Constellation, starsCoordinates: DoubleArray): Vector3 {
-        val x = constellation.map { starsCoordinates[it * 3] }.sum()
-        val y = constellation.map { starsCoordinates[it * 3 + 1] }.sum()
-        val z = constellation.map { starsCoordinates[it * 3 + 2] }.sum()
-        return Vector3(x, y, z).normalize()
+    fun computeMeanEcliptical(starIndex: Int, instant: Instant, ecliptic: Ecliptic = Ecliptic(instant)) =
+            ecliptic.trafoEclJ2000ToEclToDate(Stars.computeEclipticalJ2000(starIndex, instant))
+
+    fun computeTrueEcliptical(starIndex: Int, instant: Instant, ecliptic: Ecliptic = Ecliptic(instant)) =
+            ecliptic.trafoEclJ2000ToTrueEclToDate(Stars.computeEclipticalJ2000(starIndex, instant))
+
+    @JvmOverloads
+    fun computeMeanEquatorial(starIndex: Int, instant: Instant, ecliptic: Ecliptic = Ecliptic(instant)): Sphe {
+        val eclipticalJ2000 = Stars.computeEclipticalJ2000(starIndex, instant)
+        return ecliptic.trafoEclJ2000ToMeanEquToDate(eclipticalJ2000).toSpherical()
     }
 
+    fun computeTrueEquatorial(starIndex: Int, instant: Instant, ecliptic: Ecliptic = Ecliptic(instant)): Sphe {
+        val position = computeTrueEcliptical(starIndex, instant, ecliptic)
+        return ecliptic.trafoTrueEcl2TrueEqu(position).toSpherical()
+    }
+
+    fun computeEclipticalApparent(starIndex: Int, instant: Instant, ecliptic: Ecliptic = Ecliptic(instant), sun: Sun = SunLowPrecision(instant)): Sphe {
+        val position = Stars.computeTrueEcliptical(starIndex, instant, ecliptic)
+        return sun.computeAberrationCorrectionEcliptical(position.toSpherical())
+    }
+
+    fun computeEquatorialApparent(starIndex: Int, instant: Instant, ecliptic: Ecliptic = Ecliptic(instant), sun: Sun = SunLowPrecision(instant)): Sphe {
+        val apparent = computeEclipticalApparent(starIndex, instant, ecliptic, sun).toCartesian()
+        return ecliptic.trafoTrueEcl2TrueEqu(apparent).toSpherical()
+    }
 }

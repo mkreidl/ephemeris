@@ -27,6 +27,7 @@ class Ecliptic(internal val instant: Instant) {
     val trafoMeanEcl2TrueEqu by lazy { trafoTrueEcl2TrueEqu * trafoMeanEcl2TrueEcl }
 
     val trafoEclJ2000ToEclToDate by lazy { computeTransformJ2000ToDate() }
+    val trafoEclJ2000ToTrueEclToDate by lazy { trafoMeanEcl2TrueEcl * trafoEclJ2000ToEclToDate }
     val trafoEclJ2000ToMeanEquToDate by lazy { trafoEcl2MeanEqu * trafoEclJ2000ToEclToDate }
     val trafoEclJ2000ToTrueEquToDate by lazy { trafoMeanEcl2TrueEqu * trafoEclJ2000ToEclToDate }
 

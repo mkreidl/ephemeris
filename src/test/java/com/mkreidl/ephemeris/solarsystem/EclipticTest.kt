@@ -34,12 +34,11 @@ class EclipticTest {
 
     @Test
     fun testNovember2028() {
+        // Meeus, Example 22.a
         val ecliptic = Ecliptic(november13_2028)
         Assert.assertEquals(Math.toRadians(23.436), ecliptic.meanObliquity, 1e-5)
-
-        val (deltaPsi, deltaEps) = ecliptic.nutation
-        Assert.assertEquals(14.861, Math.toDegrees(deltaPsi) * 3600, 0.02)
-        Assert.assertEquals(2.705, Math.toDegrees(deltaEps * 3600), 0.02)
+        Assert.assertEquals(14.861, Math.toDegrees(ecliptic.nutationInLongitude) * 3_600, 0.02)
+        Assert.assertEquals(2.705, Math.toDegrees(ecliptic.nutationInObliquity) * 3_600, 0.02)
     }
 
     private fun getObliquity(year: Int) = Ecliptic(

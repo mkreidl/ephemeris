@@ -89,15 +89,17 @@ class SolarSystemGeocentricTest(testname: String, private val body: Body, privat
         println("${Sexagesimal.of(expected.latitude.degreesNonNeg)}  | ecliptical latitude  |  ${Sexagesimal.of(latitude.degreesNonNeg)}")
         println("${Sexagesimal.of(expected.rightAscension.hoursNonNeg)}  | equatorial longitude |  ${Sexagesimal.of(rightAscension.hoursNonNeg)}")
         println("${Sexagesimal.of(expected.declination.degreesNonNeg)}  | equatorial latitude  |  ${Sexagesimal.of(declination.degreesNonNeg)}")
-        println("expected: ${if (expected.retrograde) "R" else "-"}  |  actual: ${if (solarSystem.isRetrograde(body)) "R" else "-"}")
-        println("Angular velocity [sec]: ${solarSystem.getAngularVelocity(body) * 3_600}")
+        println("expected: ${r(expected.retrograde)}  |  actual: ${r(solarSystem.getTrueEclipticalGeocentric(body).retrograde)}")
+        println("Angular velocity [sec]: ${solarSystem.getTrueEclipticalGeocentric(body).angularVelocity * 3_600}")
 
         assertEquals(expected.longitude.radians, longitude.radians, tol)
         assertEquals(expected.latitude.radians, latitude.radians, tol)
         assertEquals(expected.rightAscension.radians, rightAscension.radians, tol)
         assertEquals(expected.declination.radians, declination.radians, tol)
-        assertEquals(expected.retrograde, solarSystem.isRetrograde(body))
+        assertEquals(expected.retrograde, solarSystem.getTrueEclipticalGeocentric(body).retrograde)
     }
+
+    private fun r(isRetrograde: Boolean) = if (isRetrograde) "R" else "-"
 
     companion object {
         @JvmStatic

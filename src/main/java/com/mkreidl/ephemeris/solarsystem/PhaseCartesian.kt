@@ -28,4 +28,7 @@ data class PhaseCartesian(val position: Vector3, val velocity: Vector3) {
     operator fun minus(other: PhaseCartesian) = PhaseCartesian(position - other.position, velocity - other.velocity)
 
     operator fun unaryMinus() = PhaseCartesian(-position, -velocity)
+
+    val angularVelocity get() = (position.x * velocity.y - position.y * velocity.x) / (position * position)
+    val retrograde get() = position.x * velocity.y - position.y * velocity.x < 0
 }

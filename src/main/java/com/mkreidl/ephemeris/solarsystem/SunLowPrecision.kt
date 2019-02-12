@@ -2,11 +2,11 @@ package com.mkreidl.ephemeris.solarsystem
 
 import com.mkreidl.ephemeris.Angle
 import com.mkreidl.ephemeris.Instant
+import com.mkreidl.math.Polynomial
 
 class SunLowPrecision(instant: Instant, ecliptic: Ecliptic = Ecliptic(instant)) : Sun(instant, ecliptic) {
 
     val meanAnomaly by lazy { Angle.reduce(M(julianCenturies)) }
-    val excentricity by lazy { E(julianCenturies) }
     val equationOfCenter by lazy { Angle.reduce(computeEquationOfCenter()) }
     val trueAnomaly by lazy { Angle.reduce(meanAnomaly + equationOfCenter) }
     val omega = Angle.reduce(Math.toRadians(125.04 - 1_934.136 * julianCenturies))
@@ -25,4 +25,13 @@ class SunLowPrecision(instant: Instant, ecliptic: Ecliptic = Ecliptic(instant)) 
                     + (0.019_993 - 0.000_101 * julianCenturies) * Math.sin(2 * meanAnomaly)
                     + 0.000_29 * Math.sin(3 * meanAnomaly)
     )
+
+    companion object {
+        private val M = Polynomial(
+                357.529_1,
+                35_999.050_3,
+                -0.000_155_9,
+                -0.000_000_48
+        ) * Math.toRadians(1.0)
+    }
 }

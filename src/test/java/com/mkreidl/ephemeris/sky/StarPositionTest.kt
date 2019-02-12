@@ -1,7 +1,9 @@
 package com.mkreidl.ephemeris.sky
 
+import com.mkreidl.ephemeris.Angle
 import com.mkreidl.ephemeris.Instant
 import com.mkreidl.ephemeris.solarsystem.Ecliptic
+import com.mkreidl.ephemeris.solarsystem.SunHighPrecision
 import com.mkreidl.math.Vector3
 import org.junit.Assert
 import org.junit.Test
@@ -47,10 +49,16 @@ class StarPositionTest {
     }
 
     @Test
-    fun testThetaPersei2028November13_J2000() {
-        val julianYears = november13_2028.julianYearsSinceJ2000
+    fun testThetaPersei2028November13_J2000_singleStar() {
+        val output = Stars.computeMeanEquatorial(thetaPersei, november13_2028, Ecliptic.J2000)
+        Assert.assertEquals(raEpoch, output.lon, tolPos)
+        Assert.assertEquals(deEpoch, output.lat, tolPos)
+    }
+
+    @Test
+    fun testThetaPersei2028November13_J2000_allStars() {
         val output = DoubleArray(3 * StarsCatalog.SIZE)
-        Stars.computeEclipticalJ2000(julianYears, output, 0, 1)
+        Stars.computeEclipticalJ2000(november13_2028, output)
 
         val offset = 3 * thetaPersei
         val cartesian = Vector3(output[offset], output[offset + 1], output[offset + 2])
@@ -61,16 +69,45 @@ class StarPositionTest {
     }
 
     @Test
-    fun testThetaPersei2028November13_J2000_alt() {
-        val output = Stars.computeEquatorial(thetaPersei, november13_2028, Ecliptic.J2000).toSpherical()
-        Assert.assertEquals(raEpoch, output.lon, tolPos)
-        Assert.assertEquals(deEpoch, output.lat, tolPos)
+    fun testThetaPersei2028November13_toDate() {
+        val output = Stars.computeMeanEquatorial(thetaPersei, november13_2028)
+        Assert.assertEquals(raEpochToDate, output.lon, tolPos)
+        Assert.assertEquals(deEpochToDate, output.lat, tolPos)
     }
 
     @Test
-    fun testThetaPersei2028November13_toDate() {
-        val output = Stars.computeEquatorial(thetaPersei, november13_2028).toSpherical()
-        Assert.assertEquals(raEpochToDate, output.lon, tolPos)
-        Assert.assertEquals(deEpochToDate, output.lat, tolPos)
+    fun testThetaPersei2028November13_apparent_SunData() {
+        // Meeus, Example 22.a
+        val sun = SunHighPrecision(november13_2028)
+        Assert.assertEquals(0.288_670_5, november13_2028.julianCenturiesSinceJ2000, 5e-8)
+        Assert.assertEquals(0.016_696_47, sun.excentricity, 5e-9)
+        Assert.assertEquals(103.434, Math.toDegrees(sun.perihelion), 5e-4)
+    }
+
+    @Test
+    fun testThetaPersei2028November13_apparent_nutation() {
+        val ecliptic = Ecliptic(november13_2028)
+        val ecliptical = Stars.computeEclipticalJ2000(thetaPersei, november13_2028)
+        val equatorialMean = ecliptic.trafoEclJ2000ToMeanEquToDate(ecliptical).toSpherical()
+        val equatorialTrue = ecliptic.trafoEclJ2000ToTrueEquToDate(ecliptical).toSpherical()
+        val nutationRa = equatorialTrue.lon - equatorialMean.lon
+        Assert.assertEquals(Angle.ofDeg(0, 0, 15.843).radians, nutationRa, 1e-7)
+    }
+
+    @Test
+    fun testThetaPersei2028November13_apparent_full() {
+        val ecliptic = Ecliptic(november13_2028)
+        val apparentEcliptical = Stars.computeEclipticalApparent(thetaPersei, november13_2028, ecliptic, SunHighPrecision(november13_2028))
+        val apparentEquatorial = ecliptic.trafoTrueEcl2TrueEqu(apparentEcliptical.toCartesian()).toSpherical()
+        Assert.assertEquals(Angle.ofHrs(2, 46, 14.39).radians, apparentEquatorial.lon, 2e-6)
+        Assert.assertEquals(Angle.ofDeg(49, 21, 7.45).radians, apparentEquatorial.lat, 2e-6)
+    }
+
+    @Test
+    fun testThetaPersei2028November13_apparent_direct() {
+        val ecliptic = Ecliptic(november13_2028)
+        val apparentEquatorial = Stars.computeEquatorialApparent(thetaPersei, november13_2028, ecliptic, SunHighPrecision(november13_2028))
+        Assert.assertEquals(Angle.ofHrs(2, 46, 14.39).radians, apparentEquatorial.lon, 2e-6)
+        Assert.assertEquals(Angle.ofDeg(49, 21, 7.45).radians, apparentEquatorial.lat, 2e-6)
     }
 }

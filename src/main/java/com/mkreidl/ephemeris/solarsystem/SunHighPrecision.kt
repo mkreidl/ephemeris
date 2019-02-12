@@ -1,8 +1,6 @@
 package com.mkreidl.ephemeris.solarsystem
 
-import com.mkreidl.ephemeris.Angle
-import com.mkreidl.ephemeris.Instant
-import com.mkreidl.ephemeris.Time
+import com.mkreidl.ephemeris.*
 import com.mkreidl.ephemeris.solarsystem.meeus.EarthMeeus
 import com.mkreidl.math.Sphe
 
@@ -29,13 +27,9 @@ class SunHighPrecision(instant: Instant, ecliptic: Ecliptic = Ecliptic(instant))
     }
 
     private fun computeApparentPosition() = geometricPosition.copy(
-            lon = Angle.reduce(geometricPosition.lon + ecliptic.nutationInLongitude + aberrationCorrection)
+            lon = Angle.reduce(geometricPosition.lon + ecliptic.nutationInLongitude - aberration)
     )
 
     private fun computeApparentEquatorial() =
             ecliptic.trafoTrueEcl2TrueEqu(apparentPosition.toCartesian()).toSpherical()
-
-    companion object {
-        private val aberrationCorrection = -Math.toRadians(20.4898 / 3_600)
-    }
 }

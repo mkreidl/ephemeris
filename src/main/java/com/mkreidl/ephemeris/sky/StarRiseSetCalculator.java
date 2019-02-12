@@ -2,7 +2,7 @@ package com.mkreidl.ephemeris.sky;
 
 import com.mkreidl.ephemeris.Instant;
 import com.mkreidl.ephemeris.sky.coordinates.Equatorial;
-import com.mkreidl.math.Vector3;
+import com.mkreidl.math.Sphe;
 
 public class StarRiseSetCalculator extends RiseSetCalculator {
     private final Equatorial.Cart cartesian = new Equatorial.Cart();
@@ -27,9 +27,8 @@ public class StarRiseSetCalculator extends RiseSetCalculator {
     @Override
     public boolean compute(long startTimeMs) {
         super.setStartTime(startTimeMs);
-        final Vector3 position = Stars.INSTANCE.computeEquatorial(starIndex, Instant.ofEpochMilli(startTimeMs));
-        cartesian.set(position.getX(), position.getY(), position.getZ());
-        cartesian.transform(topocentric);
+        final Sphe position = Stars.INSTANCE.computeMeanEquatorial(starIndex, Instant.ofEpochMilli(startTimeMs));
+        topocentric.set(position.getDst(), position.getLon(), position.getLat());
         final boolean isCrossing = isCrossing();
         if (isCrossing)
             adjustTime();
