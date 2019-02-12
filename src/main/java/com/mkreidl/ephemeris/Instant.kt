@@ -20,7 +20,6 @@ class Instant internal constructor(val epochMilli: Long) {
 
     companion object {
         val J2000 = Instant.ofEpochMilli(946_728_000_000L)
-        const val J2000_DAY_NUMBER = 2_451_545.0
 
         @JvmStatic
         fun ofEpochMilli(epochMilli: Long) = Instant(epochMilli)
