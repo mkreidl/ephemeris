@@ -1,5 +1,6 @@
 package com.mkreidl.ephemeris.solarsystem
 
+import com.mkreidl.ephemeris.DAYS_PER_SECOND
 import com.mkreidl.ephemeris.Time
 import com.mkreidl.math.Sphe
 import com.mkreidl.math.Vector3
@@ -56,7 +57,8 @@ abstract class ModelVsop87(private val coefficients: Array<Array<Array<DoubleArr
             )
         }
 
-        override fun computeCartesian(time: Time) = computeSpherical(time).toCartesian()
+        override fun computeCartesian(time: Time) =
+                computeSpherical(time).toCartesian().scaleVelocity(DAYS_PER_SECOND)
     }
 
     companion object {

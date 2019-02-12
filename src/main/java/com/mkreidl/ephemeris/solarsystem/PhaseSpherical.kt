@@ -1,6 +1,5 @@
 package com.mkreidl.ephemeris.solarsystem
 
-import com.mkreidl.ephemeris.Time
 import com.mkreidl.math.Matrix3x3
 import com.mkreidl.math.Sphe
 import com.mkreidl.math.Vector3
@@ -12,8 +11,7 @@ data class PhaseSpherical(val position: Sphe, val velocity: Sphe) {
     }
 
     fun toCartesian() = PhaseCartesian(
-            position.toCartesian(),
-            jacobian() * Vector3(velocity.dst, velocity.lon, velocity.lat) * (1.0 / Time.SECONDS_PER_DAY)
+            position.toCartesian(), jacobian() * Vector3(velocity.dst, velocity.lon, velocity.lat)
     )
 
     private fun jacobian(): Matrix3x3 {

@@ -62,8 +62,8 @@ fun Instant.getMeanSolarTimeRadians(): Double {
 
 fun SunLowPrecision.getTrueSolarTimeRadians() = ecliptic.instant.getMeanSolarTimeRadians() + equationOfTime
 
-private infix fun Instant.hoursFrom(instant: Instant) = (epochMilli - instant.epochMilli) * Instant.HOURS_PER_MILLI
-private infix fun Instant.siderealDaysFrom(instant: Instant) = (epochMilli - instant.epochMilli) * Instant.DAYS_PER_MILLI * SIDEREAL_PER_SOLAR
+private infix fun Instant.hoursFrom(instant: Instant) = (epochMilli - instant.epochMilli) * HOURS_PER_MILLI
+private infix fun Instant.siderealDaysFrom(instant: Instant) = (epochMilli - instant.epochMilli) * DAYS_PER_MILLI * SIDEREAL_PER_SOLAR
 
 private fun standardize24(hours: Double): Double {
     val hoursReduced = hours % 24
@@ -71,9 +71,6 @@ private fun standardize24(hours: Double): Double {
 }
 
 private val UTC = TimeZone.getTimeZone("UTC")
-private const val SIDEREAL_PER_SOLAR = 1.00273790935
-private const val SOLAR_PER_SIDEREAL = 1.0 / SIDEREAL_PER_SOLAR
-private const val MILLIS_PER_SIDEREAL_DAY = Instant.MILLIS_PER_DAY * SOLAR_PER_SIDEREAL
 private val siderealDaysAtMidnightUTC = Polynomial(
         100.46061837,
         36000.770053608,

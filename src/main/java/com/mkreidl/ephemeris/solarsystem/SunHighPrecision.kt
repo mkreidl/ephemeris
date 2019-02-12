@@ -27,7 +27,7 @@ class SunHighPrecision(instant: Instant, ecliptic: Ecliptic = Ecliptic(instant))
     }
 
     private fun computeApparentPosition() = geometricPosition.copy(
-            lon = Angle.reduce(geometricPosition.lon + ecliptic.nutationInLongitude - aberration)
+            lon = Angle.reduce(geometricPosition.lon + ecliptic.nutationInLongitude - ABERRATION)
     )
 
     private fun computeApparentEquatorial() =

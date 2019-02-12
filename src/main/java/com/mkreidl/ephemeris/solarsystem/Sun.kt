@@ -2,7 +2,7 @@ package com.mkreidl.ephemeris.solarsystem
 
 import com.mkreidl.ephemeris.Angle
 import com.mkreidl.ephemeris.Instant
-import com.mkreidl.ephemeris.aberration
+import com.mkreidl.ephemeris.ABERRATION
 import com.mkreidl.ephemeris.getMeanSolarTimeRadians
 import com.mkreidl.math.Polynomial
 import com.mkreidl.math.Sphe
@@ -21,8 +21,8 @@ abstract class Sun(internal val instant: Instant, internal val ecliptic: Eclipti
     fun computeAberrationCorrectionEcliptical(position: Sphe): Sphe {
         val p = perihelion - position.lon
         val g = geometricLongitude - position.lon
-        val l = aberration / Math.cos(position.lat) * (excentricity * Math.cos(p) - Math.cos(g))
-        val b = aberration * Math.sin(position.lat) * (excentricity * Math.sin(p) - Math.sin(g))
+        val l = ABERRATION / Math.cos(position.lat) * (excentricity * Math.cos(p) - Math.cos(g))
+        val b = ABERRATION * Math.sin(position.lat) * (excentricity * Math.sin(p) - Math.sin(g))
         return position.copy(lon = position.lon + l, lat = position.lat + b)
     }
 

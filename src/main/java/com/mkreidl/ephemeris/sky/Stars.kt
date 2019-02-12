@@ -1,56 +1,28 @@
 package com.mkreidl.ephemeris.sky
 
 import com.mkreidl.ephemeris.Instant
-import com.mkreidl.ephemeris.geometry.Cartesian
-import com.mkreidl.ephemeris.geometry.Matrix3x3
-import com.mkreidl.ephemeris.sky.coordinates.Ecliptical
-import com.mkreidl.ephemeris.sky.coordinates.Equatorial
-import com.mkreidl.ephemeris.solarsystem.Ecliptic
-import com.mkreidl.ephemeris.solarsystem.Sun
-import com.mkreidl.ephemeris.solarsystem.SunLowPrecision
+import com.mkreidl.ephemeris.solarsystem.*
 import com.mkreidl.math.Sphe
 import com.mkreidl.math.Vector3
-import java.lang.Math.cos
-import java.lang.Math.sin
 
 object Stars {
     internal val POS_J2000 = DoubleArray(StarsCatalog.SIZE * 3)
     internal val VEL_J2000 = DoubleArray(StarsCatalog.SIZE * 3)
 
     init {
-        val equ2ecl = Matrix3x3(Ecliptic.J2000.trafoMeanEqu2Ecl)
-        val tmp = Cartesian()
-        val velEquatorial = Equatorial.Cart()
-        val posEquatorial = Equatorial.Cart()
-        val posJ2000 = Equatorial.Sphe()
-
         for (i in 0 until StarsCatalog.SIZE) {
-            val ra = StarsCatalog.getRAscJ2000(i)
-            val decl = StarsCatalog.getDeclJ2000(i)
-            val sinRa = sin(ra)
-            val cosRa = cos(ra)
-            val sinDecl = sin(decl)
-            val cosDecl = cos(decl)
-            val jacobian = Matrix3x3(
-                    -sinRa * cosDecl, -cosRa * sinDecl, 0.0,
-                    cosRa * cosDecl, -sinRa * sinDecl, 0.0,
-                    0.0, cosDecl, 0.0
-            )
-            tmp.set(StarsCatalog.getVRAscJ2000(i), StarsCatalog.getVDeclJ2000(i), 0.0)
-            jacobian.applyTo(tmp, velEquatorial)
-            val vel = equ2ecl.applyTo(velEquatorial, Ecliptical.Cart())
-
-            posJ2000.set(1.0, StarsCatalog.getRAscJ2000(i), StarsCatalog.getDeclJ2000(i))
-            posJ2000.transform(posEquatorial)
-            val pos = equ2ecl.applyTo(posEquatorial, Ecliptical.Cart())
+            val posJ2000 = Sphe(1.0, StarsCatalog.getRAscJ2000(i), StarsCatalog.getDeclJ2000(i))
+            val velJ2000 = Sphe(0.0, StarsCatalog.getVRAscJ2000(i), StarsCatalog.getVDeclJ2000(i))
+            val phaseJ2000 = PhaseSpherical(posJ2000, velJ2000).toCartesian()
+            val ecliptical = Ecliptic.J2000.trafoMeanEqu2Ecl * phaseJ2000
 
             var offset = 3 * i
-            POS_J2000[offset] = pos.x
-            VEL_J2000[offset] = vel.x
-            POS_J2000[++offset] = pos.y
-            VEL_J2000[offset] = vel.y
-            POS_J2000[++offset] = pos.z
-            VEL_J2000[offset] = vel.z
+            POS_J2000[offset] = ecliptical.position.x
+            VEL_J2000[offset] = ecliptical.velocity.x
+            POS_J2000[++offset] = ecliptical.position.y
+            VEL_J2000[offset] = ecliptical.velocity.y
+            POS_J2000[++offset] = ecliptical.position.z
+            VEL_J2000[offset] = ecliptical.velocity.z
         }
     }
 

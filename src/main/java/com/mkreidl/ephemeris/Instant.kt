@@ -29,18 +29,5 @@ class Instant internal constructor(val epochMilli: Long) {
         fun ofJulianDayFraction(julianDayFraction: Double) = Instant(julianDayToEpochMilli(julianDayFraction))
 
         private fun julianDayToEpochMilli(d: Double) = ((d - J2000_DAY_NUMBER) * MILLIS_PER_DAY).toLong() + J2000.epochMilli
-
-        private const val MILLIS_PER_HOUR = 3_600_000L
-
-        const val MILLIS_PER_DAY = MILLIS_PER_HOUR * 24
-        const val MILLIS_PER_YEAR = MILLIS_PER_DAY * 365.25
-        const val MILLIS_PER_CENTURY = MILLIS_PER_YEAR * 100
-        const val MILLIS_PER_MILLENNIUM = MILLIS_PER_YEAR * 1_000
-
-        const val HOURS_PER_MILLI = 1.0 / MILLIS_PER_HOUR
-        const val DAYS_PER_MILLI = 1.0 / MILLIS_PER_DAY
-        const val YEARS_PER_MILLI = 1.0 / MILLIS_PER_YEAR
-        const val CENTURIES_PER_MILLI = 1.0 / MILLIS_PER_CENTURY
-        const val MILLENNIA_PER_MILLI = 1.0 / MILLIS_PER_MILLENNIUM
     }
 }
