@@ -19,7 +19,6 @@ object Stars {
 
     init {
         val equ2ecl = Matrix3x3(Ecliptic.J2000.trafoMeanEqu2Ecl)
-        val jacobian = Matrix3x3()
         val tmp = Cartesian()
         val velEquatorial = Equatorial.Cart()
         val posEquatorial = Equatorial.Cart()
@@ -32,7 +31,7 @@ object Stars {
             val cosRa = cos(ra)
             val sinDecl = sin(decl)
             val cosDecl = cos(decl)
-            jacobian.set(
+            val jacobian = Matrix3x3(
                     -sinRa * cosDecl, -cosRa * sinDecl, 0.0,
                     cosRa * cosDecl, -sinRa * sinDecl, 0.0,
                     0.0, cosDecl, 0.0

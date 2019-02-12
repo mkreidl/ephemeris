@@ -11,13 +11,10 @@ data class PhaseSpherical(val position: Sphe, val velocity: Sphe) {
         val ZERO = PhaseSpherical(Sphe.ZERO, Sphe.ZERO)
     }
 
-    fun toCartesian(): PhaseCartesian {
-
-        return PhaseCartesian(
-                position.toCartesian(),
-                jacobian() * Vector3(velocity.dst, velocity.lon, velocity.lat) * (1.0 / Time.SECONDS_PER_DAY)
-        )
-    }
+    fun toCartesian() = PhaseCartesian(
+            position.toCartesian(),
+            jacobian() * Vector3(velocity.dst, velocity.lon, velocity.lat) * (1.0 / Time.SECONDS_PER_DAY)
+    )
 
     private fun jacobian(): Matrix3x3 {
         val r = position.dst

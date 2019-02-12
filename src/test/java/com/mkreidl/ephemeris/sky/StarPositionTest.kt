@@ -24,12 +24,15 @@ class StarPositionTest {
     private val raEpochToDate = Math.toRadians(41.547_214)
     private val deEpochToDate = Math.toRadians(49.348_483)
 
-    private val tolPos = 2.5e-6  // ~ half of an arc second
-    private val tolVel = 2.5e-9  // ~ half of a milli arc second / year
+    private val tolPos = Angle.ofDeg(0, 0, 0.015).radians
+    private val tolVel = 1e-13
 
     init {
         // Substitute value for proper motion in RA to match the values in Example 21.b
-        StarsCatalog.QP[thetaPersei][4] = Math.toRadians(0.034_25 * 15 / 3_600).toFloat()
+        StarsCatalog.QP[thetaPersei][1] = Angle.ofHrs(2, 44, 11.986).radians.toFloat()
+        StarsCatalog.QP[thetaPersei][2] = Angle.ofDeg(49, 13, 42.48).radians.toFloat()
+        StarsCatalog.QP[thetaPersei][4] = Angle.ofHrs(0, 0, 0.034_25).radians.toFloat()
+        StarsCatalog.QP[thetaPersei][5] = Angle.ofDeg(0, 0, -0.0895).radians.toFloat()
     }
 
     @Test
@@ -91,23 +94,23 @@ class StarPositionTest {
         val equatorialMean = ecliptic.trafoEclJ2000ToMeanEquToDate(ecliptical).toSpherical()
         val equatorialTrue = ecliptic.trafoEclJ2000ToTrueEquToDate(ecliptical).toSpherical()
         val nutationRa = equatorialTrue.lon - equatorialMean.lon
-        Assert.assertEquals(Angle.ofDeg(0, 0, 15.843).radians, nutationRa, 1e-7)
+        Assert.assertEquals(Angle.ofDeg(0, 0, 15.843).radians, nutationRa, tolPos)
     }
 
     @Test
     fun testThetaPersei2028November13_apparent_full() {
         val ecliptic = Ecliptic(november13_2028)
-        val apparentEcliptical = Stars.computeEclipticalApparent(thetaPersei, november13_2028, ecliptic, SunHighPrecision(november13_2028))
+        val apparentEcliptical = Stars.computeEclipticalApparent(thetaPersei, november13_2028, ecliptic)
         val apparentEquatorial = ecliptic.trafoTrueEcl2TrueEqu(apparentEcliptical.toCartesian()).toSpherical()
-        Assert.assertEquals(Angle.ofHrs(2, 46, 14.39).radians, apparentEquatorial.lon, 2e-6)
-        Assert.assertEquals(Angle.ofDeg(49, 21, 7.45).radians, apparentEquatorial.lat, 2e-6)
+        Assert.assertEquals(Angle.ofHrs(2, 46, 14.39).radians, apparentEquatorial.lon, tolPos)
+        Assert.assertEquals(Angle.ofDeg(49, 21, 7.45).radians, apparentEquatorial.lat, tolPos)
     }
 
     @Test
     fun testThetaPersei2028November13_apparent_direct() {
         val ecliptic = Ecliptic(november13_2028)
-        val apparentEquatorial = Stars.computeEquatorialApparent(thetaPersei, november13_2028, ecliptic, SunHighPrecision(november13_2028))
-        Assert.assertEquals(Angle.ofHrs(2, 46, 14.39).radians, apparentEquatorial.lon, 2e-6)
-        Assert.assertEquals(Angle.ofDeg(49, 21, 7.45).radians, apparentEquatorial.lat, 2e-6)
+        val apparentEquatorial = Stars.computeEquatorialApparent(thetaPersei, november13_2028, ecliptic)
+        Assert.assertEquals(Angle.ofHrs(2, 46, 14.39).radians, apparentEquatorial.lon, tolPos)
+        Assert.assertEquals(Angle.ofDeg(49, 21, 7.45).radians, apparentEquatorial.lat, tolPos)
     }
 }
