@@ -1,4 +1,4 @@
-package com.mkreidl.ephemeris
+package com.mkreidl.math
 
 operator fun Double.times(angle: Angle) = angle * this
 
@@ -28,9 +28,9 @@ class Angle(radians: Double) {
     companion object {
         val ZERO = Angle(0.0)
 
-        val degree = Angle.ofDeg(1, 0, 0.0)
-        val minute = Angle.ofDeg(0, 1, 0.0)
-        val second = Angle.ofDeg(0, 0, 1.0)
+        val degree = ofDeg(1, 0, 0.0)
+        val minute = ofDeg(0, 1, 0.0)
+        val second = ofDeg(0, 0, 1.0)
 
         fun ofRad(radians: Double) = Angle(radians)
         fun ofDeg(degrees: Double) = Angle(Math.toRadians(degrees))
@@ -38,8 +38,10 @@ class Angle(radians: Double) {
         fun ofDeg(degrees: Int, minutes: Int, seconds: Double) = Angle(Math.toRadians(degrees + minutes * min + seconds * sec))
         fun ofHrs(hours: Int, minutes: Int, seconds: Double) = Angle((hours + minutes * min + seconds * sec) * hrsToRad)
 
-        fun ofDms(sexagesimal: Sexagesimal<*>) = Angle.ofDeg(sexagesimal.toDecimal())
-        fun ofHms(sexagesimal: Sexagesimal<*>) = Angle.ofHrs(sexagesimal.toDecimal())
+        fun ofDms(sexagesimal: Sexagesimal<*>) = ofDeg(sexagesimal.toDecimal())
+        fun ofHms(sexagesimal: Sexagesimal<*>) = ofHrs(sexagesimal.toDecimal())
+
+        fun reducePositive(radians: Double) = toPositive(reduce(radians))
 
         fun reduce(radians: Double): Double {
             val reduced = radians % TwoPi
@@ -50,13 +52,9 @@ class Angle(radians: Double) {
             }
         }
 
-        fun reducePositive(radians: Double) = toPositive(reduce(radians))
-
-        internal fun toPositive(radians: Double): Double {
-            return when {
-                radians < 0 -> radians + TwoPi
-                else -> radians
-            }
+        internal fun toPositive(radians: Double) = when {
+            radians < 0 -> radians + TwoPi
+            else -> radians
         }
 
         private const val TwoPi = 2 * Math.PI

@@ -1,34 +1,9 @@
 package com.mkreidl.math
 
-operator fun Double.times(quaternion: Quaternion) = quaternion * this
+operator fun Vector3.times(quaternion: Quaternion) = (quaternion.conjugate() * Quaternion(0.0, x, y, z) * quaternion).imag()
 
-data class Quaternion(val r: Double, val i: Double, val j: Double, val k: Double) : LieGroup<Quaternion>, LieAlgebra<Quaternion> {
-
-    companion object {
-        val ZERO = Quaternion(0.0, 0.0, 0.0, 0.0)
-        val ONE = ZERO.copy(r = 1.0)
-        val I = ZERO.copy(i = 1.0)
-        val J = ZERO.copy(j = 1.0)
-        val K = ZERO.copy(k = 1.0)
-
-        fun rotation(angle: Double, axis: Axis): Quaternion {
-            val half = angle * 0.5
-            return when (axis) {
-                Axis.X -> Quaternion(Math.cos(half), Math.sin(half), 0.0, 0.0)
-                Axis.Y -> Quaternion(Math.cos(half), 0.0, Math.sin(half), 0.0)
-                Axis.Z -> Quaternion(Math.cos(half), 0.0, 0.0, Math.sin(half))
-            }
-        }
-
-        fun infinitesimalRotation(angle: Double, axis: Axis) = when (axis) {
-            Axis.X -> Quaternion(0.0, angle * 0.5, 0.0, 0.0)
-            Axis.Y -> Quaternion(0.0, 0.0, angle * 0.5, 0.0)
-            Axis.Z -> Quaternion(0.0, 0.0, 0.0, angle * 0.5)
-        }
-
-        fun infinitesimalRotation(v: Vector3) = infinitesimalRotation( v.x, v.y , v.z )
-        fun infinitesimalRotation(x: Double, y: Double, z: Double) = Quaternion(0.0, x * 0.5, y * 0.5, z * 0.5)
-    }
+data class Quaternion(val r: Double, val i: Double, val j: Double, val k: Double)
+    : LieGroup<Quaternion>, LieAlgebra<Quaternion> {
 
     override fun exp(t: Double): Quaternion {
         val normImag = Math.sqrt(i * i + j * j + k * k)
@@ -74,7 +49,7 @@ data class Quaternion(val r: Double, val i: Double, val j: Double, val k: Double
         return Matrix3x3(a11, a12, a13, a21, a22, a23, a31, a32, a33)
     }
 
-    override fun toUniversalCover() = this
+    override fun lift() = this
 
     override operator fun times(other: Quaternion) = Quaternion(
             r * other.r - i * other.i - j * other.j - k * other.k,
@@ -83,28 +58,28 @@ data class Quaternion(val r: Double, val i: Double, val j: Double, val k: Double
             r * other.k + k * other.r + i * other.j - j * other.i
     )
 
-    override operator fun times(vector: Vector3) = (conjugate() * Quaternion(0.0, vector.x, vector.y, vector.z) * this).imag()
+    override operator fun times(vector: Vector3) = (this * Quaternion(0.0, vector.x, vector.y, vector.z) * conjugate()).imag()
 
     /**
      * Caution: only for unit quaternions! (Division is implemented as multiplication by conjugates)
      */
-    override operator fun div(divisor: Quaternion) = this * divisor.conjugate()
+    override operator fun div(other: Quaternion) = this * other.conjugate()
 
-    override infix fun leftdiv(dividend: Quaternion) = conjugate() * dividend
+    override infix fun leftDiv(other: Quaternion) = conjugate() * other
 
     fun conjugate() = Quaternion(r, -i, -j, -k)
 
     override fun toDoubleArray() = doubleArrayOf(r, i, j, k)
 
-    override operator fun times(scale: Double) = Quaternion(r * scale, i * scale, j * scale, k * scale)
+    override operator fun times(factor: Double) = Quaternion(r * factor, i * factor, j * factor, k * factor)
 
-    override operator fun div(shrink: Double) = this * (1 / shrink)
+    override operator fun div(divisor: Double) = this * (1 / divisor)
 
     override operator fun unaryMinus() = Quaternion(-r, -i, -j, -k)
 
     override operator fun plus(other: Quaternion) = Quaternion(r + other.r, i + other.i, j + other.j, k + other.k)
 
-    override operator fun minus(subtrahend: Quaternion) = Quaternion(r - subtrahend.r, i - subtrahend.i, j - subtrahend.j, k - subtrahend.k)
+    override operator fun minus(other: Quaternion) = Quaternion(r - other.r, i - other.i, j - other.j, k - other.k)
 
     infix fun dot(other: Quaternion) = r * other.r + i * other.i + j * other.j + k * other.k
 
@@ -121,12 +96,37 @@ data class Quaternion(val r: Double, val i: Double, val j: Double, val k: Double
             -tol < j && j < tol &&
             -tol < k && k < tol
 
-    // TODO: inline lambda dependent on TOL -- syntax should be
-    // p equalWithTol(1e-16) q
     infix fun almostEqualTo(other: Quaternion) = (other - this).isAlmostZero(1e-16)
 
     fun rightMultiplyMatrix(matrix: Matrix3x3) = Quaternion(r,
             i * matrix.a11 + j * matrix.a21 + k * matrix.a31,
             i * matrix.a12 + j * matrix.a22 + k * matrix.a32,
             i * matrix.a13 + j * matrix.a23 + k * matrix.a33)
+
+    companion object {
+        val ZERO = Quaternion(0.0, 0.0, 0.0, 0.0)
+        val ONE = ZERO.copy(r = 1.0)
+        val I = ZERO.copy(i = 1.0)
+        val J = ZERO.copy(j = 1.0)
+        val K = ZERO.copy(k = 1.0)
+
+        fun rotation(angle: Double, axis: Axis): Quaternion {
+            val half = angle * 0.5
+            return when (axis) {
+                Axis.X -> Quaternion(Math.cos(half), Math.sin(half), 0.0, 0.0)
+                Axis.Y -> Quaternion(Math.cos(half), 0.0, Math.sin(half), 0.0)
+                Axis.Z -> Quaternion(Math.cos(half), 0.0, 0.0, Math.sin(half))
+            }
+        }
+
+        fun rotation(v: Vector3) = Quaternion(0.0, v.x * 0.5, v.y * 0.5, v.z * 0.5).exp()
+
+        fun rotation(start: Vector3, end: Vector3): Quaternion {
+            val rot = start x end
+            val theta = Math.asin(rot.norm) * 0.5
+            val sinTheta = Math.sin(theta)
+            val u = rot / rot.norm
+            return Quaternion(r = Math.cos(theta), i = u.x * sinTheta, j = u.y * sinTheta, k = u.z * sinTheta)
+        }
+    }
 }

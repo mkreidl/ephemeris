@@ -1,6 +1,6 @@
 package com.mkreidl.ephemeris.geometry;
 
-import com.mkreidl.math.Sphe;
+import com.mkreidl.math.Spherical3;
 import com.mkreidl.math.Vector3;
 
 public abstract class OrbitalElements {
@@ -24,8 +24,8 @@ public abstract class OrbitalElements {
         return new Vector3(eclipticalCartesian.x, eclipticalCartesian.y, eclipticalCartesian.z);
     }
 
-    public Sphe getPositionSpherical() {
-        return new Sphe(eclipticalSpherical.dst, eclipticalSpherical.lon, eclipticalSpherical.lat);
+    public Spherical3 getPositionSpherical() {
+        return new Spherical3(eclipticalSpherical.dst, eclipticalSpherical.lon, eclipticalSpherical.lat);
     }
 
     public void getPosition(Spherical output) {

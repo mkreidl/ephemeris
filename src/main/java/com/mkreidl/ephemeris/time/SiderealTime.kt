@@ -1,6 +1,6 @@
 package com.mkreidl.ephemeris.time
 
-import com.mkreidl.ephemeris.Angle
+import com.mkreidl.math.Angle
 import com.mkreidl.ephemeris.HOURS_PER_MILLI
 import com.mkreidl.ephemeris.SIDEREAL_HOURS_PER_MILLI
 import com.mkreidl.ephemeris.solarsystem.Ecliptic

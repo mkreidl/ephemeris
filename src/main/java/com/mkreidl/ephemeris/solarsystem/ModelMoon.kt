@@ -5,7 +5,7 @@ import com.mkreidl.ephemeris.time.Instant
 import com.mkreidl.ephemeris.Time
 import com.mkreidl.ephemeris.geometry.Angle.DEG
 import com.mkreidl.ephemeris.geometry.ClassicalOrbitalElements
-import com.mkreidl.math.Sphe
+import com.mkreidl.math.Spherical3
 import com.mkreidl.math.Vector3
 import java.lang.Math.cos
 import java.lang.Math.sin
@@ -37,12 +37,12 @@ class ModelMoon : OrbitalModel() {
      */
 
     private val orbitalElements = ClassicalOrbitalElements()
-    private var posSpherical = Sphe.ZERO
+    private var posSpherical = Spherical3.ZERO
     private var posCartesian = Vector3.ZERO
 
     override fun computeSpherical(instant: Instant): PhaseSpherical {
         compute(instant)
-        return PhaseSpherical(posSpherical, Sphe.ZERO)
+        return PhaseSpherical(posSpherical, Spherical3.ZERO)
     }
 
     override fun computeCartesian(instant: Instant): PhaseCartesian {
@@ -76,7 +76,7 @@ class ModelMoon : OrbitalModel() {
         orbElSun.times(t)
         orbElSun.add(orbElSunSeries[0])
 
-        posSpherical = Sphe(
+        posSpherical = Spherical3(
                 lon = posSpherical.lon + longitudeCorrection(),
                 lat = posSpherical.lat + latitudeCorrection(),
                 dst = posSpherical.dst + distanceCorrection()

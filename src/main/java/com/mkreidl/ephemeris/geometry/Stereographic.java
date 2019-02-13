@@ -31,7 +31,7 @@ public class Stereographic
         return output;
     }
 
-    public Spherical project( Spherical input, Spherical output )
+    public Spherical project(Spherical input, Spherical output )
     {
         final double scale = centerZ / ( 1.0 - input.dst * sin( input.lat ) );
         if ( scale < 0.0 ) // TODO: This might be generalized
@@ -72,7 +72,7 @@ public class Stereographic
      * (2) r == NaN means the circle is actually a line through the origin of the coordinate
      * system. Then x and y describe a unit vector orthogonal to that line.
      */
-    public Circle project( Spherical poleOfCircle, double alpha, Circle projection )
+    public Circle project(Spherical poleOfCircle, double alpha, Circle projection )
     {
         final double north = project1D( poleOfCircle.lat + alpha );
         final double south = project1D( poleOfCircle.lat - alpha );

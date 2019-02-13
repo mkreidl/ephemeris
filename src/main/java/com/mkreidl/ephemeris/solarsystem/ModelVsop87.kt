@@ -3,7 +3,7 @@ package com.mkreidl.ephemeris.solarsystem
 import com.mkreidl.ephemeris.DAYS_PER_SECOND
 import com.mkreidl.ephemeris.time.Instant
 import com.mkreidl.ephemeris.Time
-import com.mkreidl.math.Sphe
+import com.mkreidl.math.Spherical3
 import com.mkreidl.math.Vector3
 
 abstract class ModelVsop87(private val coefficients: Array<Array<Array<DoubleArray>>>) : OrbitalModel() {
@@ -53,8 +53,8 @@ abstract class ModelVsop87(private val coefficients: Array<Array<Array<DoubleArr
         override fun computeSpherical(instant: Instant): PhaseSpherical {
             compute(instant)
             return PhaseSpherical(
-                    Sphe(results[2], results[0], results[1]),
-                    Sphe(results[5], results[3], results[4])
+                    Spherical3(results[2], results[0], results[1]),
+                    Spherical3(results[5], results[3], results[4])
             )
         }
 

@@ -1,4 +1,4 @@
-package com.mkreidl.ephemeris
+package com.mkreidl.math
 
 import kotlin.math.roundToInt
 

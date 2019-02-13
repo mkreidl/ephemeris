@@ -2,7 +2,7 @@ package com.mkreidl.ephemeris.solarsystem
 
 import com.mkreidl.ephemeris.DAYS_PER_SECOND
 import com.mkreidl.ephemeris.time.Instant
-import com.mkreidl.math.Sphe
+import com.mkreidl.math.Spherical3
 
 class ModelPluto : OrbitalModel() {
 
@@ -28,7 +28,7 @@ class ModelPluto : OrbitalModel() {
         p = P0 + p1 * d
     }
 
-    private fun computePosition() = Sphe(
+    private fun computePosition() = Spherical3(
             lon = Math.toRadians((((((238.9508 + 0.00400703 * d - 19.799 * Math.sin(p) + 19.848 * Math.cos(p)
                     + 0.897 * Math.sin(2 * p)) - 4.956 * Math.cos(2 * p)
                     + 0.610 * Math.sin(3 * p) + 1.211 * Math.cos(3 * p))
@@ -46,7 +46,7 @@ class ModelPluto : OrbitalModel() {
                     - 1.18 * Math.sin(2 * p) - 0.03 * Math.cos(2 * p)) + 0.15 * Math.sin(3 * p) - 0.14 * Math.cos(3 * p)
     )
 
-    private fun computeVelocity() = Sphe(
+    private fun computeVelocity() = Spherical3(
             lon = Math.toRadians(0.00400703 + p1 * ((((-19.799 * Math.cos(p) - 19.848 * Math.sin(p)
                     + 0.897 * 2.0 * Math.cos(2 * p) + 4.956 * 2.0 * Math.sin(2 * p)
                     + 0.610 * 3.0 * Math.cos(3 * p)) - 1.211 * 3.0 * Math.sin(3 * p)

@@ -44,7 +44,7 @@ public class MoonRiseSetTest extends PlanetRiseSetTest
         return Arrays.asList( EVENTS );
     }
 
-    public MoonRiseSetTest( Spherical geographicLocation, String startTime, RiseSetCalculator.LookupDirection searchDirection, EventType eventType, String eventTime )
+    public MoonRiseSetTest(Spherical geographicLocation, String startTime, RiseSetCalculator.LookupDirection searchDirection, EventType eventType, String eventTime )
     {
         super( geographicLocation, startTime, searchDirection, eventType, eventTime );
     }

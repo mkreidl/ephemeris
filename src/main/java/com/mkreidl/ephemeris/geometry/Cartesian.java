@@ -85,7 +85,7 @@ public class Cartesian extends Coordinates<Cartesian>
         return this;
     }
 
-    public Spherical transform( Spherical output )
+    public Spherical transform(Spherical output )
     {
         output.dst = length();
         output.lat = Math.asin( z / output.dst );
@@ -93,7 +93,7 @@ public class Cartesian extends Coordinates<Cartesian>
         return output.standardize();
     }
 
-    public Spherical transformVelocity( Cartesian cartesianPos, Spherical velocity )
+    public Spherical transformVelocity(Cartesian cartesianPos, Spherical velocity )
     {
         // TODO implement
         return velocity;

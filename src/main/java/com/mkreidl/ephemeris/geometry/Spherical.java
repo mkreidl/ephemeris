@@ -14,18 +14,18 @@ public class Spherical extends Coordinates<Spherical>
     {
     }
 
-    public Spherical( Spherical orig )
+    public Spherical(Spherical orig )
     {
         set( orig );
     }
 
-    public Spherical( double dst, double lon, double lat )
+    public Spherical(double dst, double lon, double lat )
     {
         set( dst, lon, lat );
     }
 
     @Override
-    public Spherical set( Spherical orig )
+    public Spherical set(Spherical orig )
     {
         this.dst = orig.dst;
         this.lat = orig.lat;
@@ -34,7 +34,7 @@ public class Spherical extends Coordinates<Spherical>
     }
 
     @Override
-    public Spherical set( double dst, double lon, double lat )
+    public Spherical set(double dst, double lon, double lat )
     {
         this.lon = lon;
         this.lat = lat;
@@ -56,14 +56,14 @@ public class Spherical extends Coordinates<Spherical>
     }
 
     @Override
-    public Spherical scale( double factor )
+    public Spherical scale(double factor )
     {
         this.dst *= factor;
         return this;
     }
 
     @Override
-    public Spherical rotate( Axis axis, double angle )
+    public Spherical rotate(Axis axis, double angle )
     {
         transform( tmpCartesian );
         tmpCartesian.rotate( axis, angle );
@@ -78,7 +78,7 @@ public class Spherical extends Coordinates<Spherical>
         return output;
     }
 
-    public Cartesian transformVelocity( Spherical position, Cartesian output )
+    public Cartesian transformVelocity(Spherical position, Cartesian output )
     {
         final double r = position.dst;
         final double sl = Math.sin( position.lon );

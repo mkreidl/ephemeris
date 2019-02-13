@@ -54,7 +54,7 @@ public class VSOP87File
         output.p = values[5];
     }
 
-    public Spherical getPosition( Spherical output )
+    public Spherical getPosition(Spherical output )
     {
         if ( version == Version.B || version == Version.D )
         {    // LBR coordinates

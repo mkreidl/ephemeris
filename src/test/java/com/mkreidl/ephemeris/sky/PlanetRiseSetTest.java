@@ -29,7 +29,7 @@ public abstract class PlanetRiseSetTest
     private final DateFormat dateFormat = new SimpleDateFormat( "yyyy-MM-dd HH:mm Z" );
     private final DateFormat dateFormatSec = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss Z" );
 
-    PlanetRiseSetTest( Spherical geographicLocation, String startTime, RiseSetCalculator.LookupDirection searchDirection, RiseSetCalculator.EventType eventType, String eventTime )
+    PlanetRiseSetTest(Spherical geographicLocation, String startTime, RiseSetCalculator.LookupDirection searchDirection, RiseSetCalculator.EventType eventType, String eventTime )
     {
         this.geographicLocation = geographicLocation;
         this.startTime = startTime;

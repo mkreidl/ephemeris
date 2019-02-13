@@ -2,6 +2,8 @@ package com.mkreidl.ephemeris;
 
 import com.mkreidl.ephemeris.solarsystem.Body;
 import com.mkreidl.ephemeris.solarsystem.Zodiac;
+import com.mkreidl.math.Angle;
+import com.mkreidl.math.Sexagesimal;
 import org.junit.runners.Parameterized.Parameters;
 
 import java.io.BufferedReader;

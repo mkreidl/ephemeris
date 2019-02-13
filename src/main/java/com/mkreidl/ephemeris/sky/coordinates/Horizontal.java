@@ -9,7 +9,7 @@ public interface Horizontal
 {
     Cartesian toEquatorial( Equatorial.Sphe zenith, Cartesian equatorial );
 
-    Spherical toEquatorial( Equatorial.Sphe zenith, Spherical equatorial );
+    Spherical toEquatorial(Equatorial.Sphe zenith, Spherical equatorial );
 
     final class Cart extends Cartesian implements Horizontal
     {
@@ -23,7 +23,7 @@ public interface Horizontal
         }
 
         @Override
-        public Spherical toEquatorial( Equatorial.Sphe zenith, Spherical spherical )
+        public Spherical toEquatorial(Equatorial.Sphe zenith, Spherical spherical )
         {
             return toEquatorial( zenith, spherical.tmpCartesian ).transform( spherical );
         }
@@ -41,7 +41,7 @@ public interface Horizontal
         }
 
         @Override
-        public Spherical toEquatorial( Equatorial.Sphe zenith, Spherical equatorial )
+        public Spherical toEquatorial(Equatorial.Sphe zenith, Spherical equatorial )
         {
             return toEquatorial( zenith, equatorial.tmpCartesian ).transform( equatorial );
         }

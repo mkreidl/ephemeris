@@ -5,11 +5,11 @@ interface LieGroup<T : LieGroup<T>> {
     fun exp(t: Double = 1.0): T
     fun pow(exponent: Double) = log().exp(exponent)
     fun adjointRep(): Matrix3x3
-    fun toUniversalCover(): Quaternion
+    fun lift(): Quaternion
 
     operator fun times(other: T): T
-    operator fun div(divisor: T): T
-    infix fun leftdiv(dividend: T): T
+    operator fun div(other: T): T
+    infix fun leftDiv(other: T): T
 
     fun toDoubleArray(): DoubleArray
 
@@ -17,26 +17,20 @@ interface LieGroup<T : LieGroup<T>> {
     operator fun times(vector: Vector3): Vector3
 }
 
-interface LieAlgebra<T : LieAlgebra<T>> {
+operator fun <T : VectorSpace<Double, T>> Double.times(vector: T) = vector * this
+
+interface VectorSpace<S : Number, V : VectorSpace<S, V>> {
+    operator fun times(factor: S): V
+    operator fun plus(other: V): V
+    operator fun minus(other: V): V
+}
+
+interface LieAlgebra<T : LieAlgebra<T>> : VectorSpace<Double, T> {
     operator fun unaryMinus(): T
     operator fun unaryPlus() = this
 
-    operator fun plus(other: T): T
-    operator fun minus(subtrahend: T): T
-    operator fun times(scale: Double): T
-    operator fun div(shrink: Double) = this * (1 / shrink)
-}
-
-internal fun Matrix3x3.computeRotationAxis(): DoubleArray {
-    // Calculate the adjugate of the matrix r and find the column with the biggest norm
-    val axis = (this - Matrix3x3.ONE).adjugate()
-    val n1 = axis.a11 * axis.a11 + axis.a21 * axis.a21 + axis.a31 * axis.a31
-    val n2 = axis.a12 * axis.a12 + axis.a22 * axis.a22 + axis.a32 * axis.a32
-    val n3 = axis.a13 * axis.a13 + axis.a23 * axis.a23 + axis.a33 * axis.a33
-    return if (n3 >= n1 && n3 >= n2)
-        doubleArrayOf(n3, axis.a13, axis.a23, axis.a33)
-    else if (n2 >= n1)
-        doubleArrayOf(n2, axis.a12, axis.a22, axis.a32)
-    else
-        doubleArrayOf(n1, axis.a11, axis.a21, axis.a31)
+    override operator fun plus(other: T): T
+    override operator fun minus(other: T): T
+    override operator fun times(factor: Double): T
+    operator fun div(divisor: Double) = this * (1 / divisor)
 }

@@ -2,11 +2,11 @@ package com.mkreidl.ephemeris.sky;
 
 import java.util.Arrays;
 
+import com.mkreidl.ephemeris.geometry.Spherical;
 import com.mkreidl.ephemeris.solarsystem.SolarSystemMeeus;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-import com.mkreidl.ephemeris.geometry.Spherical;
 import com.mkreidl.ephemeris.sky.RiseSetCalculator.EventType;
 import com.mkreidl.ephemeris.solarsystem.Body;
 
@@ -186,7 +186,7 @@ public class SunRiseSetTest extends PlanetRiseSetTest
         return Arrays.asList( EVENTS );
     }
 
-    public SunRiseSetTest( Spherical geographicLocation, String startTime, RiseSetCalculator.LookupDirection searchDirection, EventType eventType, String eventTime )
+    public SunRiseSetTest(Spherical geographicLocation, String startTime, RiseSetCalculator.LookupDirection searchDirection, EventType eventType, String eventTime )
     {
         super( geographicLocation, startTime, searchDirection, eventType, eventTime );
     }

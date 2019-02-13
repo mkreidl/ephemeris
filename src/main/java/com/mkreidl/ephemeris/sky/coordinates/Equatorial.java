@@ -9,11 +9,11 @@ public interface Equatorial
 {
     Cartesian toEcliptical( double ecliptic, Cartesian eclipticalCart );
 
-    Spherical toEcliptical( double ecliptic, Spherical eclipticalCart );
+    Spherical toEcliptical(double ecliptic, Spherical eclipticalCart );
 
-    Cartesian toHorizontal( Spherical zenith, Cartesian horizontal );
+    Cartesian toHorizontal(Spherical zenith, Cartesian horizontal );
 
-    Spherical toHorizontal( Spherical zenith, Spherical horizontal );
+    Spherical toHorizontal(Spherical zenith, Spherical horizontal );
 
     final class Cart extends Cartesian implements Equatorial
     {
@@ -25,13 +25,13 @@ public interface Equatorial
         }
 
         @Override
-        public Spherical toEcliptical( double ecliptic, Spherical eclipticalSphe )
+        public Spherical toEcliptical(double ecliptic, Spherical eclipticalSphe )
         {
             return toEcliptical( ecliptic, eclipticalSphe.tmpCartesian ).transform( eclipticalSphe );
         }
 
         @Override
-        public Cartesian toHorizontal( Spherical zenith, Cartesian horizontal )
+        public Cartesian toHorizontal(Spherical zenith, Cartesian horizontal )
         {
             return horizontal.set( this )
                     .rotate( Coordinates.Axis.Z, -zenith.lon )
@@ -39,7 +39,7 @@ public interface Equatorial
         }
 
         @Override
-        public Spherical toHorizontal( Spherical zenith, Spherical spherical )
+        public Spherical toHorizontal(Spherical zenith, Spherical spherical )
         {
             return toHorizontal( zenith, spherical.tmpCartesian ).transform( spherical );
         }
@@ -56,20 +56,20 @@ public interface Equatorial
         }
 
         @Override
-        public Spherical toEcliptical( double ecliptic, Spherical eclipticalSphe )
+        public Spherical toEcliptical(double ecliptic, Spherical eclipticalSphe )
         {
             return toEcliptical( ecliptic, tmpCartesian ).transform( eclipticalSphe );
         }
 
         @Override
-        public Cartesian toHorizontal( Spherical zenith, Cartesian horizontal )
+        public Cartesian toHorizontal(Spherical zenith, Cartesian horizontal )
         {
             transform( tmp );
             return tmp.toHorizontal( zenith, horizontal );
         }
 
         @Override
-        public Spherical toHorizontal( Spherical zenith, Spherical spherical )
+        public Spherical toHorizontal(Spherical zenith, Spherical spherical )
         {
             return toHorizontal( zenith, tmpCartesian ).transform( spherical );
         }

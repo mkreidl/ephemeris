@@ -8,11 +8,11 @@ public interface Ecliptical
 {
     Cartesian toEquatorial( double ecliptic, Cartesian cartesian );
 
-    Spherical toEquatorial( double ecliptic, Spherical spherical );
+    Spherical toEquatorial(double ecliptic, Spherical spherical );
 
-    Cartesian toHorizontal( double ecliptic, Spherical zenith, Cartesian cartesian );
+    Cartesian toHorizontal(double ecliptic, Spherical zenith, Cartesian cartesian );
 
-    Spherical toHorizontal( double ecliptic, Spherical zenith, Spherical spherical );
+    Spherical toHorizontal(double ecliptic, Spherical zenith, Spherical spherical );
 
     final class Cart extends Cartesian implements Ecliptical
     {
@@ -25,20 +25,20 @@ public interface Ecliptical
         }
 
         @Override
-        public Spherical toEquatorial( double ecliptic, Spherical spherical )
+        public Spherical toEquatorial(double ecliptic, Spherical spherical )
         {
             return toEquatorial( ecliptic, spherical.tmpCartesian ).transform( spherical );
         }
 
         @Override
-        public Cartesian toHorizontal( double ecliptic, Spherical zenith, Cartesian cartesian )
+        public Cartesian toHorizontal(double ecliptic, Spherical zenith, Cartesian cartesian )
         {
             return ( (Equatorial.Cart)toEquatorial( ecliptic, tmp ) )
                     .toHorizontal( zenith, cartesian );
         }
 
         @Override
-        public Spherical toHorizontal( double ecliptic, Spherical zenith, Spherical spherical )
+        public Spherical toHorizontal(double ecliptic, Spherical zenith, Spherical spherical )
         {
             return toHorizontal( ecliptic, zenith, spherical.tmpCartesian ).transform( spherical );
         }
@@ -56,19 +56,19 @@ public interface Ecliptical
         }
 
         @Override
-        public Spherical toEquatorial( double ecliptic, Spherical spherical )
+        public Spherical toEquatorial(double ecliptic, Spherical spherical )
         {
             return toEquatorial( ecliptic, tmpCartesian ).transform( spherical );
         }
 
         @Override
-        public Cartesian toHorizontal( double ecliptic, Spherical zenith, Cartesian cartesian )
+        public Cartesian toHorizontal(double ecliptic, Spherical zenith, Cartesian cartesian )
         {
             return ( (Ecliptical.Cart)transform( tmp ) ).toHorizontal( ecliptic, zenith, cartesian );
         }
 
         @Override
-        public Spherical toHorizontal( double ecliptic, Spherical zenith, Spherical spherical )
+        public Spherical toHorizontal(double ecliptic, Spherical zenith, Spherical spherical )
         {
             return ( (Ecliptical.Cart)transform( tmp ) ).toHorizontal( ecliptic, zenith, spherical );
         }

@@ -1,13 +1,13 @@
 package com.mkreidl.ephemeris.solarsystem
 
 import com.mkreidl.math.Matrix3x3
-import com.mkreidl.math.Sphe
+import com.mkreidl.math.Spherical3
 import com.mkreidl.math.Vector3
 
-data class PhaseSpherical(val position: Sphe, val velocity: Sphe) {
+data class PhaseSpherical(val position: Spherical3, val velocity: Spherical3) {
 
     companion object {
-        val ZERO = PhaseSpherical(Sphe.ZERO, Sphe.ZERO)
+        val ZERO = PhaseSpherical(Spherical3.ZERO, Spherical3.ZERO)
     }
 
     fun toCartesian() = PhaseCartesian(

@@ -1,10 +1,10 @@
 package com.mkreidl.ephemeris.solarsystem
 
-import com.mkreidl.ephemeris.Angle
+import com.mkreidl.math.Angle
 import com.mkreidl.ephemeris.time.Instant
 import com.mkreidl.ephemeris.ABERRATION
 import com.mkreidl.math.Polynomial
-import com.mkreidl.math.Sphe
+import com.mkreidl.math.Spherical3
 
 abstract class Sun(internal val instant: Instant, internal val ecliptic: Ecliptic = Ecliptic(instant)) {
 
@@ -16,7 +16,7 @@ abstract class Sun(internal val instant: Instant, internal val ecliptic: Eclipti
     val perihelion by lazy { P(julianCenturies) }
     val equationOfTime by lazy { computeEquationOfTime() }
 
-    fun computeAberrationCorrectionEcliptical(position: Sphe): Sphe {
+    fun computeAberrationCorrectionEcliptical(position: Spherical3): Spherical3 {
         val p = perihelion - position.lon
         val g = geometricLongitude - position.lon
         val l = ABERRATION / Math.cos(position.lat) * (excentricity * Math.cos(p) - Math.cos(g))

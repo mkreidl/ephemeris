@@ -1,10 +1,10 @@
 package com.mkreidl.ephemeris.solarsystem
 
 import com.mkreidl.ephemeris.ABERRATION
-import com.mkreidl.ephemeris.Angle
+import com.mkreidl.math.Angle
 import com.mkreidl.ephemeris.time.Instant
 import com.mkreidl.ephemeris.solarsystem.meeus.EarthMeeus
-import com.mkreidl.math.Sphe
+import com.mkreidl.math.Spherical3
 
 class SunHighPrecision(instant: Instant, ecliptic: Ecliptic = Ecliptic(instant)) : Sun(instant, ecliptic) {
 
@@ -22,7 +22,7 @@ class SunHighPrecision(instant: Instant, ecliptic: Ecliptic = Ecliptic(instant))
     private val apparentPosition by lazy { computeApparentPosition() }
     private val apparentPosEquatorial by lazy { computeApparentEquatorial() }
 
-    private fun computeGeometricPosition(): Sphe {
+    private fun computeGeometricPosition(): Spherical3 {
         val (pos, _) = earth.computeSpherical(instant)
         return pos.copy(lon = Angle.reduce(pos.lon + Math.PI), lat = -Angle.reduce(pos.lat))
     }

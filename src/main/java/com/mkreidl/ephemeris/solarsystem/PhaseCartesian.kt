@@ -1,7 +1,7 @@
 package com.mkreidl.ephemeris.solarsystem
 
 import com.mkreidl.math.Matrix3x3
-import com.mkreidl.math.Sphe
+import com.mkreidl.math.Spherical3
 import com.mkreidl.math.Vector3
 import com.mkreidl.math.times
 
@@ -15,7 +15,7 @@ data class PhaseCartesian(val position: Vector3, val velocity: Vector3) {
 
     fun toSpherical(): PhaseSpherical {
         val sphe = jacobian() * velocity
-        return PhaseSpherical(position.toSpherical(), Sphe(sphe.x, sphe.y, sphe.z))
+        return PhaseSpherical(position.toSpherical(), Spherical3(sphe.x, sphe.y, sphe.z))
     }
 
     private fun jacobian(): Matrix3x3 {

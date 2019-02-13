@@ -1,42 +1,40 @@
 package com.mkreidl.math
 
-import com.mkreidl.ephemeris.Angle
-
-operator fun Double.times(vector: Vector3) = vector * this
-
-data class Vector3(val x: Double, val y: Double, val z: Double) {
+data class Vector3(val x: Double, val y: Double, val z: Double) : VectorSpace<Double, Vector3> {
 
     constructor(x: Float, y: Float, z: Float) : this(x.toDouble(), y.toDouble(), z.toDouble())
 
-    companion object {
-        val ZERO = Vector3(0.0, 0.0, 0.0)
-    }
+    constructor(v: FloatArray) : this(v[0].toDouble(), v[1].toDouble(), v[2].toDouble())
+
+    fun normalize() = this / norm
+
+    val norm get() = Math.sqrt(this * this)
 
     operator fun unaryPlus() = this
 
     operator fun unaryMinus() = Vector3(-x, -y, -z)
 
-    operator fun plus(other: Vector3) = Vector3(
+    override operator fun plus(other: Vector3) = Vector3(
             x + other.x,
             y + other.y,
             z + other.z
     )
 
-    operator fun minus(other: Vector3) = Vector3(
+    override operator fun minus(other: Vector3) = Vector3(
             x - other.x,
             y - other.y,
             z - other.z
     )
 
-    operator fun times(factor: Double) = Vector3(
+    override operator fun times(factor: Double) = Vector3(
             x * factor,
             y * factor,
             z * factor
     )
 
-    operator fun div(factor: Double) = this * (1.0 / factor)
-
     operator fun times(other: Vector3) = x * other.x + y * other.y + z * other.z
+
+    operator fun div(divisor: Double) = this * (1.0 / divisor)
 
     infix fun x(other: Vector3) = Vector3(
             y * other.z - z * other.y,
@@ -52,14 +50,14 @@ data class Vector3(val x: Double, val y: Double, val z: Double) {
 
     infix fun angle(other: Vector3) = Angle(Math.atan2((this x other).norm, this * other))
 
-    val norm get() = Math.sqrt(this * this)
-
-    fun toFloatArray() = arrayOf(x.toFloat(), y.toFloat(), z.toFloat()).toFloatArray()
-
-    fun toSpherical(): Sphe {
+    fun toSpherical(): Spherical3 {
         val norm = this.norm
-        return Sphe(dst = norm, lat = Math.asin(z / norm), lon = Math.atan2(y, x))
+        return Spherical3(dst = norm, lat = Math.asin(z / norm), lon = Math.atan2(y, x))
     }
 
-    fun normalize() = this / norm
+    fun toFloatArray() = floatArrayOf(x.toFloat(), y.toFloat(), z.toFloat())
+
+    companion object {
+        val ZERO = Vector3(0.0, 0.0, 0.0)
+    }
 }
