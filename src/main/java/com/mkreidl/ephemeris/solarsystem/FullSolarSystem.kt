@@ -3,6 +3,8 @@ package com.mkreidl.ephemeris.solarsystem
 import com.mkreidl.ephemeris.Distance
 import com.mkreidl.ephemeris.time.Instant
 import com.mkreidl.ephemeris.solarsystem.meeus.*
+import com.mkreidl.math.PhaseCartesian
+import com.mkreidl.math.times
 
 class FullSolarSystem(private val models: Map<Body, OrbitalModel>) {
 

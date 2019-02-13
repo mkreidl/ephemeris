@@ -1,15 +1,18 @@
 package com.mkreidl.ephemeris.time
 
-import com.mkreidl.math.Angle
 import com.mkreidl.ephemeris.HOURS_PER_MILLI
 import com.mkreidl.ephemeris.SIDEREAL_HOURS_PER_MILLI
 import com.mkreidl.ephemeris.solarsystem.Ecliptic
-import com.mkreidl.ephemeris.solarsystem.Sun
-import com.mkreidl.ephemeris.solarsystem.SunLowPrecision
+import com.mkreidl.ephemeris.sun.Sun
+import com.mkreidl.ephemeris.sun.SunLowPrecision
+import com.mkreidl.math.Angle
 import com.mkreidl.math.Polynomial
 import java.util.*
 
 class SiderealTime(private val instant: Instant) {
+
+    override fun equals(other: Any?) = other is SiderealTime && other.instant == instant
+    override fun hashCode() = instant.hashCode()
 
     fun getMeanSolarTime(longitude: Angle = Angle.ZERO) =
             Angle.ofHrs(instant hoursFrom midnightAtGreenwichSameDate()) + longitude

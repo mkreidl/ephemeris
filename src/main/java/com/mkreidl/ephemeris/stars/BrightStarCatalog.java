@@ -5,45 +5,46 @@ import java.util.List;
 
 public class BrightStarCatalog
 {
-    public static final StarCatalog INSTANCE = new StarCatalog() {
-            @Override
-            public int getSize() {
-                return SIZE;
-            }
-            @Override
-            public  double getDist( int index )
-            {
-                final double dist = QP[index][0];
-                // negative distances arise from negative parallaxes
-                // -- unclear what that means, thus return NaN in those cases
-                return dist > 0 ? dist : Double.NaN;
-            }
-            @Override
-            public  double getRAscJ2000( int index )
-            {
-                return QP[index][1];
-            }
-            @Override
-            public  double getDeclJ2000( int index )
-            {
-                return QP[index][2];
-            }
-            @Override
-            public  double getVDist( int index )
-            {
-                return QP[index][3];
-            }
-            @Override
-            public  double getVRAscJ2000( int index )
-            {
-                return QP[index][4];
-            }
-            @Override
-            public  double getVDeclJ2000( int index )
-            {
-                return QP[index][5];
-            }
-        };
+    public static final StarCatalog INSTANCE = new StarCatalog()
+    {
+        @Override
+        public int getSize() {
+            return SIZE;
+        }
+        @Override
+        public  double getDist( int index )
+        {
+            final double dist = QP[index][0];
+            // negative distances arise from negative parallaxes
+            // -- unclear what that means, thus return NaN in those cases
+            return dist > 0 ? dist : Double.NaN;
+        }
+        @Override
+        public  double getRAscJ2000( int index )
+        {
+            return QP[index][1];
+        }
+        @Override
+        public  double getDeclJ2000( int index )
+        {
+            return QP[index][2];
+        }
+        @Override
+        public  double getVDist( int index )
+        {
+            return QP[index][3];
+        }
+        @Override
+        public  double getVRAscJ2000( int index )
+        {
+            return QP[index][4];
+        }
+        @Override
+        public  double getVDeclJ2000( int index )
+        {
+            return QP[index][5];
+        }
+    };
 
     public static final java.util.Map<Character, Integer> COLOR_TABLE = new java.util.HashMap<>();
 

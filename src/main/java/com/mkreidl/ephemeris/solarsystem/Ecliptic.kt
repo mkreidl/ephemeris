@@ -23,7 +23,7 @@ class Ecliptic(internal val instant: Instant) {
     val trafoMeanEqu2Ecl by lazy { Matrix3x3.rotation(-meanObliquity, Axis.X) }
 
     val trafoMeanEcl2TrueEcl by lazy { Matrix3x3.rotation(nutationInLongitude, Axis.Z) }
-    val trafoTrueEcl2TrueEqu by lazy {  Matrix3x3.rotation(trueObliquity, Axis.X) }
+    val trafoTrueEcl2TrueEqu by lazy { Matrix3x3.rotation(trueObliquity, Axis.X) }
     val trafoMeanEcl2TrueEqu by lazy { trafoTrueEcl2TrueEqu * trafoMeanEcl2TrueEcl }
 
     val trafoEclJ2000ToEclToDate by lazy { computeTransformJ2000ToDate() }
@@ -40,6 +40,7 @@ class Ecliptic(internal val instant: Instant) {
     private val julianMillennia = julianCenturies * 0.1
 
     override fun equals(other: Any?) = other is Ecliptic && other.instant == instant
+    override fun hashCode() = instant.hashCode()
 
     fun computeTransformJ2000ToDate(): Matrix3x3 {
         val s11 = S11(julianMillennia)

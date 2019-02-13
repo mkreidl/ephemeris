@@ -7,6 +7,7 @@ import com.mkreidl.ephemeris.geometry.Cartesian;
 import com.mkreidl.ephemeris.sky.coordinates.Ecliptical;
 import com.mkreidl.ephemeris.sky.coordinates.Equatorial;
 import com.mkreidl.ephemeris.sky.coordinates.Horizontal;
+import com.mkreidl.math.PhaseCartesian;
 import com.mkreidl.math.Vector3;
 
 import java.util.EnumMap;

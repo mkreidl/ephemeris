@@ -1,6 +1,7 @@
-package com.mkreidl.ephemeris.solarsystem
+package com.mkreidl.ephemeris.sun
 
 import com.mkreidl.ephemeris.ABERRATION
+import com.mkreidl.ephemeris.solarsystem.Ecliptic
 import com.mkreidl.math.Angle
 import com.mkreidl.ephemeris.time.Instant
 import com.mkreidl.ephemeris.solarsystem.meeus.EarthMeeus

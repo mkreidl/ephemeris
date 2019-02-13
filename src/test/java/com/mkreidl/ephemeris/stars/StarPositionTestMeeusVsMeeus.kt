@@ -3,7 +3,7 @@ package com.mkreidl.ephemeris.stars
 import com.mkreidl.math.Angle
 import com.mkreidl.ephemeris.time.Instant
 import com.mkreidl.ephemeris.solarsystem.Ecliptic
-import com.mkreidl.ephemeris.solarsystem.SunHighPrecision
+import com.mkreidl.ephemeris.sun.SunHighPrecision
 import com.mkreidl.math.Vector3
 import org.junit.Assert
 import org.junit.Test

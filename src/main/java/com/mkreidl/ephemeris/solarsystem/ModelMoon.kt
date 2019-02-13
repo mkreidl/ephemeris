@@ -5,6 +5,8 @@ import com.mkreidl.ephemeris.time.Instant
 import com.mkreidl.ephemeris.Time
 import com.mkreidl.ephemeris.geometry.Angle.DEG
 import com.mkreidl.ephemeris.geometry.ClassicalOrbitalElements
+import com.mkreidl.math.PhaseCartesian
+import com.mkreidl.math.PhaseSpherical
 import com.mkreidl.math.Spherical3
 import com.mkreidl.math.Vector3
 import java.lang.Math.cos
@@ -42,7 +44,7 @@ class ModelMoon : OrbitalModel() {
 
     override fun computeSpherical(instant: Instant): PhaseSpherical {
         compute(instant)
-        return PhaseSpherical(posSpherical, Spherical3.ZERO)
+        return PhaseSpherical(posSpherical, Vector3.ZERO)
     }
 
     override fun computeCartesian(instant: Instant): PhaseCartesian {

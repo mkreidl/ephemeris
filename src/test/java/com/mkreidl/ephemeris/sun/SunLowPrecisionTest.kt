@@ -1,7 +1,7 @@
-package com.mkreidl.ephemeris.solarsystem
+package com.mkreidl.ephemeris.sun
 
-import com.mkreidl.math.Angle
 import com.mkreidl.ephemeris.time.Instant
+import com.mkreidl.math.Angle
 import org.junit.Assert
 import org.junit.Test
 

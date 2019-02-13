@@ -1,9 +1,4 @@
-package com.mkreidl.ephemeris.solarsystem
-
-import com.mkreidl.math.Matrix3x3
-import com.mkreidl.math.Spherical3
-import com.mkreidl.math.Vector3
-import com.mkreidl.math.times
+package com.mkreidl.math
 
 operator fun Matrix3x3.times(phase: PhaseCartesian) = PhaseCartesian(this * phase.position, this * phase.velocity)
 
@@ -13,12 +8,11 @@ data class PhaseCartesian(val position: Vector3, val velocity: Vector3) {
         val ZERO = PhaseCartesian(Vector3.ZERO, Vector3.ZERO)
     }
 
-    fun toSpherical(): PhaseSpherical {
-        val sphe = jacobian() * velocity
-        return PhaseSpherical(position.toSpherical(), Spherical3(sphe.x, sphe.y, sphe.z))
-    }
+    fun toSpherical() = PhaseSpherical(position.toSpherical(), jacobian * velocity)
 
-    private fun jacobian(): Matrix3x3 {
+    private val jacobian by lazy { computeJacobian() }
+
+    private fun computeJacobian(): Matrix3x3 {
         throw NotImplementedError("The Jacobian matrix for transformation from Cartesian to Spherical coordinates is not yet implemented")
     }
 

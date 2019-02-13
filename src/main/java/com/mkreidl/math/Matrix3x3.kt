@@ -1,15 +1,9 @@
 package com.mkreidl.math
 
 data class Matrix3x3(
-        val a11: Double = 0.0,
-        val a12: Double = 0.0,
-        val a13: Double = 0.0,
-        val a21: Double = 0.0,
-        val a22: Double = 0.0,
-        val a23: Double = 0.0,
-        val a31: Double = 0.0,
-        val a32: Double = 0.0,
-        val a33: Double = 0.0
+        val a11: Double = 0.0, val a12: Double = 0.0, val a13: Double = 0.0,
+        val a21: Double = 0.0, val a22: Double = 0.0, val a23: Double = 0.0,
+        val a31: Double = 0.0, val a32: Double = 0.0, val a33: Double = 0.0
 ) : LieGroup<Matrix3x3>, LieAlgebra<Matrix3x3> {
 
     constructor(coordinates: DoubleArray) : this(
@@ -97,12 +91,14 @@ data class Matrix3x3(
 
             a31 * other.a11 + a32 * other.a21 + a33 * other.a31,
             a31 * other.a12 + a32 * other.a22 + a33 * other.a32,
-            a31 * other.a13 + a32 * other.a23 + a33 * other.a33)
+            a31 * other.a13 + a32 * other.a23 + a33 * other.a33
+    )
 
     override operator fun times(vector: Vector3) = Vector3(
             a11 * vector.x + a12 * vector.y + a13 * vector.z,
             a21 * vector.x + a22 * vector.y + a23 * vector.z,
-            a31 * vector.x + a32 * vector.y + a33 * vector.z)
+            a31 * vector.x + a32 * vector.y + a33 * vector.z
+    )
 
     override operator fun div(other: Matrix3x3) = (other.transpose() leftDiv this.transpose()).transpose()
 
@@ -114,7 +110,7 @@ data class Matrix3x3(
             a31 * factor, a32 * factor, a33 * factor
     )
 
-    override operator fun div(divisor: Double) = this * (1 / divisor)
+    override operator fun div(divisor: Double) = this * (1.0 / divisor)
 
     override infix fun leftDiv(other: Matrix3x3): Matrix3x3 {
         val gaussAlgorithm = GaussAlgorithm(3)
@@ -123,7 +119,8 @@ data class Matrix3x3(
         return Matrix3x3(
                 result[0], result[1], result[2],
                 result[3], result[4], result[5],
-                result[6], result[7], result[8])
+                result[6], result[7], result[8]
+        )
     }
 
     override operator fun unaryMinus() = Matrix3x3(
@@ -165,7 +162,8 @@ data class Matrix3x3(
             a31 * a12 - a11 * a32,
             a12 * a23 - a22 * a13,
             a21 * a13 - a11 * a23,
-            a11 * a22 - a21 * a12)
+            a11 * a22 - a21 * a12
+    )
 
     fun symmetric(): Matrix3x3 {
         val s12 = 0.5 * (a12 + a21)
@@ -205,9 +203,11 @@ data class Matrix3x3(
             }
         }
 
-        fun infinitesimalRotation(x: Double, y: Double, z: Double) = ZERO.copy(a12 = z, a21 = -z, a13 = -y, a31 = y, a23 = x, a32 = -x)
+        fun infinitesimalRotation(x: Double, y: Double, z: Double) =
+                ZERO.copy(a12 = z, a21 = -z, a13 = -y, a31 = y, a23 = x, a32 = -x)
 
-        fun symmetric(a11: Double, a12: Double, a13: Double, a22: Double, a23: Double, a33: Double) = Matrix3x3(a11, a12, a13, a12, a22, a23, a13, a23, a33)
+        fun symmetric(a11: Double, a12: Double, a13: Double, a22: Double, a23: Double, a33: Double) =
+                Matrix3x3(a11, a12, a13, a12, a22, a23, a13, a23, a33)
 
         private fun extendOrthogonally(x: Double, y: Double, z: Double): Matrix3x3 {
             // On the first column of this matrix: Find an orthogonal column vector by looking

@@ -2,7 +2,9 @@ package com.mkreidl.ephemeris.solarsystem
 
 import com.mkreidl.ephemeris.DAYS_PER_SECOND
 import com.mkreidl.ephemeris.time.Instant
+import com.mkreidl.math.PhaseSpherical
 import com.mkreidl.math.Spherical3
+import com.mkreidl.math.Vector3
 
 class ModelPluto : OrbitalModel() {
 
@@ -46,21 +48,21 @@ class ModelPluto : OrbitalModel() {
                     - 1.18 * Math.sin(2 * p) - 0.03 * Math.cos(2 * p)) + 0.15 * Math.sin(3 * p) - 0.14 * Math.cos(3 * p)
     )
 
-    private fun computeVelocity() = Spherical3(
-            lon = Math.toRadians(0.00400703 + p1 * ((((-19.799 * Math.cos(p) - 19.848 * Math.sin(p)
+    private fun computeVelocity() = Vector3(
+            y = Math.toRadians(0.00400703 + p1 * ((((-19.799 * Math.cos(p) - 19.848 * Math.sin(p)
                     + 0.897 * 2.0 * Math.cos(2 * p) + 4.956 * 2.0 * Math.sin(2 * p)
                     + 0.610 * 3.0 * Math.cos(3 * p)) - 1.211 * 3.0 * Math.sin(3 * p)
                     - 0.341 * 4.0 * Math.cos(4 * p)) + 0.190 * 4.0 * Math.sin(4 * p)
                     + 0.128 * 5.0 * Math.cos(5 * p) + 0.034 * 5.0 * Math.sin(5 * p))
                     - 0.038 * 6.0 * Math.cos(6 * p) - 0.031 * 6.0 * Math.sin(6 * p))
                     + (s1 - p1) * (0.020 * Math.cos(s - p) + 0.010 * Math.sin(s - p))),
-            lat = Math.toRadians(p1 * (((((-5.453 * Math.cos(p) + 14.975 * Math.sin(p)
+            z = Math.toRadians(p1 * (((((-5.453 * Math.cos(p) + 14.975 * Math.sin(p)
                     + 3.527 * 2.0 * Math.cos(2 * p)) - 1.673 * 2.0 * Math.sin(2 * p)
                     - 1.051 * 3.0 * Math.cos(3 * p) - 0.328 * 3.0 * Math.sin(3 * p))
                     + 0.179 * 4.0 * Math.cos(4 * p) + 0.292 * 4.0 * Math.sin(4 * p)
                     + 0.019 * 5.0 * Math.cos(5 * p)) - 0.100 * 5.0 * Math.sin(5 * p)
                     - 0.031 * 6.0 * Math.cos(6 * p)) + 0.026 * 6.0 * Math.sin(6 * p)) - (s1 - p1) * 0.011 * Math.sin(s - p)),
-            dst = p1 * ((+6.68 * Math.cos(p) - 6.90 * Math.sin(p)
+            x = p1 * ((+6.68 * Math.cos(p) - 6.90 * Math.sin(p)
                     - 1.18 * 2.0 * Math.cos(2 * p)) + 0.03 * 2.0 * Math.sin(2 * p)
                     + 0.15 * 3.0 * Math.cos(3 * p) + 0.14 * 3.0 * Math.sin(3 * p))
     )

@@ -26,7 +26,6 @@ class OrbitalElementsTest(M: Double, e: Double, private val tolerance: Double) {
     }
 
     companion object {
-
         @JvmStatic
         @Parameters
         fun data() = Arrays.asList(

@@ -1,20 +1,27 @@
-package com.mkreidl.ephemeris.solarsystem
+package com.mkreidl.ephemeris.sun
 
-import com.mkreidl.math.Angle
-import com.mkreidl.ephemeris.time.Instant
 import com.mkreidl.ephemeris.ABERRATION
+import com.mkreidl.ephemeris.solarsystem.Ecliptic
+import com.mkreidl.ephemeris.time.Instant
+import com.mkreidl.math.Angle
 import com.mkreidl.math.Polynomial
 import com.mkreidl.math.Spherical3
 
 abstract class Sun(internal val instant: Instant, internal val ecliptic: Ecliptic = Ecliptic(instant)) {
 
-    protected val julianCenturies = instant.julianCenturiesSinceJ2000
-    private val julianMillennia = instant.julianMillenniaSinceJ2000
+    override fun equals(other: Any?) = other is Sun
+            && other::class == this::class
+            && other.instant == instant
+            && other.ecliptic == ecliptic
 
-    val meanLongitude by lazy { Angle.reduce(L0(julianMillennia)) }
+    override fun hashCode() = instant.hashCode() * 31 + ecliptic.hashCode()
+
+    val meanLongitude by lazy { Angle.reduce(L0(instant.julianMillenniaSinceJ2000)) }
     val excentricity by lazy { E(julianCenturies) }
     val perihelion by lazy { P(julianCenturies) }
     val equationOfTime by lazy { computeEquationOfTime() }
+
+    internal val julianCenturies = instant.julianCenturiesSinceJ2000
 
     fun computeAberrationCorrectionEcliptical(position: Spherical3): Spherical3 {
         val p = perihelion - position.lon

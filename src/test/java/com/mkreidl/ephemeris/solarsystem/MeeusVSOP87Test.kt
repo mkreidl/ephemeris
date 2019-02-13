@@ -1,10 +1,10 @@
 package com.mkreidl.ephemeris.solarsystem
 
-import com.mkreidl.ephemeris.time.Instant
-import com.mkreidl.ephemeris.Time
+import com.mkreidl.ephemeris.SECONDS_PER_DAY
 import com.mkreidl.ephemeris.geometry.Spherical
 import com.mkreidl.ephemeris.geometry.VSOP87File
 import com.mkreidl.ephemeris.solarsystem.meeus.*
+import com.mkreidl.ephemeris.time.Instant
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -41,9 +41,9 @@ class MeeusVSOP87Test(
         assertEquals(expectedPos.lon, actualPos.lon, 1e-5)  // 1e-5 rad = 2 arcsec
         assertEquals(expectedPos.lat, actualPos.lat, 1e-5)
         // Reference values from VSOP test files are given in [dist] per DAY
-        assertEquals(expectedVel.dst, actualVel.dst * Time.SECONDS_PER_DAY.toDouble(), 1e-6)
-        assertEquals(expectedVel.lon, actualVel.lon * Time.SECONDS_PER_DAY.toDouble(), 1e-6)
-        assertEquals(expectedVel.lat, actualVel.lat * Time.SECONDS_PER_DAY.toDouble(), 1e-6)
+        assertEquals(expectedVel.dst, actualVel.x * SECONDS_PER_DAY.toDouble(), 1e-6)
+        assertEquals(expectedVel.lon, actualVel.y * SECONDS_PER_DAY.toDouble(), 1e-6)
+        assertEquals(expectedVel.lat, actualVel.z * SECONDS_PER_DAY.toDouble(), 1e-6)
     }
 
     companion object {

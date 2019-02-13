@@ -1,9 +1,13 @@
 package com.mkreidl.ephemeris.stars
 
+import com.mkreidl.ephemeris.solarsystem.Ecliptic
+import com.mkreidl.ephemeris.sun.Sun
+import com.mkreidl.ephemeris.sun.SunLowPrecision
 import com.mkreidl.ephemeris.time.Instant
-import com.mkreidl.ephemeris.solarsystem.*
+import com.mkreidl.math.PhaseSpherical
 import com.mkreidl.math.Spherical3
 import com.mkreidl.math.Vector3
+import com.mkreidl.math.times
 
 class Stars(catalog: StarCatalog) {
 
@@ -15,7 +19,7 @@ class Stars(catalog: StarCatalog) {
     init {
         for (i in 0 until size) {
             val posJ2000 = Spherical3(1.0, catalog.getRAscJ2000(i), catalog.getDeclJ2000(i))
-            val velJ2000 = Spherical3(0.0, catalog.getVRAscJ2000(i), catalog.getVDeclJ2000(i))
+            val velJ2000 = Vector3(0.0, catalog.getVRAscJ2000(i), catalog.getVDeclJ2000(i))
             val phaseJ2000 = PhaseSpherical(posJ2000, velJ2000).toCartesian()
             val ecliptical = Ecliptic.J2000.trafoMeanEqu2Ecl * phaseJ2000
 
