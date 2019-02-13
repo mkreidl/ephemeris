@@ -1,7 +1,7 @@
 package com.mkreidl.ephemeris.solarsystem
 
 import com.mkreidl.ephemeris.DAYS_PER_SECOND
-import com.mkreidl.ephemeris.Instant
+import com.mkreidl.ephemeris.time.Instant
 import com.mkreidl.math.Sphe
 
 class ModelPluto : OrbitalModel() {

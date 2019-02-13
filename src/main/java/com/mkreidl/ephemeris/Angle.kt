@@ -26,6 +26,8 @@ class Angle(radians: Double) {
     operator fun div(divisor: Double) = Angle(radians / divisor)
 
     companion object {
+        val ZERO = Angle(0.0)
+
         val degree = Angle.ofDeg(1, 0, 0.0)
         val minute = Angle.ofDeg(0, 1, 0.0)
         val second = Angle.ofDeg(0, 0, 1.0)

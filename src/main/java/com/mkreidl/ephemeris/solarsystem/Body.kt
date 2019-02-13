@@ -2,7 +2,7 @@ package com.mkreidl.ephemeris.solarsystem
 
 import java.util.*
 
-enum class Body private constructor(
+enum class Body(
         val MASS: Double,
         val RADIUS_MEAN_M: Double,
         val RADIUS_EQUATORIAL_M: Double

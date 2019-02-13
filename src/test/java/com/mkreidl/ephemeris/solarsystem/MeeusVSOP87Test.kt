@@ -1,6 +1,6 @@
 package com.mkreidl.ephemeris.solarsystem
 
-import com.mkreidl.ephemeris.Instant
+import com.mkreidl.ephemeris.time.Instant
 import com.mkreidl.ephemeris.Time
 import com.mkreidl.ephemeris.geometry.Spherical
 import com.mkreidl.ephemeris.geometry.VSOP87File

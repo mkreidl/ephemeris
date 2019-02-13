@@ -1,7 +1,7 @@
 package com.mkreidl.ephemeris.solarsystem
 
 import com.mkreidl.ephemeris.Angle
-import com.mkreidl.ephemeris.Instant
+import com.mkreidl.ephemeris.time.Instant
 import com.mkreidl.math.Polynomial
 
 class SunLowPrecision(instant: Instant, ecliptic: Ecliptic = Ecliptic(instant)) : Sun(instant, ecliptic) {

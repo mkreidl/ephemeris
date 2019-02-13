@@ -1,9 +1,8 @@
 package com.mkreidl.ephemeris.solarsystem
 
 import com.mkreidl.ephemeris.Angle
-import com.mkreidl.ephemeris.Instant
+import com.mkreidl.ephemeris.time.Instant
 import com.mkreidl.ephemeris.ABERRATION
-import com.mkreidl.ephemeris.getMeanSolarTimeRadians
 import com.mkreidl.math.Polynomial
 import com.mkreidl.math.Sphe
 
@@ -16,7 +15,6 @@ abstract class Sun(internal val instant: Instant, internal val ecliptic: Eclipti
     val excentricity by lazy { E(julianCenturies) }
     val perihelion by lazy { P(julianCenturies) }
     val equationOfTime by lazy { computeEquationOfTime() }
-    val trueSolarTime by lazy { Angle.reduce(instant.getMeanSolarTimeRadians() + equationOfTime) }
 
     fun computeAberrationCorrectionEcliptical(position: Sphe): Sphe {
         val p = perihelion - position.lon

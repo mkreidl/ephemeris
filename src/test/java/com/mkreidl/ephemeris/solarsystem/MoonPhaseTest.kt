@@ -1,12 +1,8 @@
 package com.mkreidl.ephemeris.solarsystem
 
-import com.mkreidl.ephemeris.Instant
-import com.mkreidl.ephemeris.Position
+import com.mkreidl.ephemeris.time.Instant
 import com.mkreidl.ephemeris.TestUtil
 import com.mkreidl.ephemeris.TestUtil.EphemerisData
-import com.mkreidl.ephemeris.Time
-import com.mkreidl.ephemeris.geometry.Angle
-import com.mkreidl.ephemeris.solarsystem.Body.EARTH
 import com.mkreidl.ephemeris.solarsystem.Body.MOON
 import org.junit.Test
 import org.junit.runner.RunWith

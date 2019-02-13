@@ -1,6 +1,6 @@
 package com.mkreidl.ephemeris.stars
 
-import com.mkreidl.ephemeris.Instant
+import com.mkreidl.ephemeris.time.Instant
 import com.mkreidl.ephemeris.solarsystem.*
 import com.mkreidl.math.Sphe
 import com.mkreidl.math.Vector3

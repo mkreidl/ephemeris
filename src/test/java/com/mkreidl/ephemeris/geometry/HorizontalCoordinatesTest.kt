@@ -1,6 +1,6 @@
 package com.mkreidl.ephemeris.geometry
 
-import com.mkreidl.ephemeris.TestUtil
+import com.mkreidl.ephemeris.time.Instant
 import com.mkreidl.ephemeris.sky.coordinates.Equatorial
 import com.mkreidl.ephemeris.sky.coordinates.Horizontal
 import com.mkreidl.ephemeris.solarsystem.Body
@@ -27,7 +27,9 @@ class HorizontalCoordinatesTest {
             11.5820 * Angle.DEG, 48.1351 * Angle.DEG
     )
 
-    private val epochMilli = TestUtil.getAstronomicalTime("2016.11.10 08:00:00").time
+    private val instant = Instant.ofEpochMilli(GregorianCalendar(TimeZone.getTimeZone("UTC"))
+            .apply { set(2016, 10, 10, 8, 0, 0)  /* 2016.11.10 08:00:00*/ }
+            .timeInMillis)
     private val solarSystem = FullSolarSystem.createFromMeeus()
 
     private val height = EnumMap<Body, Angle>(Body::class.java)

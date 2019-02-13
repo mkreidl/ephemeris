@@ -1,7 +1,7 @@
 package com.mkreidl.ephemeris.stars
 
 import com.mkreidl.ephemeris.Angle
-import com.mkreidl.ephemeris.Instant
+import com.mkreidl.ephemeris.time.Instant
 import com.mkreidl.ephemeris.solarsystem.Ecliptic
 import com.mkreidl.ephemeris.solarsystem.SunHighPrecision
 import com.mkreidl.math.Vector3

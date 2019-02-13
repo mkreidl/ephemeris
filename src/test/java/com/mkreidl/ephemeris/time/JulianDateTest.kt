@@ -1,6 +1,5 @@
 package com.mkreidl.ephemeris.time
 
-import com.mkreidl.ephemeris.Instant
 import com.mkreidl.ephemeris.geometry.VSOP87File
 import com.mkreidl.ephemeris.solarsystem.Vsop87AbstractTest
 import org.junit.Assert

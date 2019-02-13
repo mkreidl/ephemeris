@@ -1,4 +1,6 @@
-package com.mkreidl.ephemeris
+package com.mkreidl.ephemeris.time
+
+import com.mkreidl.ephemeris.*
 
 class Instant internal constructor(val epochMilli: Long) {
 
@@ -19,7 +21,7 @@ class Instant internal constructor(val epochMilli: Long) {
     override fun equals(other: Any?) = other is Instant && other.epochMilli == epochMilli
 
     companion object {
-        val J2000 = Instant.ofEpochMilli(946_728_000_000L)
+        val J2000 = ofEpochMilli(946_728_000_000L)
 
         @JvmStatic
         fun ofEpochMilli(epochMilli: Long) = Instant(epochMilli)

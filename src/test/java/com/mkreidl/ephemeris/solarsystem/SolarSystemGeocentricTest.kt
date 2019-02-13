@@ -4,6 +4,7 @@ import com.mkreidl.ephemeris.*
 import com.mkreidl.ephemeris.TestUtil.EphemerisData
 import com.mkreidl.ephemeris.solarsystem.meeus.*
 import com.mkreidl.ephemeris.solarsystem.vsop87c.*
+import com.mkreidl.ephemeris.time.Instant
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith

@@ -2,7 +2,7 @@ package com.mkreidl.ephemeris.solarsystem
 
 import com.mkreidl.ephemeris.ABERRATION
 import com.mkreidl.ephemeris.Angle
-import com.mkreidl.ephemeris.Instant
+import com.mkreidl.ephemeris.time.Instant
 import com.mkreidl.ephemeris.solarsystem.meeus.EarthMeeus
 import com.mkreidl.math.Sphe
 

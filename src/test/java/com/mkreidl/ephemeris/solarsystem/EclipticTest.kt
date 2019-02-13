@@ -1,6 +1,6 @@
 package com.mkreidl.ephemeris.solarsystem
 
-import com.mkreidl.ephemeris.Instant
+import com.mkreidl.ephemeris.time.Instant
 import org.junit.Assert
 import org.junit.Test
 import java.util.*

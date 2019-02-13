@@ -35,10 +35,6 @@ public class Time {
 
     private static final TimeZone UTC = TimeZone.getTimeZone("UTC");
     public static final long SECONDS_PER_DAY = 24 * 3600;
-
-    public static final long MILLIS_SINCE_EPOCH_AT_J2000 = 946_728_000_000L;
-    public static final double JULIAN_YEARS_PER_MILLISECOND = 1.0 / (MILLIS_PER_DAY * 365.25);
-
     private long millisSinceEpoch;
 
     @Override
@@ -64,34 +60,9 @@ public class Time {
         this.millisSinceEpoch = millisSinceEpoch;
     }
 
-    public double julianDayNumber() {
-        return julianDayNumberSince(J2000) + STD_EPOCH_DAY_NUMBER;
-    }
-
     public double julianDayNumberSince(Time instant) {
         return (double) (millisSinceEpoch - instant.millisSinceEpoch) / MILLIS_PER_DAY;
     }
-
-    public double julianCenturiesSince(Time instant) {
-        return (double) (millisSinceEpoch - instant.millisSinceEpoch) / MILLIS_PER_CENTURY;
-    }
-
-    public double julianMillenniaSince(Time instant) {
-        return (double) (millisSinceEpoch - instant.millisSinceEpoch) / MILLIS_PER_MILLENNIUM;
-    }
-
-    public double julianYearsSinceJ2000() {
-        return julianDayNumberSince(J2000) / DAYS_PER_YEAR;
-    }
-
-    public static double julianYearsSinceJ2000(long millisSinceEpoch) {
-        return (millisSinceEpoch - MILLIS_SINCE_EPOCH_AT_J2000) * JULIAN_YEARS_PER_MILLISECOND;
-    }
-
-    public double terrestrialDynamicalTime() {
-        return julianDayNumberSince(J2000) + TDT_OFFSET;
-    }
-
     /**
      * Calculate the Mean Sidereal Time for Greenwich at given date
      *
@@ -134,18 +105,9 @@ public class Time {
         return siderealTime;
     }
 
-    public Angle getMeanSiderealTime(Angle siderealTime) {
-        return siderealTime.set(getMeanSiderealTime(), Angle.Unit.HOURS);
-    }
-
     public Angle getMeanSiderealTime(Angle longitude, Angle siderealTime) {
         double hours = getMeanSiderealTime() + longitude.get(Angle.Unit.HOURS);
         return siderealTime.set(standardize24(hours), Angle.Unit.HOURS);
-    }
-
-    public Angle getMeanSolarTime(Angle longitude, Angle solarTime) {
-        double hours = (millisSinceEpoch - midnightAtGreenwichSameDate()) / MILLIS_PER_HOUR + longitude.get(Angle.Unit.HOURS);
-        return solarTime.set(standardize24(hours), Angle.Unit.HOURS);
     }
 
     private static double standardize24(double hours) {

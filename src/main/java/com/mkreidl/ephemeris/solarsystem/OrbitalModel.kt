@@ -1,7 +1,7 @@
 package com.mkreidl.ephemeris.solarsystem
 
 import com.mkreidl.ephemeris.Distance
-import com.mkreidl.ephemeris.Instant
+import com.mkreidl.ephemeris.time.Instant
 
 abstract class OrbitalModel {
 

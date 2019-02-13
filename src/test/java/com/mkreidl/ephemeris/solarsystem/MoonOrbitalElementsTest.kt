@@ -1,34 +1,40 @@
 package com.mkreidl.ephemeris.solarsystem
 
-import com.mkreidl.ephemeris.Instant
-import com.mkreidl.ephemeris.TestUtil
-import com.mkreidl.ephemeris.geometry.Angle.*
+import com.mkreidl.ephemeris.Angle
+import com.mkreidl.ephemeris.time.Instant
 import com.mkreidl.ephemeris.geometry.Spherical
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import java.util.*
 
 class MoonOrbitalElementsTest {
 
     // References from the Astronomical Almanac
-    private val time = TestUtil.getAstronomicalTime("1990.04.19 00:00:00")
+    private val instant = Instant.ofEpochMilli(GregorianCalendar(TimeZone.getTimeZone("UTC"))
+            .apply { set(1990, 3, 19, 0, 0, 0)  /* 1990, April 19, 00:00:00*/ }
+            .timeInMillis)
     private val modelMoon = ModelMoon()
     private val refSpherical = Spherical(
-            60.793 * Body.EARTH.RADIUS_EQUATORIAL_M, 306.94 * DEG, -0.55 * DEG
+            60.793 * Body.EARTH.RADIUS_EQUATORIAL_M, Math.toRadians(306.94), -Math.toRadians(0.55)
     )
 
     @Test
     fun testCalculate() {
-        val (position) = modelMoon.computeSpherical(Instant.ofEpochMilli(time.time))
-        val orbitalEl = modelMoon.computeOrbitalElements(Instant.ofEpochMilli(time.time))
+        val (position) = modelMoon.computeSpherical(instant)
+        val orbitalEl = modelMoon.computeOrbitalElements(instant)
 
-        assertEquals(standardize(312.7381 * DEG), orbitalEl.node, 1.0 * SEC)
-        assertEquals(standardize(5.1454 * DEG), orbitalEl.incl, 1.0 * SEC)
-        assertEquals(standardize(-264.2546 * DEG), orbitalEl.periapsis, 1.0 * SEC)
+        assertEquals(Angle.ofDeg(312.7381).radians, orbitalEl.node, sec)
+        assertEquals(Angle.ofDeg(5.1454).radians, orbitalEl.incl, sec)
+        assertEquals(Angle.ofDeg(-264.2546).radians, orbitalEl.periapsis, sec)
         assertEquals(60.2666 * Body.EARTH.RADIUS_EQUATORIAL_M, orbitalEl.axis, 1e-12)
         assertEquals(0.054900, orbitalEl.exc, 1e-12)
-        assertEquals(standardize(-46173.9046 * DEG), orbitalEl.meanAnom, 1.0 * SEC)
+        assertEquals(Angle.ofDeg(-46173.9046).radians, orbitalEl.meanAnom, sec)
 
-        assertEquals(refSpherical.lat, position.lat, 2.5 * MIN)
-        assertEquals(refSpherical.lon, position.lon, 1.0 * MIN)
+        assertEquals(refSpherical.lat, position.lat, 2.5 * 60 * sec)
+        assertEquals(refSpherical.lon, position.lon, 1.0 * 60 * sec)
+    }
+
+    companion object {
+        val sec = Angle.ofDeg(0, 0, 1.0).radians
     }
 }

@@ -1,6 +1,6 @@
 package com.mkreidl.ephemeris.sky;
 
-import com.mkreidl.ephemeris.Instant;
+import com.mkreidl.ephemeris.time.Instant;
 import com.mkreidl.ephemeris.stars.BrightStarCatalog;
 import com.mkreidl.ephemeris.stars.Stars;
 import com.mkreidl.math.Sphe;

@@ -89,7 +89,7 @@ public class TestUtil {
             String dateStr = "";
             boolean geocentric = false;
             double moonPhase = Double.POSITIVE_INFINITY;
-            com.mkreidl.ephemeris.Instant instant = null;
+            com.mkreidl.ephemeris.time.Instant instant = null;
 
             try {
                 lineReader = new BufferedReader(new FileReader(file.getAbsolutePath()));
@@ -102,7 +102,7 @@ public class TestUtil {
                             System.err.println("String '" + dateStr + "' does not represent a valid date.");
                             continue;
                         }
-                        instant = com.mkreidl.ephemeris.Instant.ofEpochMilli(time.getTime());
+                        instant = com.mkreidl.ephemeris.time.Instant.ofEpochMilli(time.getTime());
                     }
                     if (line.equals("Geocentric positions"))
                         geocentric = true;
@@ -127,17 +127,17 @@ public class TestUtil {
         return dataSets;
     }
 
-    public static com.mkreidl.ephemeris.Instant getAstronomicalTimeProlepticGregorian(String dateString) {
+    public static com.mkreidl.ephemeris.time.Instant getAstronomicalTimeProlepticGregorian(String dateString) {
         try {
             final LocalDateTime dateTime = LocalDateTime.parse(dateString, NASA_DATE_FORMATTER);
             final ZonedDateTime zonedDateTime = ZonedDateTime.of(dateTime, UTC);
-            return com.mkreidl.ephemeris.Instant.ofEpochMilli(Instant.from(zonedDateTime).toEpochMilli());
+            return com.mkreidl.ephemeris.time.Instant.ofEpochMilli(Instant.from(zonedDateTime).toEpochMilli());
         } catch (DateTimeParseException e) {
         }
         try {
             final LocalDateTime dateTime = LocalDateTime.parse(dateString, VSOP_DATE_FORMATTER);
             final ZonedDateTime zonedDateTime = ZonedDateTime.of(dateTime, UTC);
-            return com.mkreidl.ephemeris.Instant.ofEpochMilli(Instant.from(zonedDateTime).toEpochMilli());
+            return com.mkreidl.ephemeris.time.Instant.ofEpochMilli(Instant.from(zonedDateTime).toEpochMilli());
         } catch (DateTimeParseException e) {
         }
         return null;
