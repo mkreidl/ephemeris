@@ -1,6 +1,9 @@
 package com.mkreidl.ephemeris.sky;
 
 import com.mkreidl.ephemeris.solarsystem.Body;
+import com.mkreidl.ephemeris.stars.BrightStarCatalog;
+import com.mkreidl.ephemeris.stars.Constellation;
+import com.mkreidl.ephemeris.stars.Constellations;
 
 public class CelestialObject
 {
@@ -31,19 +34,19 @@ public class CelestialObject
             if ( constellation != null )
                 return CelestialObject.of( constellation );
             else
-                return CelestialObject.of( StarsCatalog.findIndexByName( name ) );
+                return CelestialObject.of( BrightStarCatalog.findIndexByName( name ) );
         }
     }
 
     public static CelestialObject of( int index )
     {
-        if ( index > -1 && index < StarsCatalog.SIZE )
+        if ( index > -1 && index < BrightStarCatalog.SIZE )
         {
             final CelestialObject object = new CelestialObject();
             object.index = index;
-            object.scientificName = StarsCatalog.FLAMSTEED_BAYER[index] != null ? StarsCatalog.FLAMSTEED_BAYER[index] : "";
-            object.trivialName = StarsCatalog.IAU_NAME[index] != null ? StarsCatalog.IAU_NAME[index] : "";
-            object.catalogName = "HR " + Integer.toString( StarsCatalog.BRIGHT_STAR_NUMBER[index] );
+            object.scientificName = BrightStarCatalog.FLAMSTEED_BAYER[index] != null ? BrightStarCatalog.FLAMSTEED_BAYER[index] : "";
+            object.trivialName = BrightStarCatalog.IAU_NAME[index] != null ? BrightStarCatalog.IAU_NAME[index] : "";
+            object.catalogName = "HR " + BrightStarCatalog.BRIGHT_STAR_NUMBER[index];
             return object;
         }
         else

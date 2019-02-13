@@ -1,4 +1,4 @@
-package com.mkreidl.ephemeris.sky
+package com.mkreidl.ephemeris.stars
 
 import com.mkreidl.ephemeris.Angle
 import com.mkreidl.ephemeris.Instant
@@ -8,9 +8,7 @@ import com.mkreidl.math.Vector3
 import org.junit.Assert
 import org.junit.Test
 
-class StarPositionTestBSCvsMeeus {
-
-    private val thetaPersei = 588  // index in StarsCatalog
+class StarPositionTestMeeusVsMeeus {
 
     private val raJ2000 = Math.toRadians(2 + 44.0 / 60 + 11.986 / 3_600) * 15
     private val deJ2000 = Math.toRadians(49 + 13.0 / 60 + 42.48 / 3_600)
@@ -24,36 +22,49 @@ class StarPositionTestBSCvsMeeus {
     private val raEpochToDate = Math.toRadians(41.547_214)
     private val deEpochToDate = Math.toRadians(49.348_483)
 
-    private val tolPos = Angle.ofDeg(0, 0, 5.0).radians
-    private val tolVel = Angle.ofDeg(0, 0, 0.2).radians
+    private val tolPos = Angle.ofDeg(0, 0, 0.015).radians
+    private val tolVel = 1e-13
+
+    private val starCatalog = object : StarCatalog {
+        override val size = 1
+        // Substitute value for proper motion in RA to match the values in Example 21.b
+        override fun getDist(index: Int) = 1.0
+        override fun getRAscJ2000(index: Int) = Angle.ofHrs(2, 44, 11.986).radians
+        override fun getDeclJ2000(index: Int) = Angle.ofDeg(49, 13, 42.48).radians
+        override fun getVDist(index: Int) = 0.0
+        override fun getVRAscJ2000(index: Int) = Angle.ofHrs(0, 0, 0.034_25).radians
+        override fun getVDeclJ2000(index: Int) = Angle.ofDeg(0, 0, -0.0895).radians
+    }
+    private val stars = Stars(starCatalog)
+    private val thetaPersei = 0  // index in dummy catalog
 
     @Test
     fun testThetaPerseiPosJ2000() {
-        val ra = StarsCatalog.getRAscJ2000(thetaPersei)
-        val de = StarsCatalog.getDeclJ2000(thetaPersei)
+        val ra = starCatalog.getRAscJ2000(thetaPersei)
+        val de = starCatalog.getDeclJ2000(thetaPersei)
         Assert.assertEquals(raJ2000, ra, tolPos)
         Assert.assertEquals(deJ2000, de, tolPos)
     }
 
     @Test
     fun testThetaPerseiVelJ2000() {
-        val vra = StarsCatalog.getVRAscJ2000(thetaPersei)
-        val vde = StarsCatalog.getVDeclJ2000(thetaPersei)
+        val vra = starCatalog.getVRAscJ2000(thetaPersei)
+        val vde = starCatalog.getVDeclJ2000(thetaPersei)
         Assert.assertEquals(vraJ2000, vra, tolVel)
         Assert.assertEquals(vdeJ2000, vde, tolVel)
     }
 
     @Test
     fun testThetaPersei2028November13_J2000_singleStar() {
-        val output = Stars.computeMeanEquatorial(thetaPersei, november13_2028, Ecliptic.J2000)
+        val output = stars.computeMeanEquatorial(thetaPersei, november13_2028, Ecliptic.J2000)
         Assert.assertEquals(raEpoch, output.lon, tolPos)
         Assert.assertEquals(deEpoch, output.lat, tolPos)
     }
 
     @Test
     fun testThetaPersei2028November13_J2000_allStars() {
-        val output = DoubleArray(3 * StarsCatalog.SIZE)
-        Stars.computeEclipticalJ2000(november13_2028, output)
+        val output = DoubleArray(3 * BrightStarCatalog.SIZE)
+        stars.computeEclipticalJ2000(november13_2028, output)
 
         val offset = 3 * thetaPersei
         val cartesian = Vector3(output[offset], output[offset + 1], output[offset + 2])
@@ -65,7 +76,7 @@ class StarPositionTestBSCvsMeeus {
 
     @Test
     fun testThetaPersei2028November13_toDate() {
-        val output = Stars.computeMeanEquatorial(thetaPersei, november13_2028)
+        val output = stars.computeMeanEquatorial(thetaPersei, november13_2028)
         Assert.assertEquals(raEpochToDate, output.lon, tolPos)
         Assert.assertEquals(deEpochToDate, output.lat, tolPos)
     }
@@ -82,7 +93,7 @@ class StarPositionTestBSCvsMeeus {
     @Test
     fun testThetaPersei2028November13_apparent_nutation() {
         val ecliptic = Ecliptic(november13_2028)
-        val ecliptical = Stars.computeEclipticalJ2000(thetaPersei, november13_2028)
+        val ecliptical = stars.computeEclipticalJ2000(thetaPersei, november13_2028)
         val equatorialMean = ecliptic.trafoEclJ2000ToMeanEquToDate(ecliptical).toSpherical()
         val equatorialTrue = ecliptic.trafoEclJ2000ToTrueEquToDate(ecliptical).toSpherical()
         val nutationRa = equatorialTrue.lon - equatorialMean.lon
@@ -92,7 +103,7 @@ class StarPositionTestBSCvsMeeus {
     @Test
     fun testThetaPersei2028November13_apparent_full() {
         val ecliptic = Ecliptic(november13_2028)
-        val apparentEcliptical = Stars.computeEclipticalApparent(thetaPersei, november13_2028, ecliptic)
+        val apparentEcliptical = stars.computeEclipticalApparent(thetaPersei, november13_2028, ecliptic)
         val apparentEquatorial = ecliptic.trafoTrueEcl2TrueEqu(apparentEcliptical.toCartesian()).toSpherical()
         Assert.assertEquals(Angle.ofHrs(2, 46, 14.39).radians, apparentEquatorial.lon, tolPos)
         Assert.assertEquals(Angle.ofDeg(49, 21, 7.45).radians, apparentEquatorial.lat, tolPos)
@@ -101,7 +112,7 @@ class StarPositionTestBSCvsMeeus {
     @Test
     fun testThetaPersei2028November13_apparent_direct() {
         val ecliptic = Ecliptic(november13_2028)
-        val apparentEquatorial = Stars.computeEquatorialApparent(thetaPersei, november13_2028, ecliptic)
+        val apparentEquatorial = stars.computeEquatorialApparent(thetaPersei, november13_2028, ecliptic)
         Assert.assertEquals(Angle.ofHrs(2, 46, 14.39).radians, apparentEquatorial.lon, tolPos)
         Assert.assertEquals(Angle.ofDeg(49, 21, 7.45).radians, apparentEquatorial.lat, tolPos)
     }

@@ -1,11 +1,12 @@
 package com.mkreidl.ephemeris.sky;
 
 import com.mkreidl.ephemeris.Instant;
-import com.mkreidl.ephemeris.sky.coordinates.Equatorial;
+import com.mkreidl.ephemeris.stars.BrightStarCatalog;
+import com.mkreidl.ephemeris.stars.Stars;
 import com.mkreidl.math.Sphe;
 
 public class StarRiseSetCalculator extends RiseSetCalculator {
-    private final Equatorial.Cart cartesian = new Equatorial.Cart();
+    private final Stars stars = new Stars(BrightStarCatalog.INSTANCE);
     private final int starIndex;
 
     public static StarRiseSetCalculator of(int starIndex) {
@@ -13,7 +14,7 @@ public class StarRiseSetCalculator extends RiseSetCalculator {
     }
 
     public static StarRiseSetCalculator of(String starName) {
-        final int starIndex = StarsCatalog.findIndexByName(starName);
+        final int starIndex = BrightStarCatalog.findIndexByName(starName);
         if (starIndex >= 0)
             return new StarRiseSetCalculator(starIndex);
         else
@@ -27,7 +28,7 @@ public class StarRiseSetCalculator extends RiseSetCalculator {
     @Override
     public boolean compute(long startTimeMs) {
         super.setStartTime(startTimeMs);
-        final Sphe position = Stars.INSTANCE.computeMeanEquatorial(starIndex, Instant.ofEpochMilli(startTimeMs));
+        final Sphe position = stars.computeMeanEquatorial(starIndex, Instant.ofEpochMilli(startTimeMs));
         topocentric.set(position.getDst(), position.getLon(), position.getLat());
         final boolean isCrossing = isCrossing();
         if (isCrossing)

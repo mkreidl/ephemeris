@@ -1,6 +1,6 @@
-package com.mkreidl.ephemeris.sky;
+package com.mkreidl.ephemeris.stars;
 
-class Constellations
+public class Constellations
 {
     private Constellations()
     {
@@ -321,7 +321,7 @@ class Constellations
 
     private static final Constellation[] ALL = new Constellation[PTOLEMAIC.length + MODERN.length];
 
-    static Constellation findByName( String name )
+    public static Constellation findByName(String name)
     {
         for ( Constellation constellation : ALL )
             if ( constellation.getName().equals( name ) )

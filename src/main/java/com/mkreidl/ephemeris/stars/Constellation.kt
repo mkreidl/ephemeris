@@ -1,4 +1,4 @@
-package com.mkreidl.ephemeris.sky
+package com.mkreidl.ephemeris.stars
 
 import com.mkreidl.math.Vector3
 
@@ -16,8 +16,8 @@ class Constellation internal constructor(val name: String, vararg paths: IntArra
 
     val brightestStar = starList[0]
     val hemisphere = when {
-        all { Stars.POS_J2000[3 * it + 2] > 0 } -> Hemisphere.NORTHERN
-        all { Stars.POS_J2000[3 * it + 2] < 0 } -> Hemisphere.SOUTHERN
+        all { stars.posEclJ2000(it).z > 0 } -> Hemisphere.NORTHERN
+        all { stars.posEclJ2000(it).z < 0 } -> Hemisphere.SOUTHERN
         else -> Hemisphere.ZODIAC
     }
 
@@ -28,5 +28,9 @@ class Constellation internal constructor(val name: String, vararg paths: IntArra
         val y = map { starsCoordinates[it * 3 + 1] }.sum()
         val z = map { starsCoordinates[it * 3 + 2] }.sum()
         return Vector3(x, y, z).normalize()
+    }
+
+    companion object {
+        val stars = Stars(BrightStarCatalog.INSTANCE)
     }
 }

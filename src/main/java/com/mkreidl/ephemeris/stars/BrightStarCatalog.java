@@ -1,12 +1,50 @@
-package com.mkreidl.ephemeris.sky;
+package com.mkreidl.ephemeris.stars;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-public class StarsCatalog
+public class BrightStarCatalog
 {
+    public static final StarCatalog INSTANCE = new StarCatalog() {
+            @Override
+            public int getSize() {
+                return SIZE;
+            }
+            @Override
+            public  double getDist( int index )
+            {
+                final double dist = QP[index][0];
+                // negative distances arise from negative parallaxes
+                // -- unclear what that means, thus return NaN in those cases
+                return dist > 0 ? dist : Double.NaN;
+            }
+            @Override
+            public  double getRAscJ2000( int index )
+            {
+                return QP[index][1];
+            }
+            @Override
+            public  double getDeclJ2000( int index )
+            {
+                return QP[index][2];
+            }
+            @Override
+            public  double getVDist( int index )
+            {
+                return QP[index][3];
+            }
+            @Override
+            public  double getVRAscJ2000( int index )
+            {
+                return QP[index][4];
+            }
+            @Override
+            public  double getVDeclJ2000( int index )
+            {
+                return QP[index][5];
+            }
+        };
+
     public static final java.util.Map<Character, Integer> COLOR_TABLE = new java.util.HashMap<>();
 
     public static final int SIZE = 9096; // 9110 HR entries, 14 of which are Novae and thus excluded here
@@ -46,41 +84,8 @@ public class StarsCatalog
         initializeDerived();
     }
 
-    private StarsCatalog()
+    private BrightStarCatalog()
     {
-    }
-
-    public static double getDist( int index )
-    {
-        final double dist = QP[index][0];
-        // negative distances arise from negative parallaxes
-        // -- unclear what that means, thus return NaN in those cases
-        return dist > 0 ? dist : Double.NaN;
-    }
-
-    public static double getRAscJ2000( int index )
-    {
-        return QP[index][1];
-    }
-
-    public static double getDeclJ2000( int index )
-    {
-        return QP[index][2];
-    }
-
-    public static double getVDist( int index )
-    {
-        return QP[index][3];
-    }
-
-    public static double getVRAscJ2000( int index )
-    {
-        return QP[index][4];
-    }
-
-    public static double getVDeclJ2000( int index )
-    {
-        return QP[index][5];
     }
 
     public static int findIndexByName( String name )
