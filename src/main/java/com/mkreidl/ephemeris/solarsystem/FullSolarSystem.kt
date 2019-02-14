@@ -1,8 +1,9 @@
 package com.mkreidl.ephemeris.solarsystem
 
 import com.mkreidl.ephemeris.Distance
-import com.mkreidl.ephemeris.time.Instant
+import com.mkreidl.ephemeris.Topos
 import com.mkreidl.ephemeris.solarsystem.meeus.*
+import com.mkreidl.ephemeris.time.Instant
 import com.mkreidl.math.PhaseCartesian
 import com.mkreidl.math.times
 
@@ -17,14 +18,23 @@ class FullSolarSystem(private val models: Map<Body, OrbitalModel>) {
     private lateinit var ecliptic: Ecliptic
 
     fun compute(instant: Instant, ecliptic: Ecliptic = Ecliptic(instant)) {
+        computeEarth(instant, ecliptic)
+        models.keys.forEach { compute(instant, it) }
+    }
+
+    fun computeSingle(instant: Instant, ecliptic: Ecliptic = Ecliptic(instant), body: Body) {
+        computeEarth(instant, ecliptic)
+        compute(instant, body)
+    }
+
+    private fun computeEarth(instant: Instant, ecliptic: Ecliptic) {
         this.ecliptic = ecliptic
         eclipticalHeliocentric[Body.EARTH] = models.getValue(Body.EARTH).computeCartesian(instant) * toMetersEarth
         eclipticalGeocentric[Body.SUN] = -correctAberration(eclipticalHeliocentric.getValue(Body.EARTH))
         geocentricDistances[Body.SUN] = eclipticalGeocentric.getValue(Body.SUN).position.norm
-        models.keys.forEach { compute(it, instant) }
     }
 
-    private fun compute(body: Body, instant: Instant) {
+    private fun compute(instant: Instant, body: Body) {
         val model = models.getValue(body)
         val earth = eclipticalHeliocentric.getValue(Body.EARTH)
         val toMeters = models.getValue(body).distanceUnit.toMeters()
