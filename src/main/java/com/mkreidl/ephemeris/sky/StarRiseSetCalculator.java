@@ -29,7 +29,7 @@ public class StarRiseSetCalculator extends RiseSetCalculator {
     public boolean compute(long startTimeMs) {
         super.setStartTime(startTimeMs);
         final Spherical3 position = stars.computeMeanEquatorial(starIndex, Instant.ofEpochMilli(startTimeMs));
-        topocentric.set(position.getDst(), position.getLon(), position.getLat());
+        getTopocentric().set(position.getDst(), position.getLon(), position.getLat());
         final boolean isCrossing = isCrossing();
         if (isCrossing)
             adjustTime();
