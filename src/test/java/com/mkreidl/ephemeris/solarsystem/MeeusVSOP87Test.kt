@@ -41,13 +41,12 @@ class MeeusVSOP87Test(
         assertEquals(expectedPos.lon, actualPos.lon, 1e-5)  // 1e-5 rad = 2 arcsec
         assertEquals(expectedPos.lat, actualPos.lat, 1e-5)
         // Reference values from VSOP test files are given in [dist] per DAY
-        assertEquals(expectedVel.dst, actualVel.x * SECONDS_PER_DAY.toDouble(), 1e-6)
-        assertEquals(expectedVel.lon, actualVel.y * SECONDS_PER_DAY.toDouble(), 1e-6)
-        assertEquals(expectedVel.lat, actualVel.z * SECONDS_PER_DAY.toDouble(), 1e-6)
+        assertEquals(expectedVel.dst, actualVel.x * SECONDS_PER_DAY, 1e-6)
+        assertEquals(expectedVel.lon, actualVel.y * SECONDS_PER_DAY, 1e-6)
+        assertEquals(expectedVel.lat, actualVel.z * SECONDS_PER_DAY, 1e-6)
     }
 
     companion object {
-
         @JvmStatic
         @Parameters(name = "{0} -- {1}")
         fun data() = Vsop87AbstractTest.data(VSOP87File.Version.D)

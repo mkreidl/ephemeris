@@ -1,7 +1,6 @@
 package com.mkreidl.ephemeris.solarsystem
 
-import com.mkreidl.ephemeris.DAYS_PER_SECOND
-import com.mkreidl.ephemeris.Time
+import com.mkreidl.ephemeris.MILLENNIA_PER_SECOND
 import com.mkreidl.ephemeris.time.Instant
 import com.mkreidl.math.PhaseCartesian
 import com.mkreidl.math.PhaseSpherical
@@ -26,7 +25,7 @@ abstract class ModelVsop87(private val coefficients: Array<Array<Array<DoubleArr
                     vel = vel * t + s + n * c
                 }
                 results[dim] = pos * t + cosSeries(dim, 0, t)
-                results[dim + DIMENSION] = vel / (Time.DAYS_PER_MILLENNIUM * Time.SECONDS_PER_DAY)
+                results[dim + DIMENSION] = vel * MILLENNIA_PER_SECOND
             }
             // remember time for which last calculation was performed
             instantCached = instant
@@ -60,8 +59,7 @@ abstract class ModelVsop87(private val coefficients: Array<Array<Array<DoubleArr
             )
         }
 
-        override fun computeCartesian(instant: Instant) =
-                computeSpherical(instant).cartesian.scaleVelocity(DAYS_PER_SECOND)
+        override fun computeCartesian(instant: Instant) = computeSpherical(instant).cartesian
     }
 
     companion object {

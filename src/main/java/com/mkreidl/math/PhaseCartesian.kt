@@ -23,8 +23,6 @@ data class PhaseCartesian(val position: Vector3, val velocity: Vector3) : Phase 
     val angularVelocity get() = (position.x * velocity.y - position.y * velocity.x) / (position * position)
     val retrograde get() = position.x * velocity.y - position.y * velocity.x < 0
 
-    fun scaleVelocity(factor: Double) = PhaseCartesian(position, factor * velocity)
-
     private val jacobian by lazy { computeJacobian() }
 
     private fun computeJacobian(): Matrix3x3 {

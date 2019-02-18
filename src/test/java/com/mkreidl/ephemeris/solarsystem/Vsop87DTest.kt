@@ -5,6 +5,7 @@ import com.mkreidl.ephemeris.geometry.Spherical
 import com.mkreidl.ephemeris.geometry.VSOP87File
 import com.mkreidl.ephemeris.solarsystem.vsop87d.*
 import com.mkreidl.ephemeris.time.Instant
+import com.mkreidl.math.Vector3
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -19,7 +20,7 @@ class Vsop87DTest(
 ) : Vsop87AbstractTest(planet, timeStr, dataSet) {
 
     private val expectedPos = Spherical(dataSet.coordinates[2], dataSet.coordinates[0], dataSet.coordinates[1])
-    private val expectedVel = Spherical(dataSet.coordinates[5], dataSet.coordinates[3], dataSet.coordinates[4])
+    private val expectedVel = Vector3(dataSet.coordinates[5], dataSet.coordinates[3], dataSet.coordinates[4])
 
     @Throws(IllegalArgumentException::class)
     @Test
@@ -41,14 +42,14 @@ class Vsop87DTest(
         assertEquals(expectedPos.lon, actualPos.lon, 1e-9)
         assertEquals(expectedPos.lat, actualPos.lat, 1e-9)
         // Reference values from VSOP test files are given in [dist] per DAY
-        assertEquals(expectedVel.dst, actualVel.x * SECONDS_PER_DAY.toDouble(), 1e-6)
-        assertEquals(expectedVel.lon, actualVel.y * SECONDS_PER_DAY.toDouble(), 1e-6)
-        assertEquals(expectedVel.lat, actualVel.z * SECONDS_PER_DAY.toDouble(), 1e-6)
+        assertEquals(expectedVel.x, actualVel.x * SECONDS_PER_DAY, 1e-9)
+        assertEquals(expectedVel.y, actualVel.y * SECONDS_PER_DAY, 1e-9)
+        assertEquals(expectedVel.z, actualVel.z * SECONDS_PER_DAY, 1e-9)
     }
 
     companion object {
         @JvmStatic
         @Parameters(name = "{0} -- {1}")
-        fun data(): Iterable<Array<Any>> = Vsop87AbstractTest.data(VSOP87File.Version.D)
+        fun data() = Vsop87AbstractTest.data(VSOP87File.Version.D)
     }
 }

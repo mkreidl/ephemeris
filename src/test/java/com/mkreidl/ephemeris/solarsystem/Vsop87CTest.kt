@@ -1,7 +1,7 @@
 package com.mkreidl.ephemeris.solarsystem
 
+import com.mkreidl.ephemeris.SECONDS_PER_DAY
 import com.mkreidl.ephemeris.time.Instant
-import com.mkreidl.ephemeris.Time
 import com.mkreidl.ephemeris.geometry.Cartesian
 import com.mkreidl.ephemeris.geometry.VSOP87File
 import com.mkreidl.ephemeris.solarsystem.vsop87c.*
@@ -40,9 +40,9 @@ class Vsop87CTest(
         assertEquals(expectedPos.y, actualPos.y, 1e-10)
         assertEquals(expectedPos.z, actualPos.z, 1e-10)
         // Reference values from VSOP test files are given in [dist] per DAY
-        assertEquals(expectedVel.x, actualVel.x * Time.SECONDS_PER_DAY.toDouble(), 1e-6)
-        assertEquals(expectedVel.y, actualVel.y * Time.SECONDS_PER_DAY.toDouble(), 1e-6)
-        assertEquals(expectedVel.z, actualVel.z * Time.SECONDS_PER_DAY.toDouble(), 1e-6)
+        assertEquals(expectedVel.x, actualVel.x * SECONDS_PER_DAY, 1e-8)
+        assertEquals(expectedVel.y, actualVel.y * SECONDS_PER_DAY, 1e-8)
+        assertEquals(expectedVel.z, actualVel.z * SECONDS_PER_DAY, 1e-9)
     }
 
     companion object {
