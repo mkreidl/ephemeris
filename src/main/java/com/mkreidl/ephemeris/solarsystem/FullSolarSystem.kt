@@ -7,6 +7,8 @@ import com.mkreidl.ephemeris.time.Instant
 import com.mkreidl.math.PhaseCartesian
 import com.mkreidl.math.times
 
+val PhaseCartesian.retrograde get() = position.x * velocity.y - position.y * velocity.x < 0
+
 class FullSolarSystem(private val models: Map<Body, OrbitalModel>) {
 
     private val eclipticalHeliocentric = mutableMapOf(Body.SUN to PhaseCartesian.ZERO)
@@ -29,7 +31,7 @@ class FullSolarSystem(private val models: Map<Body, OrbitalModel>) {
 
     private fun computeEarth(instant: Instant, ecliptic: Ecliptic) {
         this.ecliptic = ecliptic
-        eclipticalHeliocentric[Body.EARTH] = models.getValue(Body.EARTH).computeCartesian(instant) * toMetersEarth
+        eclipticalHeliocentric[Body.EARTH] = models.getValue(Body.EARTH).compute(instant).cartesian * toMetersEarth
         eclipticalGeocentric[Body.SUN] = -correctAberration(eclipticalHeliocentric.getValue(Body.EARTH))
         geocentricDistances[Body.SUN] = eclipticalGeocentric.getValue(Body.SUN).position.norm
     }
@@ -39,11 +41,11 @@ class FullSolarSystem(private val models: Map<Body, OrbitalModel>) {
         val earth = eclipticalHeliocentric.getValue(Body.EARTH)
         val toMeters = models.getValue(body).distanceUnit.toMeters()
         if (models.getValue(body).type == OrbitalModel.Type.GEOCENTRIC) {
-            val geometricGeocentric = model.computeCartesian(instant) * toMeters
+            val geometricGeocentric = model.compute(instant).cartesian * toMeters
             eclipticalHeliocentric[body] = geometricGeocentric + earth
             eclipticalGeocentric[body] = correctAberration(geometricGeocentric)
         } else {
-            val geometricHeliocentric = model.computeCartesian(instant) * toMeters
+            val geometricHeliocentric = model.compute(instant).cartesian * toMeters
             eclipticalHeliocentric[body] = geometricHeliocentric
             eclipticalGeocentric[body] = correctAberration(geometricHeliocentric - earth)
         }

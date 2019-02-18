@@ -20,15 +20,15 @@ class MoonOrbitalElementsTest {
 
     @Test
     fun testCalculate() {
-        val (position) = modelMoon.computeSpherical(instant)
-        val orbitalEl = modelMoon.computeOrbitalElements(instant)
+        val (position, _) = modelMoon.compute(instant).spherical
+        val orbitalEl = modelMoon.moon.reduce()
 
         assertEquals(Angle.ofDeg(312.7381).radians, orbitalEl.node, sec)
-        assertEquals(Angle.ofDeg(5.1454).radians, orbitalEl.incl, sec)
+        assertEquals(Angle.ofDeg(5.1454).radians, orbitalEl.inclination, sec)
         assertEquals(Angle.ofDeg(-264.2546).radians, orbitalEl.periapsis, sec)
         assertEquals(60.2666 * Body.EARTH.RADIUS_EQUATORIAL_M, orbitalEl.axis, 1e-12)
-        assertEquals(0.054900, orbitalEl.exc, 1e-12)
-        assertEquals(Angle.ofDeg(-46173.9046).radians, orbitalEl.meanAnom, sec)
+        assertEquals(0.054900, orbitalEl.excentricity, 1e-12)
+        assertEquals(Angle.ofDeg(-46173.9046).radians, orbitalEl.meanAnomaly, sec)
 
         assertEquals(refSpherical.lat, position.lat, 2.5 * 60 * sec)
         assertEquals(refSpherical.lon, position.lon, 1.0 * 60 * sec)

@@ -1,21 +1,22 @@
 package com.mkreidl.ephemeris.solarsystem
 
+import com.mkreidl.ephemeris.Distance
 import com.mkreidl.ephemeris.MILLENNIA_PER_SECOND
 import com.mkreidl.ephemeris.time.Instant
-import com.mkreidl.math.PhaseCartesian
-import com.mkreidl.math.PhaseSpherical
-import com.mkreidl.math.Spherical3
-import com.mkreidl.math.Vector3
+import com.mkreidl.math.*
 
-abstract class ModelVsop87(private val coefficients: Array<Array<Array<DoubleArray>>>) : OrbitalModel() {
+abstract class ModelVsop87(private val coefficients: Array<Array<Array<DoubleArray>>>) : OrbitalModel {
 
-    protected var results = DoubleArray(2 * DIMENSION)
+    override val type = OrbitalModel.Type.HELIOCENTRIC
+    override val distanceUnit = Distance.AU
+
+    protected var results = DoubleArray(6)
     private var instantCached: Instant? = null
 
-    fun compute(instant: Instant) {
+    protected fun computeSeries(instant: Instant) {
         if (instant != instantCached) {
             val t = instant.julianMillenniaSinceJ2000
-            for (dim in 0 until DIMENSION) {
+            for (dim in 0 until 3) {
                 var pos = 0.0
                 var vel = 0.0
                 for (n in coefficients[dim].size - 1 downTo 1) {
@@ -25,7 +26,7 @@ abstract class ModelVsop87(private val coefficients: Array<Array<Array<DoubleArr
                     vel = vel * t + s + n * c
                 }
                 results[dim] = pos * t + cosSeries(dim, 0, t)
-                results[dim + DIMENSION] = vel * MILLENNIA_PER_SECOND
+                results[dim + 3] = vel * MILLENNIA_PER_SECOND
             }
             // remember time for which last calculation was performed
             instantCached = instant
@@ -38,10 +39,11 @@ abstract class ModelVsop87(private val coefficients: Array<Array<Array<DoubleArr
 
     open class XYZ(coefficients: Array<Array<Array<DoubleArray>>>) : ModelVsop87(coefficients) {
 
-        override fun computeSpherical(instant: Instant) = computeCartesian(instant).spherical
+        final override var phase = PhaseCartesian.ZERO
+            private set
 
-        override fun computeCartesian(instant: Instant): PhaseCartesian {
-            compute(instant)
+        override fun compute(instant: Instant): PhaseCartesian {
+            computeSeries(instant)
             return PhaseCartesian(
                     Vector3(results[0], results[1], results[2]),
                     Vector3(results[3], results[4], results[5])
@@ -51,27 +53,16 @@ abstract class ModelVsop87(private val coefficients: Array<Array<Array<DoubleArr
 
     open class LBR(coefficients: Array<Array<Array<DoubleArray>>>) : ModelVsop87(coefficients) {
 
-        override fun computeSpherical(instant: Instant): PhaseSpherical {
-            compute(instant)
-            return PhaseSpherical(
+        final override var phase = PhaseSpherical.ZERO
+            private set
+
+        override fun compute(instant: Instant): Phase {
+            computeSeries(instant)
+            phase = PhaseSpherical(
                     Spherical3(results[2], results[0], results[1]).reduce(),
                     Vector3(results[5], results[3], results[4])
             )
+            return phase
         }
-
-        override fun computeCartesian(instant: Instant) = computeSpherical(instant).cartesian
-    }
-
-    companion object {
-        protected const val DIMENSION = 3
-
-        const val MERCURY = "MERCURY"
-        const val VENUS = "VENUS"
-        const val EARTH = "EARTH"
-        const val MARS = "MARS"
-        const val JUPITER = "JUPITER"
-        const val SATURN = "SATURN"
-        const val URANUS = "URANUS"
-        const val NEPTUNE = "NEPTUNE"
     }
 }

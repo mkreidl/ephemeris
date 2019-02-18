@@ -1,5 +1,6 @@
 package com.mkreidl.ephemeris.solarsystem
 
+import com.mkreidl.math.Angle
 import com.mkreidl.math.Coordinates
 import com.mkreidl.math.PhaseCartesian
 import com.mkreidl.math.Vector3
@@ -37,7 +38,7 @@ data class ClassicalOrbitalElements(
     override fun computePhase() = PhaseCartesian(computePosition().cartesian, Vector3.ZERO)
 
     override fun computePosition(): Coordinates {
-        val eccentricAnomaly = computeEccentricAnomaly(1e-15)
+        val eccentricAnomaly = computeEccentricAnomaly(1e-12)
         // Cartesian coordinates in the orbital plane,
         // The ascending node defines the x-axis
         val xv = axis * (Math.cos(eccentricAnomaly) - excentricity)
@@ -70,4 +71,11 @@ data class ClassicalOrbitalElements(
         } while (Math.abs(excentricAnomaly - e0) > eps)
         return excentricAnomaly
     }
+
+    fun reduce() = copy(
+            node = Angle.reduce(node),
+            inclination = Angle.reduce(inclination),
+            periapsis = Angle.reduce(periapsis),
+            meanAnomaly = Angle.reduce(meanAnomaly)
+    )
 }

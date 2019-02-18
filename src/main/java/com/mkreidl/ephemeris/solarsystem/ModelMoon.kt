@@ -1,11 +1,10 @@
 package com.mkreidl.ephemeris.solarsystem
 
 import com.mkreidl.ephemeris.Distance
-import com.mkreidl.ephemeris.time.Instant
-import com.mkreidl.ephemeris.Time
+import com.mkreidl.ephemeris.SECONDS_PER_DAY
 import com.mkreidl.ephemeris.geometry.Angle.DEG
-import com.mkreidl.ephemeris.geometry.ClassicalOrbitalElements
-import com.mkreidl.math.PhaseCartesian
+import com.mkreidl.ephemeris.time.Instant
+import com.mkreidl.math.Phase
 import com.mkreidl.math.PhaseSpherical
 import com.mkreidl.math.Spherical3
 import com.mkreidl.math.Vector3
@@ -23,150 +22,123 @@ import java.lang.Math.sin
  * Kepler's equation is solved using Newton's method to obtain
  * Moon's coordinates in the Cartesian reference frame.
  */
-class ModelMoon : OrbitalModel() {
+class ModelMoon : OrbitalModel {
 
     override val type = OrbitalModel.Type.GEOCENTRIC
-
     override val distanceUnit = Distance.m
 
-    /**
-     * N = longitude of the ascending node
-     * i = inclination to the ecliptic (plane of the Earth's orbit)
-     * w = argument of perihelion
-     * a = semi-major axis
-     * e = eccentricity (0=circle, 0-1=ellipse, 1=parabola)
-     * M = mean anomaly (0 at perihelion; increases uniformly with time)
-     */
+    override var phase = PhaseSpherical.ZERO
+        private set
 
-    private val orbitalElements = ClassicalOrbitalElements()
-    private var posSpherical = Spherical3.ZERO
-    private var posCartesian = Vector3.ZERO
-
-    override fun computeSpherical(instant: Instant): PhaseSpherical {
-        compute(instant)
-        return PhaseSpherical(posSpherical, Vector3.ZERO)
-    }
-
-    override fun computeCartesian(instant: Instant): PhaseCartesian {
-        compute(instant)
-        return PhaseCartesian(
-                posCartesian,
-                Vector3(-posCartesian.y, posCartesian.x, 0.0) * velocityScale)
-    }
-
-    fun computeOrbitalElements(instant: Instant): ClassicalOrbitalElements {
-        compute(instant)
-        return ClassicalOrbitalElements().set(orbitalElements)
-    }
-
-    /**
-     * Calculate the position of the Moon at a given time.
-     *
-     * @param time Time object.
-     */
-    private fun compute(instant: Instant) {
+    override fun compute(instant: Instant): Phase {
         val t = instant.terrestrialDynamicalTime
 
-        orbitalElements.set(orbElMoonSeries[1])
-        orbitalElements.times(t)
-        orbitalElements.add(orbElMoonSeries[0])
-
-        orbitalElements.computePosition()
-        posSpherical = orbitalElements.positionSpherical
-
-        orbElSun.set(orbElSunSeries[1])
-        orbElSun.times(t)
-        orbElSun.add(orbElSunSeries[0])
-
-        posSpherical = Spherical3(
-                lon = posSpherical.lon + longitudeCorrection(),
-                lat = posSpherical.lat + latitudeCorrection(),
-                dst = posSpherical.dst + distanceCorrection()
+        moon = ClassicalOrbitalElements(
+                node = orbElMoon0.node + t * orbElMoon1.node,
+                inclination = orbElMoon0.inclination + t * orbElMoon1.inclination,
+                periapsis = orbElMoon0.periapsis + t * orbElMoon1.periapsis,
+                axis = orbElMoon0.axis + t * orbElMoon1.axis,
+                excentricity = orbElMoon0.excentricity + t * orbElMoon1.excentricity,
+                meanAnomaly = orbElMoon0.meanAnomaly + t * orbElMoon1.meanAnomaly
+        )
+        sun = ClassicalOrbitalElements(
+                node = orbElSun0.node + t * orbElSun1.node,
+                inclination = orbElSun0.inclination + t * orbElSun1.inclination,
+                periapsis = orbElSun0.periapsis + t * orbElSun1.periapsis,
+                axis = orbElSun0.axis + t * orbElSun1.axis,
+                excentricity = orbElSun0.excentricity + t * orbElSun1.excentricity,
+                meanAnomaly = orbElSun0.meanAnomaly + t * orbElSun1.meanAnomaly
         )
 
-        posSpherical = posSpherical.reduce()
-        posCartesian = posSpherical.cartesian
+        val posSphericalRaw = moon.computePosition().spherical
+        val posSpherical = Spherical3(
+                lon = posSphericalRaw.lon + longitudeCorrection(),
+                lat = posSphericalRaw.lat + latitudeCorrection(),
+                dst = posSphericalRaw.dst + distanceCorrection()
+        )
+        phase = PhaseSpherical(posSpherical, velSpherical)
+        return phase
     }
 
-    private fun D(): Double {
-        // Mean elongation of Moon
-        return orbitalElements.meanLongitude() - orbElSun.meanLongitude()
-    }
+    lateinit var moon: ClassicalOrbitalElements
+        private set
+    private lateinit var sun: ClassicalOrbitalElements
 
-    private fun F(): Double {
-        // Argument of latitude of Moon
-        return orbitalElements.meanLongitude() - orbitalElements.node
-    }
+    // Mean elongation of Moon
+    private fun D() = moon.meanLongitude - sun.meanLongitude
+
+    // Argument of latitude of Moon
+    private fun F() = moon.meanLongitude - moon.node
 
     private fun longitudeCorrection(): Double {
         val D = D()
         val DD = 2 * D
-        return DEG * ((((-1.274 * sin(orbitalElements.meanAnom - DD) + 0.658 * sin(DD)
-                - 0.186 * sin(orbElSun.meanAnom)
-                - 0.059 * sin(2 * orbitalElements.meanAnom - DD)
-                - 0.057 * sin(orbitalElements.meanAnom - DD + orbElSun.meanAnom))
-                + 0.053 * sin(orbitalElements.meanAnom + DD)
-                + 0.046 * sin(DD - orbElSun.meanAnom)
-                + 0.041 * sin(orbitalElements.meanAnom - orbElSun.meanAnom))
+        return DEG * ((((-1.274 * sin(moon.meanAnomaly - DD) + 0.658 * sin(DD)
+                - 0.186 * sin(sun.meanAnomaly)
+                - 0.059 * sin(2 * moon.meanAnomaly - DD)
+                - 0.057 * sin(moon.meanAnomaly - DD + sun.meanAnomaly))
+                + 0.053 * sin(moon.meanAnomaly + DD)
+                + 0.046 * sin(DD - sun.meanAnomaly)
+                + 0.041 * sin(moon.meanAnomaly - sun.meanAnomaly))
                 - 0.035 * sin(D)
-                - 0.031 * sin(orbitalElements.meanAnom + orbElSun.meanAnom)
-                - 0.015 * sin(2 * (F() - D))) + 0.011 * sin(orbitalElements.meanAnom - 4 * D))
+                - 0.031 * sin(moon.meanAnomaly + sun.meanAnomaly)
+                - 0.015 * sin(2 * (F() - D))) + 0.011 * sin(moon.meanAnomaly - 4 * D))
     }
 
     private fun latitudeCorrection(): Double {
         val DD = 2 * D()
         val F = F()
         return DEG * ((-0.173 * sin(F - DD)
-                - 0.055 * sin(orbitalElements.meanAnom - F - DD)
-                - 0.046 * sin(orbitalElements.meanAnom + F - DD))
+                - 0.055 * sin(moon.meanAnomaly - F - DD)
+                - 0.046 * sin(moon.meanAnomaly + F - DD))
                 + 0.033 * sin(F + DD)
-                + 0.017 * sin(2 * orbitalElements.meanAnom + F))
+                + 0.017 * sin(2 * moon.meanAnomaly + F))
     }
 
     private fun distanceCorrection(): Double {
         val DD = 2 * D()
-        return DEG * (-0.58 * cos(orbitalElements.meanAnom - DD) - 0.46 * cos(DD))
+        return DEG * (-0.58 * cos(moon.meanAnomaly - DD) - 0.46 * cos(DD))
     }
 
     companion object {
-        private val velocityScale = 2 * Math.PI / (29 * Time.SECONDS_PER_DAY)
+        private val velSpherical = Vector3(0.0, 2 * Math.PI / (29 * SECONDS_PER_DAY), 0.0)
 
-        private val orbElMoonSeries = arrayOf(ClassicalOrbitalElements(), ClassicalOrbitalElements())
-        private val orbElSunSeries = arrayOf(ClassicalOrbitalElements(), ClassicalOrbitalElements())
-        private val orbElSun = ClassicalOrbitalElements()
+        // 0-order terms for Moon's orbital elements
+        private val orbElMoon0 = ClassicalOrbitalElements(
+                node = 125.1228 * DEG,
+                inclination = 5.1454 * DEG,
+                periapsis = 318.0634 * DEG,
+                axis = 60.2666 * Body.EARTH.RADIUS_EQUATORIAL_M,
+                excentricity = 0.054900,
+                meanAnomaly = 115.3654 * DEG
+        )
+        // 1-order terms for Moon's orbital elements
+        private val orbElMoon1 = ClassicalOrbitalElements(
+                node = -0.0529538083 * DEG,
+                inclination = 0.0 * DEG,
+                periapsis = 0.1643573223 * DEG,
+                axis = 0.0 * Body.EARTH.RADIUS_EQUATORIAL_M,
+                excentricity = 0.0,
+                meanAnomaly = 13.0649929509 * DEG
+        )
 
-        init {
-            // 0-order terms for Moon's orbital elements
-            orbElMoonSeries[0].node = 125.1228 * DEG
-            orbElMoonSeries[0].incl = 5.1454 * DEG
-            orbElMoonSeries[0].periapsis = 318.0634 * DEG
-            orbElMoonSeries[0].axis = 60.2666 * Body.EARTH.RADIUS_EQUATORIAL_M
-            orbElMoonSeries[0].exc = 0.054900
-            orbElMoonSeries[0].meanAnom = 115.3654 * DEG
-
-            // 1-order terms for Moon's orbital elements
-            orbElMoonSeries[1].node = -0.0529538083 * DEG
-            orbElMoonSeries[1].incl = 0.0 * DEG
-            orbElMoonSeries[1].periapsis = 0.1643573223 * DEG
-            orbElMoonSeries[1].axis = 0.0 * Body.EARTH.RADIUS_EQUATORIAL_M
-            orbElMoonSeries[1].exc = 0.0
-            orbElMoonSeries[1].meanAnom = 13.0649929509 * DEG
-
-            // 0-order terms for Sun's orbital elements
-            orbElSunSeries[0].node = 0.0 * DEG
-            orbElSunSeries[0].incl = 0.0 * DEG
-            orbElSunSeries[0].periapsis = 282.9404 * DEG
-            orbElSunSeries[0].axis = 1.0 * Distance.AU.toMeters()
-            orbElSunSeries[0].exc = 0.016709
-            orbElSunSeries[0].meanAnom = 356.0470 * DEG
-
-            // 1-order terms for Sun's orbital elements
-            orbElSunSeries[1].node = 0.0 * DEG
-            orbElSunSeries[1].incl = 0.0 * DEG
-            orbElSunSeries[1].periapsis = 4.70935E-5 * DEG
-            orbElSunSeries[1].axis = 0.0 * Distance.AU.toMeters()
-            orbElSunSeries[1].exc = -1.151E-9
-            orbElSunSeries[1].meanAnom = 0.9856002585 * DEG
-        }
+        // 0-order terms for Sun's orbital elements
+        private val orbElSun0 = ClassicalOrbitalElements(
+                node = 0.0 * DEG,
+                inclination = 0.0 * DEG,
+                periapsis = 282.9404 * DEG,
+                axis = 1.0 * Distance.AU.toMeters(),
+                excentricity = 0.016709,
+                meanAnomaly = 356.0470 * DEG
+        )
+        // 1-order terms for Sun's orbital elements
+        private val orbElSun1 = ClassicalOrbitalElements(
+                node = 0.0 * DEG,
+                inclination = 0.0 * DEG,
+                periapsis = 4.70935E-5 * DEG,
+                axis = 0.0 * Distance.AU.toMeters(),
+                excentricity = -1.151E-9,
+                meanAnomaly = 0.9856002585 * DEG
+        )
     }
 }

@@ -1,7 +1,5 @@
 package com.mkreidl.ephemeris.solarsystem
 
-import java.util.*
-
 enum class Body(
         val MASS: Double,
         val RADIUS_MEAN_M: Double,
@@ -20,8 +18,6 @@ enum class Body(
     PLUTO(1.303e22, 2.374e6 / 2, 2.374e6 / 2);
 
     companion object {
-        val EXTRA_TERRESTRIAL = Arrays.asList(
-                SUN, MOON, MERCURY, VENUS, MARS, JUPITER, SATURN, URANUS, NEPTUNE, PLUTO
-        )
+        val EXTRA_TERRESTRIAL = listOf(SUN, MOON, MERCURY, VENUS, MARS, JUPITER, SATURN, URANUS, NEPTUNE, PLUTO)
     }
 }

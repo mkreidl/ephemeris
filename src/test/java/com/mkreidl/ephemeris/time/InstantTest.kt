@@ -23,7 +23,7 @@ class InstantTest(private val dateString: String, private val julianDayFraction:
     companion object {
         @JvmStatic
         @Parameters
-        fun data() = Arrays.asList(
+        fun data() = listOf(
                 arrayOf("1990.01.01 12:00:00", 2447893.0000000),
                 arrayOf("1800.01.01 12:00:00", 2378497.000000),
                 arrayOf("2100.01.01 12:00:00", 2488070.0000000),

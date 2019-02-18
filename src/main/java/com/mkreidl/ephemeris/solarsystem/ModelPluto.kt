@@ -1,25 +1,32 @@
 package com.mkreidl.ephemeris.solarsystem
 
 import com.mkreidl.ephemeris.DAYS_PER_SECOND
+import com.mkreidl.ephemeris.Distance
 import com.mkreidl.ephemeris.time.Instant
+import com.mkreidl.math.Phase
 import com.mkreidl.math.PhaseSpherical
 import com.mkreidl.math.Spherical3
 import com.mkreidl.math.Vector3
 
-class ModelPluto : OrbitalModel() {
+class ModelPluto : OrbitalModel {
 
-    private var d: Double = 0.toDouble()
-    private var s: Double = 0.toDouble()
-    private var p: Double = 0.toDouble()
-    private var s1: Double = 0.toDouble()
-    private var p1: Double = 0.toDouble()
+    override val type = OrbitalModel.Type.HELIOCENTRIC
+    override val distanceUnit = Distance.AU
 
-    override fun computeCartesian(instant: Instant) = computeSpherical(instant).cartesian
+    override var phase = PhaseSpherical.ZERO
+        private set
 
-    override fun computeSpherical(instant: Instant): PhaseSpherical {
+    override fun compute(instant: Instant): Phase {
         computeTime(instant)
-        return PhaseSpherical(computePosition(), computeVelocity() * DAYS_PER_SECOND)
+        phase = PhaseSpherical(computePosition(), computeVelocity() * DAYS_PER_SECOND)
+        return phase
     }
+
+    private var d: Double = 0.0
+    private var s: Double = 0.0
+    private var p: Double = 0.0
+    private var s1: Double = 0.0
+    private var p1: Double = 0.0
 
     private fun computeTime(instant: Instant) {
         d = instant.terrestrialDynamicalTime

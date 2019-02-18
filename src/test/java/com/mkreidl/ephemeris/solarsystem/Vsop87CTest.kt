@@ -35,7 +35,7 @@ class Vsop87CTest(
             VSOP87File.Planet.NEP -> NeptuneVsop87C()
             else -> throw IllegalArgumentException("Planet not found")
         }
-        val (actualPos, actualVel) = model.computeCartesian(Instant.ofEpochMilli(time.time))
+        val (actualPos, actualVel) = model.compute(Instant.ofEpochMilli(time.time)).cartesian
         assertEquals(expectedPos.x, actualPos.x, 1e-10)
         assertEquals(expectedPos.y, actualPos.y, 1e-10)
         assertEquals(expectedPos.z, actualPos.z, 1e-10)

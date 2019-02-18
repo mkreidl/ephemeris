@@ -25,7 +25,7 @@ abstract class RiseSetCalculator(longitudeDeg: Double, latitudeDeg: Double) {
     }
 
     protected lateinit var current: Instant
-    private lateinit var start: Instant
+    protected lateinit var start: Instant
 
     protected val topocentric = Equatorial.Sphe()
     protected var mode = EventType.SET
@@ -34,13 +34,6 @@ abstract class RiseSetCalculator(longitudeDeg: Double, latitudeDeg: Double) {
     private var virtualHorizonDeg = OPTICAL_HORIZON_DEG
 
     private val horizon = Circle()
-
-    var time: Long
-        get() = current.epochMilli
-        set(startTimeMs) {
-            start = Instant.ofEpochMilli(startTimeMs)
-            current = start
-        }
 
     fun setEventType(mode: EventType) {
         this.mode = mode
