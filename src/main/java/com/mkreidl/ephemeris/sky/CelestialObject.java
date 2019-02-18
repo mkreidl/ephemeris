@@ -30,7 +30,7 @@ public class CelestialObject
         }
         catch ( IllegalArgumentException unused )
         {
-            final Constellation constellation = Constellations.findByName( name );
+            final Constellation constellation = Constellations.INSTANCE.findByName( name );
             if ( constellation != null )
                 return CelestialObject.of( constellation );
             else
