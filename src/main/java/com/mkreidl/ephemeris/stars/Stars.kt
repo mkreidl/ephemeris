@@ -20,7 +20,7 @@ class Stars(catalog: StarCatalog) {
         for (i in 0 until size) {
             val posJ2000 = Spherical3(1.0, catalog.getRAscJ2000(i), catalog.getDeclJ2000(i))
             val velJ2000 = Vector3(0.0, catalog.getVRAscJ2000(i), catalog.getVDeclJ2000(i))
-            val phaseJ2000 = PhaseSpherical(posJ2000, velJ2000).toCartesian()
+            val phaseJ2000 = PhaseSpherical(posJ2000, velJ2000).cartesian
             val ecliptical = Ecliptic.J2000.trafoMeanEqu2Ecl * phaseJ2000
 
             var offset = 3 * i
@@ -61,21 +61,21 @@ class Stars(catalog: StarCatalog) {
     @JvmOverloads
     fun computeMeanEquatorial(starIndex: Int, instant: Instant, ecliptic: Ecliptic = Ecliptic(instant)): Spherical3 {
         val eclipticalJ2000 = computeEclipticalJ2000(starIndex, instant)
-        return ecliptic.trafoEclJ2000ToMeanEquToDate(eclipticalJ2000).toSpherical()
+        return ecliptic.trafoEclJ2000ToMeanEquToDate(eclipticalJ2000).spherical
     }
 
     fun computeTrueEquatorial(starIndex: Int, instant: Instant, ecliptic: Ecliptic = Ecliptic(instant)): Spherical3 {
         val position = computeTrueEcliptical(starIndex, instant, ecliptic)
-        return ecliptic.trafoTrueEcl2TrueEqu(position).toSpherical()
+        return ecliptic.trafoTrueEcl2TrueEqu(position).spherical
     }
 
     fun computeEclipticalApparent(starIndex: Int, instant: Instant, ecliptic: Ecliptic = Ecliptic(instant), sun: Sun = SunLowPrecision(instant)): Spherical3 {
         val position = computeTrueEcliptical(starIndex, instant, ecliptic)
-        return sun.computeAberrationCorrectionEcliptical(position.toSpherical())
+        return sun.computeAberrationCorrectionEcliptical(position.spherical)
     }
 
     fun computeEquatorialApparent(starIndex: Int, instant: Instant, ecliptic: Ecliptic = Ecliptic(instant), sun: Sun = SunLowPrecision(instant)): Spherical3 {
-        val apparent = computeEclipticalApparent(starIndex, instant, ecliptic, sun).toCartesian()
-        return ecliptic.trafoTrueEcl2TrueEqu(apparent).toSpherical()
+        val apparent = computeEclipticalApparent(starIndex, instant, ecliptic, sun).cartesian
+        return ecliptic.trafoTrueEcl2TrueEqu(apparent).spherical
     }
 }

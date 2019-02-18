@@ -74,8 +74,8 @@ class SolarSystemGeocentricTest(testname: String, private val body: Body, privat
     }
 
     private fun test(solarSystem: FullSolarSystem) {
-        val ecliptical = solarSystem.getTrueEclipticalGeocentric(body).position.toSpherical()
-        val equatorial = solarSystem.getTrueEquatorialGeocentric(body).position.toSpherical()
+        val ecliptical = solarSystem.getTrueEclipticalGeocentric(body).position.spherical
+        val equatorial = solarSystem.getTrueEquatorialGeocentric(body).position.spherical
 
         val longitude = Angle.ofRad(ecliptical.lon)
         val latitude = Angle.ofRad(ecliptical.lat)

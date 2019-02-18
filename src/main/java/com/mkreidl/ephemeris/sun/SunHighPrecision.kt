@@ -33,5 +33,5 @@ class SunHighPrecision(instant: Instant, ecliptic: Ecliptic = Ecliptic(instant))
     )
 
     private fun computeApparentEquatorial() =
-            ecliptic.trafoTrueEcl2TrueEqu(apparentPosition.toCartesian()).toSpherical()
+            ecliptic.trafoTrueEcl2TrueEqu(apparentPosition.cartesian).spherical
 }

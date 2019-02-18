@@ -39,7 +39,7 @@ abstract class ModelVsop87(private val coefficients: Array<Array<Array<DoubleArr
 
     open class XYZ(coefficients: Array<Array<Array<DoubleArray>>>) : ModelVsop87(coefficients) {
 
-        override fun computeSpherical(instant: Instant) = computeCartesian(instant).toSpherical()
+        override fun computeSpherical(instant: Instant) = computeCartesian(instant).spherical
 
         override fun computeCartesian(instant: Instant): PhaseCartesian {
             compute(instant)
@@ -61,7 +61,7 @@ abstract class ModelVsop87(private val coefficients: Array<Array<Array<DoubleArr
         }
 
         override fun computeCartesian(instant: Instant) =
-                computeSpherical(instant).toCartesian().scaleVelocity(DAYS_PER_SECOND)
+                computeSpherical(instant).cartesian.scaleVelocity(DAYS_PER_SECOND)
     }
 
     companion object {

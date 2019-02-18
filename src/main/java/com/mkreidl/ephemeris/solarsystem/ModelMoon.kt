@@ -85,7 +85,7 @@ class ModelMoon : OrbitalModel() {
         )
 
         posSpherical = posSpherical.reduce()
-        posCartesian = posSpherical.toCartesian()
+        posCartesian = posSpherical.cartesian
     }
 
     private fun D(): Double {

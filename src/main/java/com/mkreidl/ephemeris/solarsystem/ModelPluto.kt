@@ -15,7 +15,7 @@ class ModelPluto : OrbitalModel() {
     private var p1: Double = 0.toDouble()
 
     override fun computeCartesian(instant: Instant) =
-            computeSpherical(instant).toCartesian().scaleVelocity(DAYS_PER_SECOND)
+            computeSpherical(instant).cartesian.scaleVelocity(DAYS_PER_SECOND)
 
     override fun computeSpherical(instant: Instant): PhaseSpherical {
         computeTime(instant)

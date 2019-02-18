@@ -1,6 +1,6 @@
 package com.mkreidl.math
 
-data class Vector3(val x: Double, val y: Double, val z: Double) : VectorSpace<Double, Vector3> {
+data class Vector3(val x: Double, val y: Double, val z: Double) : VectorSpace<Double, Vector3>, Coordinates {
 
     constructor(x: Float, y: Float, z: Float) : this(x.toDouble(), y.toDouble(), z.toDouble())
 
@@ -50,9 +50,10 @@ data class Vector3(val x: Double, val y: Double, val z: Double) : VectorSpace<Do
 
     infix fun angle(other: Vector3) = Angle(Math.atan2((this x other).norm, this * other))
 
-    fun toSpherical(): Spherical3 {
-        val norm = this.norm
-        return Spherical3(dst = norm, lat = Math.asin(z / norm), lon = Math.atan2(y, x))
+    override val cartesian get() = this
+
+    override val spherical by lazy {
+        Spherical3(dst = norm, lat = Math.asin(z / norm), lon = Math.atan2(y, x))
     }
 
     fun toFloatArray() = floatArrayOf(x.toFloat(), y.toFloat(), z.toFloat())

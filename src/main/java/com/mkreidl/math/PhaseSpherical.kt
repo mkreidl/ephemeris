@@ -1,12 +1,14 @@
 package com.mkreidl.math
 
-data class PhaseSpherical(val position: Spherical3, val velocity: Vector3) {
+data class PhaseSpherical(val position: Spherical3, val velocity: Vector3) : Phase {
 
     companion object {
         val ZERO = PhaseSpherical(Spherical3.ZERO, Vector3.ZERO)
     }
 
-    fun toCartesian() = PhaseCartesian(position.toCartesian(), jacobian * velocity)
+    override val cartesian by lazy { PhaseCartesian(position.cartesian, jacobian * velocity) }
+
+    override val spherical get() = this
 
     private val jacobian by lazy { computeJacobian() }
 

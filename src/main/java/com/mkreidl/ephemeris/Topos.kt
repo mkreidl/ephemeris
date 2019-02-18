@@ -21,8 +21,8 @@ data class Topos internal constructor(val longitude: Double, val latitude: Doubl
     val meanEquatorialSphe by lazy { Spherical3(Body.EARTH.RADIUS_MEAN_M, localMeanSiderealTime.radians, latitude) }
     val trueEquatorialSphe by lazy { Spherical3(Body.EARTH.RADIUS_MEAN_M, localTrueSiderealTime.radians, latitude) }
 
-    val meanEquatorial by lazy { meanEquatorialSphe.toCartesian() }
-    val trueEquatorial by lazy { trueEquatorialSphe.toCartesian() }
+    val meanEquatorial by lazy { meanEquatorialSphe.cartesian }
+    val trueEquatorial by lazy { trueEquatorialSphe.cartesian }
 
     val meanEcliptical by lazy { Matrix3x3.rotation(ecliptic.meanObliquity, Axis.X) * meanEquatorial }
     val trueEcliptical by lazy { Matrix3x3.rotation(ecliptic.trueObliquity, Axis.X) * trueEquatorial }
