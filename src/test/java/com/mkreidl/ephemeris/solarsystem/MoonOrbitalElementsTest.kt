@@ -1,8 +1,8 @@
 package com.mkreidl.ephemeris.solarsystem
 
-import com.mkreidl.math.Angle
 import com.mkreidl.ephemeris.time.Instant
-import com.mkreidl.ephemeris.geometry.Spherical
+import com.mkreidl.math.Angle
+import com.mkreidl.math.Spherical3
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.util.*
@@ -14,9 +14,11 @@ class MoonOrbitalElementsTest {
             .apply { set(1990, 3, 19, 0, 0, 0)  /* 1990, April 19, 00:00:00*/ }
             .timeInMillis)
     private val modelMoon = ModelMoon()
-    private val refSpherical = Spherical(
-            60.793 * Body.EARTH.RADIUS_EQUATORIAL_M, Math.toRadians(306.94), -Math.toRadians(0.55)
-    )
+    private val refSpherical = Spherical3(
+            60.793 * Body.EARTH.RADIUS_EQUATORIAL_M,
+            Math.toRadians(306.94),
+            -Math.toRadians(0.55)
+    ).reduce()
 
     @Test
     fun testCalculate() {
@@ -35,6 +37,6 @@ class MoonOrbitalElementsTest {
     }
 
     companion object {
-        val sec = Angle.ofDeg(0, 0, 1.0).radians
+        private val sec = Angle.ofDeg(0, 0, 1.0).radians
     }
 }

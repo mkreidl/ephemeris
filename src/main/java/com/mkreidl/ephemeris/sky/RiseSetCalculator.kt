@@ -2,7 +2,6 @@ package com.mkreidl.ephemeris.sky
 
 import com.mkreidl.ephemeris.MILLIS_PER_SIDEREAL_DAY
 import com.mkreidl.ephemeris.SIDEREAL_MILLIS_PER_RADIAN
-import com.mkreidl.ephemeris.sky.coordinates.Equatorial
 import com.mkreidl.ephemeris.time.Instant
 import com.mkreidl.ephemeris.time.SiderealTime
 import com.mkreidl.math.*
@@ -22,7 +21,7 @@ abstract class RiseSetCalculator(longitudeDeg: Double, latitudeDeg: Double) {
     protected lateinit var current: Instant
     protected lateinit var start: Instant
 
-    protected val topocentric = Equatorial.Sphe()
+    protected val topocentric = Spherical3.ZERO
     protected var mode = EventType.SET
 
     private var lookupDirection = LookupDirection.FORWARD

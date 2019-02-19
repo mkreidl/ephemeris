@@ -1,9 +1,9 @@
 package com.mkreidl.ephemeris.solarsystem
 
 import com.mkreidl.ephemeris.SECONDS_PER_DAY
-import com.mkreidl.ephemeris.geometry.Cartesian
 import com.mkreidl.ephemeris.geometry.VSOP87File
 import com.mkreidl.ephemeris.solarsystem.vsop87c.*
+import com.mkreidl.math.Vector3
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -13,8 +13,8 @@ import org.junit.runners.Parameterized.Parameters
 @RunWith(Parameterized::class)
 class Vsop87CTest(planet: VSOP87File.Planet, dataSet: Vsop87AbstractTest.DataSet) : Vsop87AbstractTest(planet, dataSet) {
 
-    private val expectedPos = Cartesian(dataSet.coordinates[0], dataSet.coordinates[1], dataSet.coordinates[2])
-    private val expectedVel = Cartesian(dataSet.coordinates[3], dataSet.coordinates[4], dataSet.coordinates[5])
+    private val expectedPos = Vector3(dataSet.coordinates[0], dataSet.coordinates[1], dataSet.coordinates[2])
+    private val expectedVel = Vector3(dataSet.coordinates[3], dataSet.coordinates[4], dataSet.coordinates[5])
 
     @Throws(IllegalArgumentException::class)
     @Test

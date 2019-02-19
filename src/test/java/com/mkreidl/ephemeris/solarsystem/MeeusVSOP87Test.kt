@@ -1,9 +1,9 @@
 package com.mkreidl.ephemeris.solarsystem
 
 import com.mkreidl.ephemeris.SECONDS_PER_DAY
-import com.mkreidl.ephemeris.geometry.Spherical
 import com.mkreidl.ephemeris.geometry.VSOP87File
 import com.mkreidl.ephemeris.solarsystem.meeus.*
+import com.mkreidl.math.Spherical3
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -13,8 +13,8 @@ import org.junit.runners.Parameterized.Parameters
 @RunWith(Parameterized::class)
 class MeeusVSOP87Test(planet: VSOP87File.Planet, dataSet: Vsop87AbstractTest.DataSet) : Vsop87AbstractTest(planet, dataSet) {
 
-    private val expectedPos = Spherical(dataSet.coordinates[2], dataSet.coordinates[0], dataSet.coordinates[1])
-    private val expectedVel = Spherical(dataSet.coordinates[5], dataSet.coordinates[3], dataSet.coordinates[4])
+    private val expectedPos = Spherical3(dataSet.coordinates[2], dataSet.coordinates[0], dataSet.coordinates[1])
+    private val expectedVel = Spherical3(dataSet.coordinates[5], dataSet.coordinates[3], dataSet.coordinates[4])
 
     @Throws(IllegalArgumentException::class)
     @Test

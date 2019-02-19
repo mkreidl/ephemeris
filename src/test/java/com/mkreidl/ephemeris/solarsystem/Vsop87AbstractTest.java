@@ -4,6 +4,7 @@ import com.mkreidl.ephemeris.TestUtil;
 import com.mkreidl.ephemeris.geometry.VSOP87File;
 import com.mkreidl.ephemeris.geometry.VSOP87File.Planet;
 import com.mkreidl.ephemeris.time.Instant;
+import com.mkreidl.math.Angle;
 import org.junit.runners.Parameterized.Parameters;
 
 import java.io.BufferedReader;
@@ -13,8 +14,6 @@ import java.net.URL;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
-
-import static com.mkreidl.ephemeris.geometry.Angle.standardize;
 
 public abstract class Vsop87AbstractTest {
 
@@ -124,14 +123,14 @@ public abstract class Vsop87AbstractTest {
         switch (version) {
             case B:
             case D:
-                coordinates[0] = standardize(coordinates[0]);
-                coordinates[1] = standardize(coordinates[1]);
+                coordinates[0] = Angle.Companion.reduce(coordinates[0]);
+                coordinates[1] = Angle.Companion.reduce(coordinates[1]);
                 break;
             case O:
                 double[] original = coordinates.clone();
                 for (int i = 0; i < 6; i++)
                     coordinates[i] = original[i / 2 + 3 * (i % 2)];
-                coordinates[1] = standardize(coordinates[1]);
+                coordinates[1] = Angle.Companion.reduce(coordinates[1]);
                 break;
             default:
                 break;
