@@ -42,6 +42,12 @@ data class Topos internal constructor(val longitude: Double, val latitude: Doubl
     fun mapMeanEquatorialToHorizontal(coordinates: Spherical3) = trafoMeanEquatorialToHorizontal(coordinates.cartesian).spherical
     fun mapTrueEquatorialToHorizontal(coordinates: Spherical3) = trafoTrueEquatorialToHorizontal(coordinates.cartesian).spherical
 
+    fun computeTopocentricFromMeanEquatorial(geocentric: Vector3) = geocentric - meanEquatorial
+    fun computeTopocentricFromTrueEquatorial(geocentric: Vector3) = geocentric - trueEquatorial
+
+    fun computeTopocentricFromMeanEquatorial(geocentric: Spherical3) = (geocentric.cartesian - meanEquatorial).spherical
+    fun computeTopocentricFromTrueEquatorial(geocentric: Spherical3) = (geocentric.cartesian - trueEquatorial).spherical
+
     companion object {
 
         fun of(location: Spherical3, instant: Instant) =
