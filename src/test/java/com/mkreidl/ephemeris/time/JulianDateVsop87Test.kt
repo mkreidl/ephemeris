@@ -1,14 +1,13 @@
 package com.mkreidl.ephemeris.time
 
-import com.mkreidl.ephemeris.geometry.VSOP87File
-import com.mkreidl.ephemeris.solarsystem.Vsop87AbstractTest
+import com.mkreidl.ephemeris.solarsystem.AbstractVsop87Test
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
 @RunWith(Parameterized::class)
-class JulianDateTest(planet: VSOP87File.Planet, dataSet: Vsop87AbstractTest.DataSet) : Vsop87AbstractTest(planet, dataSet) {
+class JulianDateVsop87Test(planet: Planet, dataSet: DataSet) : AbstractVsop87Test(planet, dataSet) {
 
     @Test
     fun testJulianDate() {
@@ -18,6 +17,6 @@ class JulianDateTest(planet: VSOP87File.Planet, dataSet: Vsop87AbstractTest.Data
     companion object {
         @JvmStatic
         @Parameterized.Parameters(name = "{0} -- {1}")
-        fun data() = Vsop87AbstractTest.data(VSOP87File.Version.C)
+        fun data() = AbstractVsop87Test.data(Version.C)
     }
 }

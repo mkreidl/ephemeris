@@ -1,4 +1,4 @@
-package com.mkreidl.ephemeris
+package com.mkreidl.ephemeris.sky
 
 import com.mkreidl.ephemeris.solarsystem.Body
 import com.mkreidl.ephemeris.solarsystem.Ecliptic

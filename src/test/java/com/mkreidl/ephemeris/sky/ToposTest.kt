@@ -1,6 +1,6 @@
-package math
+package com.mkreidl.ephemeris.sky
 
-import com.mkreidl.ephemeris.Topos
+import com.mkreidl.ephemeris.sky.Topos
 import com.mkreidl.ephemeris.time.Instant
 import com.mkreidl.ephemeris.time.SiderealTime
 import com.mkreidl.math.Angle
@@ -8,7 +8,7 @@ import com.mkreidl.math.Spherical3
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class HorizontalCoordinatesTest {
+class ToposTest {
 
     private val geographicLocation = Spherical3(1.0, Math.toRadians(11.5820), -Math.toRadians(48.1351))
     private val localSiderealTime = SiderealTime(Instant.J2000).getMeanSiderealTime(Angle.ofRad(geographicLocation.lon)).radians

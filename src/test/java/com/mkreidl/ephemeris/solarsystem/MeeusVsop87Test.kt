@@ -1,7 +1,6 @@
 package com.mkreidl.ephemeris.solarsystem
 
 import com.mkreidl.ephemeris.SECONDS_PER_DAY
-import com.mkreidl.ephemeris.geometry.VSOP87File
 import com.mkreidl.ephemeris.solarsystem.meeus.*
 import com.mkreidl.math.Spherical3
 import org.junit.Assert.assertEquals
@@ -11,7 +10,7 @@ import org.junit.runners.Parameterized
 import org.junit.runners.Parameterized.Parameters
 
 @RunWith(Parameterized::class)
-class MeeusVSOP87Test(planet: VSOP87File.Planet, dataSet: Vsop87AbstractTest.DataSet) : Vsop87AbstractTest(planet, dataSet) {
+class MeeusVsop87Test(planet: Planet, dataSet: AbstractVsop87Test.DataSet) : AbstractVsop87Test(planet, dataSet) {
 
     private val expectedPos = Spherical3(dataSet.coordinates[2], dataSet.coordinates[0], dataSet.coordinates[1])
     private val expectedVel = Spherical3(dataSet.coordinates[5], dataSet.coordinates[3], dataSet.coordinates[4])
@@ -20,14 +19,14 @@ class MeeusVSOP87Test(planet: VSOP87File.Planet, dataSet: Vsop87AbstractTest.Dat
     @Test
     fun testModel() {
         val model: ModelVsop87.LBR = when (planet) {
-            VSOP87File.Planet.MER -> MercuryMeeus()
-            VSOP87File.Planet.VEN -> VenusMeeus()
-            VSOP87File.Planet.EAR -> EarthMeeus()
-            VSOP87File.Planet.MAR -> MarsMeeus()
-            VSOP87File.Planet.JUP -> JupiterMeeus()
-            VSOP87File.Planet.SAT -> SaturnMeeus()
-            VSOP87File.Planet.URA -> UranusMeeus()
-            VSOP87File.Planet.NEP -> NeptuneMeeus()
+            Planet.MER -> MercuryMeeus()
+            Planet.VEN -> VenusMeeus()
+            Planet.EAR -> EarthMeeus()
+            Planet.MAR -> MarsMeeus()
+            Planet.JUP -> JupiterMeeus()
+            Planet.SAT -> SaturnMeeus()
+            Planet.URA -> UranusMeeus()
+            Planet.NEP -> NeptuneMeeus()
             else -> throw IllegalArgumentException("Planet not found")
         }
         var (actualPos, actualVel) = model.compute(instant).spherical
@@ -44,6 +43,6 @@ class MeeusVSOP87Test(planet: VSOP87File.Planet, dataSet: Vsop87AbstractTest.Dat
     companion object {
         @JvmStatic
         @Parameters(name = "{0} -- {1}")
-        fun data() = Vsop87AbstractTest.data(VSOP87File.Version.D)
+        fun data() = AbstractVsop87Test.data(Version.D)
     }
 }

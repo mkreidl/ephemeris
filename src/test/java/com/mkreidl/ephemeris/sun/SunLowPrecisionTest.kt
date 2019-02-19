@@ -1,5 +1,6 @@
 package com.mkreidl.ephemeris.sun
 
+import com.mkreidl.ephemeris.sun.SunLowPrecision
 import com.mkreidl.ephemeris.time.Instant
 import com.mkreidl.math.Angle
 import org.junit.Assert
