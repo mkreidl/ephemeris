@@ -1,10 +1,9 @@
 package com.mkreidl.ephemeris.solarsystem;
 
-import com.mkreidl.ephemeris.time.Instant;
 import com.mkreidl.ephemeris.TestUtil;
-import com.mkreidl.ephemeris.Time;
 import com.mkreidl.ephemeris.geometry.VSOP87File;
 import com.mkreidl.ephemeris.geometry.VSOP87File.Planet;
+import com.mkreidl.ephemeris.time.Instant;
 import org.junit.runners.Parameterized.Parameters;
 
 import java.io.BufferedReader;
@@ -18,22 +17,21 @@ import java.util.Map;
 import static com.mkreidl.ephemeris.geometry.Angle.standardize;
 
 public abstract class Vsop87AbstractTest {
+
     protected final VSOP87File.Planet planet;
-    protected final Time time;
     protected final double julianDate;
     protected final Instant instant;
 
-    public Vsop87AbstractTest(Planet planet, String timeStr, DataSet dataSet) {
+    public Vsop87AbstractTest(Planet planet, DataSet dataSet) {
         this.planet = planet;
-        this.time = dataSet.time;
         this.julianDate = dataSet.julianDate;
-        instant = Instant.ofEpochMilli(time.getTime());
+        this.instant = dataSet.instant;
     }
 
     public static class DataSet {
         public VSOP87File.Planet planet;
-        public Time time;
-        public VSOP87File model;
+        public Instant instant;
+        VSOP87File model;
         String VSOP87filename;
         String dateString;
         double julianDate;
@@ -41,7 +39,7 @@ public abstract class Vsop87AbstractTest {
     }
 
     private static final String DATASETS = "/VSOP87/vsop87.chk";
-    public static final Map<VSOP87File.Planet, Map<VSOP87File.Version, Map<String, DataSet>>> fullData = new LinkedHashMap<>();
+    private static final Map<VSOP87File.Planet, Map<VSOP87File.Version, Map<String, DataSet>>> fullData = new LinkedHashMap<>();
 
     static {
         for (VSOP87File.Planet p : VSOP87File.Planet.values()) {
@@ -58,7 +56,7 @@ public abstract class Vsop87AbstractTest {
         final LinkedList<Object[]> parameters = new LinkedList<>();
         for (VSOP87File.Planet planet : fullData.keySet())
             for (String timeStr : fullData.get(planet).get(version).keySet())
-                parameters.add(new Object[]{planet, timeStr, fullData.get(planet).get(version).get(timeStr)});
+                parameters.add(new Object[]{planet, fullData.get(planet).get(version).get(timeStr)});
         return parameters;
     }
 
@@ -111,8 +109,8 @@ public abstract class Vsop87AbstractTest {
                     nextRecord.coordinates[i + 2] = Double.parseDouble(parts[8]);
                 }
                 standardizeCoordinates(nextRecord.coordinates, model.version);
-                nextRecord.time = TestUtil.getAstronomicalTime(nextRecord.dateString);
-                if (nextRecord.time == null) {
+                nextRecord.instant = TestUtil.getAstronomicalTime(nextRecord.dateString);
+                if (nextRecord.instant == null) {
                     System.err.println("String '" + nextRecord.dateString + "' does not represent a valid date.");
                     continue;
                 }

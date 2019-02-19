@@ -1,7 +1,6 @@
 package com.mkreidl.ephemeris.solarsystem
 
 import com.mkreidl.ephemeris.SECONDS_PER_DAY
-import com.mkreidl.ephemeris.time.Instant
 import com.mkreidl.ephemeris.geometry.Cartesian
 import com.mkreidl.ephemeris.geometry.VSOP87File
 import com.mkreidl.ephemeris.solarsystem.vsop87c.*
@@ -12,11 +11,7 @@ import org.junit.runners.Parameterized
 import org.junit.runners.Parameterized.Parameters
 
 @RunWith(Parameterized::class)
-class Vsop87CTest(
-        planet: VSOP87File.Planet,
-        timeStr: String,
-        dataSet: Vsop87AbstractTest.DataSet
-) : Vsop87AbstractTest(planet, timeStr, dataSet) {
+class Vsop87CTest(planet: VSOP87File.Planet, dataSet: Vsop87AbstractTest.DataSet) : Vsop87AbstractTest(planet, dataSet) {
 
     private val expectedPos = Cartesian(dataSet.coordinates[0], dataSet.coordinates[1], dataSet.coordinates[2])
     private val expectedVel = Cartesian(dataSet.coordinates[3], dataSet.coordinates[4], dataSet.coordinates[5])
@@ -35,7 +30,7 @@ class Vsop87CTest(
             VSOP87File.Planet.NEP -> NeptuneVsop87C()
             else -> throw IllegalArgumentException("Planet not found")
         }
-        val (actualPos, actualVel) = model.compute(Instant.ofEpochMilli(time.time)).cartesian
+        val (actualPos, actualVel) = model.compute(instant).cartesian
         assertEquals(expectedPos.x, actualPos.x, 1e-10)
         assertEquals(expectedPos.y, actualPos.y, 1e-10)
         assertEquals(expectedPos.z, actualPos.z, 1e-10)

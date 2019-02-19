@@ -1,10 +1,10 @@
 package com.mkreidl.ephemeris.solarsystem;
 
-import com.mkreidl.ephemeris.Time;
 import com.mkreidl.ephemeris.geometry.Angle;
 import com.mkreidl.ephemeris.geometry.Cartesian;
 import com.mkreidl.ephemeris.geometry.Spherical;
 import com.mkreidl.ephemeris.sky.coordinates.Ecliptical;
+import com.mkreidl.ephemeris.time.Instant;
 
 public class Zodiac {
     public double obliquity;
@@ -34,8 +34,8 @@ public class Zodiac {
         return sign.convertToRelativeLongitude(angle);
     }
 
-    public double compute(Time time) {
-        obliquity = new Ecliptic(time.getTime()).getMeanObliquity();
+    public double compute(Instant instant) {
+        obliquity = new Ecliptic(instant).getMeanObliquity();
         pole.lat = Math.PI / 2 - obliquity;
         return obliquity;
     }

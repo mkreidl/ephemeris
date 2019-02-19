@@ -4,7 +4,6 @@ import com.mkreidl.ephemeris.SECONDS_PER_DAY
 import com.mkreidl.ephemeris.geometry.Spherical
 import com.mkreidl.ephemeris.geometry.VSOP87File
 import com.mkreidl.ephemeris.solarsystem.meeus.*
-import com.mkreidl.ephemeris.time.Instant
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -12,11 +11,7 @@ import org.junit.runners.Parameterized
 import org.junit.runners.Parameterized.Parameters
 
 @RunWith(Parameterized::class)
-class MeeusVSOP87Test(
-        planet: VSOP87File.Planet,
-        timeStr: String,
-        dataSet: Vsop87AbstractTest.DataSet
-) : Vsop87AbstractTest(planet, timeStr, dataSet) {
+class MeeusVSOP87Test(planet: VSOP87File.Planet, dataSet: Vsop87AbstractTest.DataSet) : Vsop87AbstractTest(planet, dataSet) {
 
     private val expectedPos = Spherical(dataSet.coordinates[2], dataSet.coordinates[0], dataSet.coordinates[1])
     private val expectedVel = Spherical(dataSet.coordinates[5], dataSet.coordinates[3], dataSet.coordinates[4])
@@ -35,7 +30,7 @@ class MeeusVSOP87Test(
             VSOP87File.Planet.NEP -> NeptuneMeeus()
             else -> throw IllegalArgumentException("Planet not found")
         }
-        var (actualPos, actualVel) = model.compute(Instant.ofEpochMilli(time.time)).spherical
+        var (actualPos, actualVel) = model.compute(instant).spherical
         actualPos = actualPos.reduce()
         assertEquals(expectedPos.dst, actualPos.dst, 1.2e-4)  // 1.2e-4 AU = 18 km
         assertEquals(expectedPos.lon, actualPos.lon, 1e-5)  // 1e-5 rad = 2 arcsec

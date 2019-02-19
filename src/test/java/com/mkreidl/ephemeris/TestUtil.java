@@ -98,13 +98,12 @@ public class TestUtil {
                 while ((line = lineReader.readLine()) != null) {
                     if (line.startsWith("Date/Time")) {
                         dateStr = line.substring(11, 30);
-                        final Time time = TestUtil.getAstronomicalTime(dateStr);
-                        if (time == null)  // dateStr could not be parsed
+                        instant = TestUtil.getAstronomicalTime(dateStr);
+                        if (instant == null)  // dateStr could not be parsed
                         {
                             System.err.println("String '" + dateStr + "' does not represent a valid date.");
                             continue;
                         }
-                        instant = com.mkreidl.ephemeris.time.Instant.ofEpochMilli(time.getTime());
                     }
                     if (line.equals("Geocentric positions"))
                         geocentric = true;
@@ -145,13 +144,13 @@ public class TestUtil {
         return null;
     }
 
-    public static Time getAstronomicalTime(String dateString) {
+    public static com.mkreidl.ephemeris.time.Instant getAstronomicalTime(String dateString) {
         try {
-            return new Time(NASA_DATE_PARSER.parse(dateString).getTime());
+            return com.mkreidl.ephemeris.time.Instant.ofEpochMilli(NASA_DATE_PARSER.parse(dateString).getTime());
         } catch (ParseException e) {
         }
         try {
-            return new Time(VSOP_DATE_PARSER.parse(dateString).getTime());
+            return com.mkreidl.ephemeris.time.Instant.ofEpochMilli(VSOP_DATE_PARSER.parse(dateString).getTime());
         } catch (ParseException e) {
         }
         return null;

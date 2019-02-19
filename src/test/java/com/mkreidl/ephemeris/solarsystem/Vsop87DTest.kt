@@ -4,7 +4,6 @@ import com.mkreidl.ephemeris.SECONDS_PER_DAY
 import com.mkreidl.ephemeris.geometry.Spherical
 import com.mkreidl.ephemeris.geometry.VSOP87File
 import com.mkreidl.ephemeris.solarsystem.vsop87d.*
-import com.mkreidl.ephemeris.time.Instant
 import com.mkreidl.math.Vector3
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -13,11 +12,7 @@ import org.junit.runners.Parameterized
 import org.junit.runners.Parameterized.Parameters
 
 @RunWith(Parameterized::class)
-class Vsop87DTest(
-        planet: VSOP87File.Planet,
-        timeStr: String,
-        dataSet: Vsop87AbstractTest.DataSet
-) : Vsop87AbstractTest(planet, timeStr, dataSet) {
+class Vsop87DTest(planet: VSOP87File.Planet, dataSet: Vsop87AbstractTest.DataSet) : Vsop87AbstractTest(planet, dataSet) {
 
     private val expectedPos = Spherical(dataSet.coordinates[2], dataSet.coordinates[0], dataSet.coordinates[1])
     private val expectedVel = Vector3(dataSet.coordinates[5], dataSet.coordinates[3], dataSet.coordinates[4])
@@ -36,7 +31,7 @@ class Vsop87DTest(
             VSOP87File.Planet.NEP -> NeptuneVsop87D()
             else -> throw IllegalArgumentException("Planet not found")
         }
-        var (actualPos, actualVel) = model.compute(Instant.ofEpochMilli(time.time)).spherical
+        var (actualPos, actualVel) = model.compute(instant).spherical
         actualPos = actualPos.reduce()
         assertEquals(expectedPos.dst, actualPos.dst, 1e-9)
         assertEquals(expectedPos.lon, actualPos.lon, 1e-9)

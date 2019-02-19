@@ -8,8 +8,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
 @RunWith(Parameterized::class)
-class JulianDateTest(planet: VSOP87File.Planet, timeStr: String, dataSet: Vsop87AbstractTest.DataSet)
-    : Vsop87AbstractTest(planet, timeStr, dataSet) {
+class JulianDateTest(planet: VSOP87File.Planet, dataSet: Vsop87AbstractTest.DataSet) : Vsop87AbstractTest(planet, dataSet) {
 
     @Test
     fun testJulianDate() {
