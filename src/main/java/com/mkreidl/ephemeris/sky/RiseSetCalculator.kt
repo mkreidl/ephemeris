@@ -2,23 +2,18 @@ package com.mkreidl.ephemeris.sky
 
 import com.mkreidl.ephemeris.MILLIS_PER_SIDEREAL_DAY
 import com.mkreidl.ephemeris.SIDEREAL_MILLIS_PER_RADIAN
-import com.mkreidl.ephemeris.geometry.Circle
-import com.mkreidl.ephemeris.geometry.Spherical
-import com.mkreidl.ephemeris.geometry.Stereographic
 import com.mkreidl.ephemeris.sky.coordinates.Equatorial
-import com.mkreidl.ephemeris.solarsystem.Body
 import com.mkreidl.ephemeris.time.Instant
 import com.mkreidl.ephemeris.time.SiderealTime
-import com.mkreidl.math.Angle
-import com.mkreidl.math.times
+import com.mkreidl.math.*
 
 abstract class RiseSetCalculator(longitudeDeg: Double, latitudeDeg: Double) {
 
     protected val lon = Angle.ofDeg(longitudeDeg)
     protected val lat = Angle.ofDeg(latitudeDeg)
-    protected val geographicLocation = Spherical(Body.EARTH.RADIUS_MEAN_M, lon.radians, lat.radians)
+    protected val geographicLocation = Spherical3(1.0, lon.radians, lat.radians)
 
-    private val projection = Stereographic(if (lat.radians >= 0) 1.0 else -1.0)
+    private val projection = if (lat.radians >= 0) Stereographic.N else Stereographic.S
 
     init {
         updateHorizon()
@@ -33,7 +28,7 @@ abstract class RiseSetCalculator(longitudeDeg: Double, latitudeDeg: Double) {
     private var lookupDirection = LookupDirection.FORWARD
     private var virtualHorizonDeg = OPTICAL_HORIZON_DEG
 
-    private val horizon = Circle()
+    private var horizon = Circle.UNIT
 
     fun setEventType(mode: EventType) {
         this.mode = mode
@@ -66,7 +61,7 @@ abstract class RiseSetCalculator(longitudeDeg: Double, latitudeDeg: Double) {
             Math.abs(Math.toDegrees(geographicLocation.lat - topocentric.lat)) >= 90 - virtualHorizonDeg
 
     private fun updateHorizon() {
-        projection.project(geographicLocation, Math.toRadians(90 - virtualHorizonDeg), horizon)
+        horizon = projection.project(geographicLocation, Math.toRadians(90 - virtualHorizonDeg))
     }
 
     internal fun adjustTime(): Boolean {
@@ -81,7 +76,7 @@ abstract class RiseSetCalculator(longitudeDeg: Double, latitudeDeg: Double) {
     }
 
     private fun computeHourAngleAtSet(): Angle {
-        val dist = horizon.distFromOrigin()
+        val dist = horizon.distFromOrigin
         val rHor = horizon.r
         val rOrb = orbitRadius()
         return Angle.ofRad(Math.acos((rHor * rHor - dist * dist - rOrb * rOrb) / (2.0 * dist * rOrb)))
