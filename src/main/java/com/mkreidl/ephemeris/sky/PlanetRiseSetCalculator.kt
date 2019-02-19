@@ -1,14 +1,18 @@
 package com.mkreidl.ephemeris.sky
 
 import com.mkreidl.ephemeris.Distance
-import com.mkreidl.ephemeris.Position
-import com.mkreidl.ephemeris.Time
+import com.mkreidl.ephemeris.MILLIS_PER_HOUR
+import com.mkreidl.ephemeris.MILLIS_PER_SIDEREAL_DAY
 import com.mkreidl.ephemeris.solarsystem.Body
-import com.mkreidl.ephemeris.solarsystem.FullSolarSystem
 import com.mkreidl.ephemeris.time.Instant
+import com.mkreidl.math.Spherical3
 
-class PlanetRiseSetCalculator private constructor(private val solarSystem: FullSolarSystem, private val body: Body) : RiseSetCalculator() {
-    private val position = Position()
+class PlanetRiseSetCalculator(
+        private val body: Body,
+        geographicLocation: Spherical3,
+        mode: EventType,
+        private val lookupDirection: LookupDirection
+) : RiseSetCalculator(geographicLocation, mode, lookupDirection) {
 
     private var timeMillisPrevious: Long = 0
 
@@ -21,31 +25,32 @@ class PlanetRiseSetCalculator private constructor(private val solarSystem: FullS
         this.precisionMs = precisionMs
     }
 
-    override fun compute(timeMillisStart: Long): Boolean {
-        time = timeMillisStart
+    override fun compute(startTimeEpochMilli: Long): Boolean {
+        start = Instant.ofEpochMilli(startTimeEpochMilli)
         isVisibleNow = null
         for (n in 0 until MAX_ITERATION) {
-            timeMillisPrevious = current.epochMilli
+            timeMillisPrevious = topos.instant.epochMilli
             computeTopocentricPosition()
             if (!isCrossing || !adjustTime())
-                if (mode === RiseSetCalculator.EventType.RISE && hasAppeared() || mode === RiseSetCalculator.EventType.SET && hasVanished())
-                    current = Instant.ofEpochMilli((current.epochMilli + timeMillisPrevious) / 2)
-                else
+                if (mode === RiseSetCalculator.EventType.RISE && hasAppeared() || mode === RiseSetCalculator.EventType.SET && hasVanished()) {
+                    topos = topos.copy(instant = Instant.ofEpochMilli((topos.instant.epochMilli + timeMillisPrevious) / 2))
+                } else {
                     return compute(searchOrbitCrossingHorizon())
-            if (Math.abs(current.epochMilli - timeMillisPrevious) < precisionMs)
+                }
+            if (Math.abs(topos.instant.epochMilli - timeMillisPrevious) < precisionMs)
                 return true
         }
         return false
     }
 
     private fun searchOrbitCrossingHorizon(): Long {
-        var searchIncrement = 30 * Time.MILLIS_PER_SIDEREAL_DAY * (if (getLookupDirection() === RiseSetCalculator.LookupDirection.FORWARD) 1 else -1).toLong()
+        var searchIncrement = 30 * MILLIS_PER_SIDEREAL_DAY * (if (lookupDirection == RiseSetCalculator.LookupDirection.FORWARD) 1 else -1)
         while (!isCrossing) {
-            timeMillisPrevious = current.epochMilli
-            current = current.addMillis(searchIncrement)
+            timeMillisPrevious = topos.instant.epochMilli
+            current = topos.instant.addMillis(searchIncrement.toLong())
             computeTopocentricPosition()
         }
-        while (Math.abs(searchIncrement) > Time.MILLIS_PER_HOUR) {
+        while (Math.abs(searchIncrement) > MILLIS_PER_HOUR) {
             if (!isCrossing)
                 timeMillisPrevious = current.epochMilli
             searchIncrement /= 2
@@ -68,19 +73,11 @@ class PlanetRiseSetCalculator private constructor(private val solarSystem: FullS
         isCrossing = isCrossing()
     }
 
-    private fun hasAppeared(): Boolean {
-        return wasVisibleBefore != null && isVisibleNow!! && (!wasVisibleBefore)!!
-    }
+    private fun hasAppeared() = wasVisibleBefore != null && isVisibleNow!! && (!wasVisibleBefore)!!
 
-    private fun hasVanished(): Boolean {
-        return wasVisibleBefore != null && (!isVisibleNow)!! && wasVisibleBefore!!
-    }
+    private fun hasVanished() = wasVisibleBefore != null && (!isVisibleNow)!! && wasVisibleBefore!!
 
     companion object {
-        private val MAX_ITERATION = 5
-
-        fun of(solarSystem: FullSolarSystem, body: Body): PlanetRiseSetCalculator {
-            return PlanetRiseSetCalculator(solarSystem, body)
-        }
+        private const val MAX_ITERATION = 5
     }
 }

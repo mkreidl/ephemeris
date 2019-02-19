@@ -16,26 +16,26 @@ public class MoonRiseSetTest extends PlanetRiseSetTest
 {
     private static final Object[][] EVENTS = {
             // https://www.timeanddate.com/sun/germany/munich
-            {MUNICH, "2018-05-02 00:00 +0200", RiseSetCalculator.LookupDirection.BACKWARD, RiseSetCalculator.EventType.SET, "2018-05-1 07:05 +0200"},
-            {MUNICH, "2018-05-02 00:00 +0200", RiseSetCalculator.LookupDirection.BACKWARD, RiseSetCalculator.EventType.RISE, "2018-05-1 21:56 +0200"},
-            {MUNICH, "2018-05-01 00:00 +0200", RiseSetCalculator.LookupDirection.FORWARD, RiseSetCalculator.EventType.SET, "2018-05-1 07:05 +0200"},
-            {MUNICH, "2018-05-01 00:00 +0200", RiseSetCalculator.LookupDirection.FORWARD, RiseSetCalculator.EventType.RISE, "2018-05-1 21:56 +0200"},
+            {Companion.getMUNICH(), "2018-05-02 00:00 +0200", RiseSetCalculator.LookupDirection.BACKWARD, RiseSetCalculator.EventType.SET, "2018-05-1 07:05 +0200"},
+            {Companion.getMUNICH(), "2018-05-02 00:00 +0200", RiseSetCalculator.LookupDirection.BACKWARD, RiseSetCalculator.EventType.RISE, "2018-05-1 21:56 +0200"},
+            {Companion.getMUNICH(), "2018-05-01 00:00 +0200", RiseSetCalculator.LookupDirection.FORWARD, RiseSetCalculator.EventType.SET, "2018-05-1 07:05 +0200"},
+            {Companion.getMUNICH(), "2018-05-01 00:00 +0200", RiseSetCalculator.LookupDirection.FORWARD, RiseSetCalculator.EventType.RISE, "2018-05-1 21:56 +0200"},
 
-            {MUNICH, "2018-05-04 00:00 +0200", RiseSetCalculator.LookupDirection.BACKWARD, RiseSetCalculator.EventType.RISE, "2018-05-03 23:55 +0200"},
-            {MUNICH, "2018-05-04 00:00 +0200", RiseSetCalculator.LookupDirection.BACKWARD, RiseSetCalculator.EventType.SET, "2018-05-03 08:15 +0200"},
-            {MUNICH, "2018-05-04 00:00 +0200", RiseSetCalculator.LookupDirection.FORWARD, RiseSetCalculator.EventType.SET, "2018-05-04 08:57 +0200"},
-            {MUNICH, "2018-05-04 00:00 +0200", RiseSetCalculator.LookupDirection.FORWARD, RiseSetCalculator.EventType.RISE, "2018-05-05 00:46 +0200"},
+            {Companion.getMUNICH(), "2018-05-04 00:00 +0200", RiseSetCalculator.LookupDirection.BACKWARD, RiseSetCalculator.EventType.RISE, "2018-05-03 23:55 +0200"},
+            {Companion.getMUNICH(), "2018-05-04 00:00 +0200", RiseSetCalculator.LookupDirection.BACKWARD, RiseSetCalculator.EventType.SET, "2018-05-03 08:15 +0200"},
+            {Companion.getMUNICH(), "2018-05-04 00:00 +0200", RiseSetCalculator.LookupDirection.FORWARD, RiseSetCalculator.EventType.SET, "2018-05-04 08:57 +0200"},
+            {Companion.getMUNICH(), "2018-05-04 00:00 +0200", RiseSetCalculator.LookupDirection.FORWARD, RiseSetCalculator.EventType.RISE, "2018-05-05 00:46 +0200"},
 
-            {MUNICH, "2018-05-18 00:00 +0200", RiseSetCalculator.LookupDirection.BACKWARD, RiseSetCalculator.EventType.RISE, "2018-05-17 07:21 +0200"},
-            {MUNICH, "2018-05-18 00:00 +0200", RiseSetCalculator.LookupDirection.BACKWARD, RiseSetCalculator.EventType.SET, "2018-05-17 23:06 +0200"},
-            {MUNICH, "2018-05-18 00:00 +0200", RiseSetCalculator.LookupDirection.FORWARD, RiseSetCalculator.EventType.RISE, "2018-05-18 08:14 +0200"},
-            {MUNICH, "2018-05-18 00:00 +0200", RiseSetCalculator.LookupDirection.FORWARD, RiseSetCalculator.EventType.SET, "2018-05-19 00:09 +0200"},
+            {Companion.getMUNICH(), "2018-05-18 00:00 +0200", RiseSetCalculator.LookupDirection.BACKWARD, RiseSetCalculator.EventType.RISE, "2018-05-17 07:21 +0200"},
+            {Companion.getMUNICH(), "2018-05-18 00:00 +0200", RiseSetCalculator.LookupDirection.BACKWARD, RiseSetCalculator.EventType.SET, "2018-05-17 23:06 +0200"},
+            {Companion.getMUNICH(), "2018-05-18 00:00 +0200", RiseSetCalculator.LookupDirection.FORWARD, RiseSetCalculator.EventType.RISE, "2018-05-18 08:14 +0200"},
+            {Companion.getMUNICH(), "2018-05-18 00:00 +0200", RiseSetCalculator.LookupDirection.FORWARD, RiseSetCalculator.EventType.SET, "2018-05-19 00:09 +0200"},
 
             // https://www.timeanddate.com/sun/australia/sydney
-            {SYDNEY, "2018-05-09 00:00 +1000", RiseSetCalculator.LookupDirection.BACKWARD, RiseSetCalculator.EventType.RISE, "2018-05-08 23:54 +1000"},
-            {SYDNEY, "2018-05-09 00:00 +1000", RiseSetCalculator.LookupDirection.BACKWARD, RiseSetCalculator.EventType.SET, "2018-05-08 12:58 +1000"},
-            {SYDNEY, "2018-05-09 00:00 +1000", RiseSetCalculator.LookupDirection.FORWARD, RiseSetCalculator.EventType.RISE, "2018-05-10 00:49 +1000"},
-            {SYDNEY, "2018-05-09 00:00 +1000", RiseSetCalculator.LookupDirection.FORWARD, RiseSetCalculator.EventType.SET, "2018-05-09 13:35 +1000"},
+            {Companion.getSYDNEY(), "2018-05-09 00:00 +1000", RiseSetCalculator.LookupDirection.BACKWARD, RiseSetCalculator.EventType.RISE, "2018-05-08 23:54 +1000"},
+            {Companion.getSYDNEY(), "2018-05-09 00:00 +1000", RiseSetCalculator.LookupDirection.BACKWARD, RiseSetCalculator.EventType.SET, "2018-05-08 12:58 +1000"},
+            {Companion.getSYDNEY(), "2018-05-09 00:00 +1000", RiseSetCalculator.LookupDirection.FORWARD, RiseSetCalculator.EventType.RISE, "2018-05-10 00:49 +1000"},
+            {Companion.getSYDNEY(), "2018-05-09 00:00 +1000", RiseSetCalculator.LookupDirection.FORWARD, RiseSetCalculator.EventType.SET, "2018-05-09 13:35 +1000"},
     };
 
     @Parameters( name = "{0} {1} {2} {3} {4}" )

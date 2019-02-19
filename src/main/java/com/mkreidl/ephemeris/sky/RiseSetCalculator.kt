@@ -7,7 +7,7 @@ import com.mkreidl.math.*
 
 abstract class RiseSetCalculator(
         private val geographicLocation: Spherical3,
-        private val mode: EventType,
+        protected val mode: EventType,
         private val lookupDirection: LookupDirection
 ) {
 
