@@ -23,8 +23,7 @@ class StarRiseSetCalculator(
 
     override fun compute(startTimeEpochMilli: Long): Boolean {
         start = Instant.ofEpochMilli(startTimeEpochMilli)
-        val meanEquatorial = stars.computeMeanEquatorial(starIndex, topos.instant)
-        topocentric = topos.computeTopocentricFromMeanEquatorial(meanEquatorial)
+        topocentric = stars.computeTrueEquatorial(starIndex, topos.instant)
         val isCrossing = isCrossing()
         if (isCrossing)
             adjustTime()

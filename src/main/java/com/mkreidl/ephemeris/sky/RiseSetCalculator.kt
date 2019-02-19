@@ -5,7 +5,11 @@ import com.mkreidl.ephemeris.SIDEREAL_MILLIS_PER_RADIAN
 import com.mkreidl.ephemeris.time.Instant
 import com.mkreidl.math.*
 
-abstract class RiseSetCalculator(val geographicLocation: Spherical3, val mode: EventType, val lookupDirection: LookupDirection) {
+abstract class RiseSetCalculator(
+        private val geographicLocation: Spherical3,
+        private val mode: EventType,
+        private val lookupDirection: LookupDirection
+) {
 
     enum class EventType(internal val signum: Double) {
         RISE(-1.0),
@@ -18,15 +22,17 @@ abstract class RiseSetCalculator(val geographicLocation: Spherical3, val mode: E
         BACKWARD
     }
 
+    val time get() = topos.instant
+
     private val projection = if (geographicLocation.lat >= 0) Stereographic.N else Stereographic.S
 
-    protected var virtualHorizonDeg = OPTICAL_HORIZON_DEG
+    private var virtualHorizonDeg = OPTICAL_HORIZON_DEG
     protected lateinit var topos: Topos
 
     protected var start = Instant.J2000
         set(start) {
             field = start
-            topos = topos.copy(instant = start)
+            topos = Topos.of(geographicLocation, start)
         }
 
     private lateinit var horizon: Circle
