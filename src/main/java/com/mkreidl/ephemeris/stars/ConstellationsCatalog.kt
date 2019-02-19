@@ -1,6 +1,6 @@
 package com.mkreidl.ephemeris.stars
 
-object Constellations {
+object ConstellationsCatalog {
 
     fun findByName(name: String) = ALL.find { it.name == name }
 

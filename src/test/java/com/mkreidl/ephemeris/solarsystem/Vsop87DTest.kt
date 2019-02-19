@@ -16,7 +16,6 @@ class Vsop87DTest(planet: Planet, dataSet: AbstractVsop87Test.DataSet) : Abstrac
     private val expectedPos = Spherical3(dataSet.coordinates[2], dataSet.coordinates[0], dataSet.coordinates[1])
     private val expectedVel = Vector3(dataSet.coordinates[5], dataSet.coordinates[3], dataSet.coordinates[4])
 
-    @Throws(IllegalArgumentException::class)
     @Test
     fun testModel() {
         val model: ModelVsop87.LBR = when (planet) {
