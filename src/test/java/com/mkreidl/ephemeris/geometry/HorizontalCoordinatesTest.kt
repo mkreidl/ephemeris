@@ -1,10 +1,10 @@
 package com.mkreidl.ephemeris.geometry
 
-import com.mkreidl.ephemeris.time.Instant
 import com.mkreidl.ephemeris.sky.coordinates.Equatorial
 import com.mkreidl.ephemeris.sky.coordinates.Horizontal
 import com.mkreidl.ephemeris.solarsystem.Body
 import com.mkreidl.ephemeris.solarsystem.FullSolarSystem
+import com.mkreidl.ephemeris.time.Instant
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -22,10 +22,7 @@ class HorizontalCoordinatesTest {
     private val cartesian = Horizontal.Cart()
     private val spherical = Horizontal.Sphe()
 
-    private val geographicLocation = Spherical(
-            Body.EARTH.RADIUS_MEAN_M,
-            11.5820 * Angle.DEG, 48.1351 * Angle.DEG
-    )
+    private val geographicLocation = Spherical(Body.EARTH.RADIUS_MEAN_M, Math.toRadians(11.5820), Math.toRadians(48.1351))
 
     private val instant = Instant.ofEpochMilli(GregorianCalendar(TimeZone.getTimeZone("UTC"))
             .apply { set(2016, 10, 10, 8, 0, 0)  /* 2016.11.10 08:00:00*/ }

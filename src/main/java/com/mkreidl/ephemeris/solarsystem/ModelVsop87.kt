@@ -5,7 +5,9 @@ import com.mkreidl.ephemeris.MILLENNIA_PER_SECOND
 import com.mkreidl.ephemeris.time.Instant
 import com.mkreidl.math.*
 
-abstract class ModelVsop87(private val coefficients: Array<Array<Array<DoubleArray>>>) : OrbitalModel {
+typealias Vsop87Series = Array<Array<Array<DoubleArray>>>
+
+abstract class ModelVsop87(private val coefficients: Vsop87Series) : OrbitalModel {
 
     override val type = OrbitalModel.Type.HELIOCENTRIC
     override val distanceUnit = Distance.AU
@@ -33,11 +35,15 @@ abstract class ModelVsop87(private val coefficients: Array<Array<Array<DoubleArr
         }
     }
 
-    private fun cosSeries(dim: Int, n: Int, time: Double) = coefficients[dim][n].map { it[0] * Math.cos(it[1] + it[2] * time) }.sum()
+    private fun cosSeries(dim: Int, n: Int, time: Double) = coefficients[dim][n]
+            .map { it[0] * Math.cos(it[1] + it[2] * time) }
+            .sum()
 
-    private fun sinSeries(dim: Int, n: Int, time: Double) = coefficients[dim][n].map { -it[0] * it[2] * Math.sin(it[1] + it[2] * time) }.sum()
+    private fun sinSeries(dim: Int, n: Int, time: Double) = coefficients[dim][n]
+            .map { -it[0] * it[2] * Math.sin(it[1] + it[2] * time) }
+            .sum()
 
-    open class XYZ(coefficients: Array<Array<Array<DoubleArray>>>) : ModelVsop87(coefficients) {
+    open class XYZ(coefficients: Vsop87Series) : ModelVsop87(coefficients) {
 
         final override var phase = PhaseCartesian.ZERO
             private set
@@ -51,7 +57,7 @@ abstract class ModelVsop87(private val coefficients: Array<Array<Array<DoubleArr
         }
     }
 
-    open class LBR(coefficients: Array<Array<Array<DoubleArray>>>) : ModelVsop87(coefficients) {
+    open class LBR(coefficients: Vsop87Series) : ModelVsop87(coefficients) {
 
         final override var phase = PhaseSpherical.ZERO
             private set

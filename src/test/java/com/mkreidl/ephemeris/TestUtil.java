@@ -57,7 +57,7 @@ public class TestUtil {
         Matcher m = lonPattern.matcher(LonLatRADecl.substring(15, 29));
         m.find();
         final double longitude = Sexagesimal.Companion.parse(m.group(1), m.group(3), m.group(4)).toDecimal()
-                + Math.toDegrees(Zodiac.getLongitude(Zodiac.Sign.valueOf(m.group(2).toUpperCase())));
+                + Zodiac.Companion.getLongitude(Zodiac.Sign.valueOf(m.group(2).toUpperCase())).getDegrees();
         position.longitude = Angle.Companion.ofDeg(longitude);
         position.retrograde = m.group(5).equals("R");
 
