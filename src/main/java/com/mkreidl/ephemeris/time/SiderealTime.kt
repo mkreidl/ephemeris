@@ -39,7 +39,7 @@ class SiderealTime(private val instant: Instant) {
             }.timeInMillis)
 
     companion object {
-        fun ofEpochMilli(epochMilli: Long) = SiderealTime(Instant(epochMilli))
+        fun ofEpochMilli(epochMilli: Long) = SiderealTime(Instant.ofEpochMilli(epochMilli))
 
         private infix fun Instant.hoursFrom(instant: Instant) = (epochMilli - instant.epochMilli) * HOURS_PER_MILLI
         private infix fun Instant.siderealHoursFrom(instant: Instant) = (epochMilli - instant.epochMilli) * SIDEREAL_HOURS_PER_MILLI

@@ -2,28 +2,17 @@ package com.mkreidl.ephemeris.sky
 
 import com.mkreidl.ephemeris.stars.BrightStarCatalog
 import com.mkreidl.ephemeris.stars.Stars
-import com.mkreidl.ephemeris.time.Instant
-import com.mkreidl.math.Spherical3
 
-class StarRiseSetCalculator(
-        private val starIndex: Int,
-        geographicLocation: Spherical3,
-        mode: EventType,
-        lookupDirection: LookupDirection
-) : RiseSetCalculator(geographicLocation, mode, lookupDirection) {
+class StarRiseSetCalculator(private val starIndex: Int, mode: EventType, lookupDirection: LookupDirection)
+    : RiseSetCalculator(mode, lookupDirection) {
 
-    constructor(
-            starName: String,
-            geographicLocation: Spherical3,
-            mode: EventType,
-            lookupDirection: LookupDirection
-    ) : this(BrightStarCatalog.findIndexByName(starName), geographicLocation, mode, lookupDirection)
+    constructor(starName: String, mode: EventType, lookupDirection: LookupDirection)
+            : this(BrightStarCatalog.findIndexByName(starName), mode, lookupDirection)
 
     private val stars = Stars(BrightStarCatalog.INSTANCE)
 
-    override fun compute(startTimeEpochMilli: Long): Boolean {
-        start = Instant.ofEpochMilli(startTimeEpochMilli)
-        topocentric = stars.computeTrueEquatorial(starIndex, topos.instant)
+    override fun compute(): Boolean {
+        topocentric = stars.computeTrueEquatorial(starIndex, time)
         val isCrossing = isCrossing()
         if (isCrossing)
             adjustTime()

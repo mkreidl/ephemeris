@@ -9,7 +9,7 @@ import com.mkreidl.math.times
 
 val PhaseCartesian.retrograde get() = position.x * velocity.y - position.y * velocity.x < 0
 
-class FullSolarSystem(private val models: Map<Body, OrbitalModel>) {
+class SolarSystem(private val models: Map<Body, OrbitalModel>) {
 
     private val eclipticalHeliocentric = mutableMapOf(Body.SUN to PhaseCartesian.ZERO)
     private val eclipticalGeocentric = mutableMapOf(Body.EARTH to PhaseCartesian.ZERO)
@@ -112,7 +112,8 @@ class FullSolarSystem(private val models: Map<Body, OrbitalModel>) {
     private fun getElongationSign(body: Body, topos: Topos) = Math.signum(getElongationRadians(body, topos).radians)
 
     companion object {
-        fun createFromMeeus() = FullSolarSystem(mapOf(
+        fun createFromMeeus() = SolarSystem(mapOf(
+                Body.SUN to SUN,
                 Body.MERCURY to MercuryMeeus(),
                 Body.VENUS to VenusMeeus(),
                 Body.EARTH to EarthMeeus(),
@@ -124,5 +125,12 @@ class FullSolarSystem(private val models: Map<Body, OrbitalModel>) {
                 Body.MOON to ModelMoon(),
                 Body.PLUTO to ModelPluto()
         ))
+
+        private object SUN : OrbitalModel {
+            override val type = OrbitalModel.Type.HELIOCENTRIC
+            override val distanceUnit = Distance.AU
+            override val phase = PhaseCartesian.ZERO
+            override fun compute(instant: Instant) = phase
+        }
     }
 }

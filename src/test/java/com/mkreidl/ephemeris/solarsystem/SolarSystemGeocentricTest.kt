@@ -56,7 +56,7 @@ class SolarSystemGeocentricTest(testname: String, private val body: Body, privat
             Body.PLUTO -> 0.8 * Angle.minute
             else -> 0.8 * Angle.minute
         }.radians
-        val solarSystem = FullSolarSystem(modelsMeeus)
+        val solarSystem = SolarSystem(modelsMeeus)
         solarSystem.compute(instant)
         test(solarSystem)
     }
@@ -68,12 +68,12 @@ class SolarSystemGeocentricTest(testname: String, private val body: Body, privat
             Body.PLUTO -> 0.8 * Angle.minute  // = 48 sec
             else -> 12.0 * Angle.second  // = 12 sec
         }.radians
-        val solarSystem = FullSolarSystem(modelsVsop87)
+        val solarSystem = SolarSystem(modelsVsop87)
         solarSystem.compute(instant)
         test(solarSystem)
     }
 
-    private fun test(solarSystem: FullSolarSystem) {
+    private fun test(solarSystem: SolarSystem) {
         val ecliptical = solarSystem.getTrueEclipticalGeocentric(body).position.spherical
         val equatorial = solarSystem.getTrueEquatorialGeocentric(body).position.spherical
 

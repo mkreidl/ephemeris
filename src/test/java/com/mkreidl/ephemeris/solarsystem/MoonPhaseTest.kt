@@ -11,7 +11,7 @@ import org.junit.runners.Parameterized.Parameters
 
 @RunWith(Parameterized::class)
 class MoonPhaseTest(testname: String, private val body: Body, private val instant: Instant, private val expected: EphemerisData) {
-    private val solarSystem = FullSolarSystem.createFromMeeus()
+    private val solarSystem = SolarSystem.createFromMeeus()
 
     @Test
     fun testMoonPhase() {

@@ -1,81 +1,71 @@
 package com.mkreidl.ephemeris.sky
 
-import com.mkreidl.ephemeris.Distance
 import com.mkreidl.ephemeris.MILLIS_PER_HOUR
 import com.mkreidl.ephemeris.MILLIS_PER_SIDEREAL_DAY
 import com.mkreidl.ephemeris.solarsystem.Body
+import com.mkreidl.ephemeris.solarsystem.SolarSystem
 import com.mkreidl.ephemeris.time.Instant
-import com.mkreidl.math.Spherical3
 
 class PlanetRiseSetCalculator(
+        private val solarSystem: SolarSystem,
         private val body: Body,
-        geographicLocation: Spherical3,
         mode: EventType,
-        private val lookupDirection: LookupDirection
-) : RiseSetCalculator(geographicLocation, mode, lookupDirection) {
+        lookupDirection: LookupDirection
+) : RiseSetCalculator(mode, lookupDirection) {
 
-    private var timeMillisPrevious: Long = 0
-
+    private var timeMillisPrevious = 0L
     private var wasVisibleBefore: Boolean? = null
-    private var isVisibleNow: Boolean? = null
-    private var isCrossing: Boolean = false
-    private var precisionMs: Long = 1000
+    private var isVisibleNow = false
+    private var crossing = false
+    private var precisionMs = 1000L
 
-    fun setPrecision(precisionMs: Long) {
-        this.precisionMs = precisionMs
-    }
-
-    override fun compute(startTimeEpochMilli: Long): Boolean {
-        start = Instant.ofEpochMilli(startTimeEpochMilli)
-        isVisibleNow = null
+    override fun compute(): Boolean {
         for (n in 0 until MAX_ITERATION) {
-            timeMillisPrevious = topos.instant.epochMilli
+            timeMillisPrevious = time.epochMilli
             computeTopocentricPosition()
-            if (!isCrossing || !adjustTime())
-                if (mode === RiseSetCalculator.EventType.RISE && hasAppeared() || mode === RiseSetCalculator.EventType.SET && hasVanished()) {
-                    topos = topos.copy(instant = Instant.ofEpochMilli((topos.instant.epochMilli + timeMillisPrevious) / 2))
+            if (!crossing || !adjustTime())
+                if (mode == RiseSetCalculator.EventType.RISE && hasAppeared() || mode == RiseSetCalculator.EventType.SET && hasVanished()) {
+                    time = Instant.ofEpochMilli((time.epochMilli + timeMillisPrevious) / 2)
                 } else {
-                    return compute(searchOrbitCrossingHorizon())
+                    searchOrbitCrossingHorizon()
+                    return compute()
                 }
-            if (Math.abs(topos.instant.epochMilli - timeMillisPrevious) < precisionMs)
+            if (Math.abs(time.epochMilli - timeMillisPrevious) < precisionMs) {
                 return true
+            }
+            wasVisibleBefore = isVisibleNow
         }
         return false
     }
 
-    private fun searchOrbitCrossingHorizon(): Long {
-        var searchIncrement = 30 * MILLIS_PER_SIDEREAL_DAY * (if (lookupDirection == RiseSetCalculator.LookupDirection.FORWARD) 1 else -1)
-        while (!isCrossing) {
-            timeMillisPrevious = topos.instant.epochMilli
-            current = topos.instant.addMillis(searchIncrement.toLong())
+    private fun searchOrbitCrossingHorizon() {
+        var searchIncrement = (30 * MILLIS_PER_SIDEREAL_DAY * lookupDirection.sign).toLong()
+        while (!crossing) {
+            timeMillisPrevious = time.epochMilli
+            startTime = time.addMillis(searchIncrement)
             computeTopocentricPosition()
         }
         while (Math.abs(searchIncrement) > MILLIS_PER_HOUR) {
-            if (!isCrossing)
-                timeMillisPrevious = current.epochMilli
+            if (!crossing)
+                timeMillisPrevious = startTime.epochMilli
             searchIncrement /= 2
-            current = Instant.ofEpochMilli(timeMillisPrevious + searchIncrement)
+            startTime = Instant.ofEpochMilli(timeMillisPrevious + searchIncrement)
             computeTopocentricPosition()
         }
-        return current.epochMilli
     }
 
     private fun computeTopocentricPosition() {
-        wasVisibleBefore = isVisibleNow
-        solarSystem.computeSingle(current, Body.EARTH)
-        solarSystem.compute(time, body)
-        solarSystem.getEphemerides(body, position)
-        position.setTimeLocation(time, geographicLocation)
-        position.get(topocentric, Position.CoordinatesCenter.TOPOCENTRIC)
-        val apparentRadius = body.RADIUS_MEAN_M / topocentric.distance(Distance.m)
-        virtualHorizonDeg = RiseSetCalculator.OPTICAL_HORIZON_DEG - Math.toDegrees(apparentRadius)
-        isVisibleNow = topocentric.lat >= getVirtualHorizonDeg()
-        isCrossing = isCrossing()
+        solarSystem.computeSingle(time, body = body)
+        val geocentric = solarSystem.getTrueEquatorialGeocentric(body).position
+        topocentric = topos.computeTopocentricFromTrueEquatorial(geocentric).spherical
+        virtualHorizon = RiseSetCalculator.OPTICAL_HORIZON - body.RADIUS_MEAN_M / topocentric.dst
+        isVisibleNow = topocentric.lat >= virtualHorizon
+        crossing = isCrossing()
     }
 
-    private fun hasAppeared() = wasVisibleBefore != null && isVisibleNow!! && (!wasVisibleBefore)!!
+    private fun hasAppeared() = wasVisibleBefore == false && isVisibleNow
 
-    private fun hasVanished() = wasVisibleBefore != null && (!isVisibleNow)!! && wasVisibleBefore!!
+    private fun hasVanished() = wasVisibleBefore == true && !isVisibleNow
 
     companion object {
         private const val MAX_ITERATION = 5

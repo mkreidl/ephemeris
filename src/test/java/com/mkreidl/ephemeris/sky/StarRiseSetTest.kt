@@ -1,9 +1,9 @@
 package com.mkreidl.ephemeris.sky
 
 import com.mkreidl.ephemeris.sky.RiseSetCalculator.EventType
+import com.mkreidl.ephemeris.time.Instant
 import com.mkreidl.math.Spherical3
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
+import org.junit.Assert.*
 import org.junit.Test
 import java.text.SimpleDateFormat
 import java.util.*
@@ -12,36 +12,71 @@ class StarRiseSetTest {
 
     @Test
     fun testPolarisRise() {
-        val polaris = StarRiseSetCalculator("Polaris", MUNICH, EventType.RISE, RiseSetCalculator.LookupDirection.FORWARD)
-        assertFalse(polaris.compute(0))
+        val calculator = StarRiseSetCalculator("Polaris", EventType.RISE, RiseSetCalculator.LookupDirection.FORWARD)
+
+        calculator.geographicLocation = MUNICH
+        calculator.setStartTimeEpochMilli(0)
+        assertFalse(calculator.compute())
     }
 
     @Test
     fun testPolarisSet() {
-        val polaris = StarRiseSetCalculator("Polaris", MUNICH, EventType.SET, RiseSetCalculator.LookupDirection.FORWARD)
-        assertFalse(polaris.compute(0))
+        val calculator = StarRiseSetCalculator("Polaris", EventType.SET, RiseSetCalculator.LookupDirection.FORWARD)
+
+        calculator.geographicLocation = MUNICH
+        calculator.setStartTimeEpochMilli(0)
+        assertFalse(calculator.compute())
+    }
+
+    @Test
+    fun testPolarisTransit() {
+        val startTime = dateFormat.parse("2018-05-09 00:00 +0200").time
+        val eventTimeExpected = dateFormat.parse("2018-05-09 12:59 +0200").time
+        val calculator = StarRiseSetCalculator("Polaris", EventType.TRANSIT, RiseSetCalculator.LookupDirection.FORWARD)
+
+        calculator.geographicLocation = MUNICH
+        calculator.setStartTimeEpochMilli(startTime)
+        assertTrue(calculator.compute())
+        PlanetRiseSetTest.assert(calculator, eventTimeExpected, 40_000)
     }
 
     @Test
     fun testSiriusSet() {
         val startTime = dateFormat.parse("2018-05-07 12:00 +0200").time
         val eventTimeExpected = dateFormat.parse("2018-05-07 21:43 +0200").time
-        val sirius = StarRiseSetCalculator("Sirius", MUNICH, EventType.SET, RiseSetCalculator.LookupDirection.FORWARD)
-        assertTrue(sirius.compute(startTime))
-        val eventTimeCalculated = sirius.time.epochMilli
-        println("Expected: ${dateFormat.format(Date(eventTimeExpected))}; Actual: ${dateFormat.format(Date(eventTimeCalculated + 30_000))}")
-        assertTrue(Math.abs(eventTimeCalculated - eventTimeExpected) < 30_000)
+        val calculator = StarRiseSetCalculator("Sirius", EventType.SET, RiseSetCalculator.LookupDirection.FORWARD)
+
+        calculator.geographicLocation = MUNICH
+        calculator.setStartTimeEpochMilli(startTime)
+
+        assertTrue(calculator.compute())
+        PlanetRiseSetTest.assert(calculator, eventTimeExpected, 30_000)
     }
 
     @Test
     fun testSiriusRise() {
         val startTime = dateFormat.parse("2018-05-08 00:00 +0200").time
         val eventTimeExpected = dateFormat.parse("2018-05-08 12:10 +0200").time
-        val sirius = StarRiseSetCalculator("Sirius", MUNICH, EventType.RISE, RiseSetCalculator.LookupDirection.FORWARD)
-        assertTrue(sirius.compute(startTime))
-        val eventTimeCalculated = sirius.time.epochMilli
-        println("Expected: ${dateFormat.format(Date(eventTimeExpected))}; Actual: ${dateFormat.format(Date(eventTimeCalculated + 30_000))}")
-        assertTrue(Math.abs(eventTimeCalculated - eventTimeExpected) < 30_000)
+        val calculator = StarRiseSetCalculator("Sirius", EventType.RISE, RiseSetCalculator.LookupDirection.FORWARD)
+
+        calculator.geographicLocation = MUNICH
+        calculator.setStartTimeEpochMilli(startTime)
+
+        assertTrue(calculator.compute())
+        PlanetRiseSetTest.assert(calculator, eventTimeExpected, 30_000)
+    }
+
+    @Test
+    fun testSiriusTransit() {
+        val startTime = dateFormat.parse("2018-05-08 00:00 +0200").time
+        val eventTimeExpected = dateFormat.parse("2018-05-08 16:54 +0200").time
+        val calculator = StarRiseSetCalculator("Sirius", EventType.TRANSIT, RiseSetCalculator.LookupDirection.FORWARD)
+
+        calculator.geographicLocation = MUNICH
+        calculator.setStartTimeEpochMilli(startTime)
+
+        assertTrue(calculator.compute())
+        PlanetRiseSetTest.assert(calculator, eventTimeExpected, 30_000)
     }
 
     companion object {

@@ -49,11 +49,9 @@ data class Topos internal constructor(val longitude: Double, val latitude: Doubl
     fun computeTopocentricFromTrueEquatorial(geocentric: Spherical3) = (geocentric.cartesian - trueEquatorial).spherical
 
     companion object {
-
-        fun of(location: Spherical3, instant: Instant) =
-                Topos(location.lon, location.lat, instant)
+        fun of(location: Spherical3, instant: Instant) = Topos(location.lon, location.lat, instant)
 
         fun of(longitudeDeg: Double, latitudeDeg: Double, epochMilli: Long) =
-                Topos(Math.toRadians(longitudeDeg), Math.toRadians(latitudeDeg), Instant(epochMilli))
+                Topos(Math.toRadians(longitudeDeg), Math.toRadians(latitudeDeg), Instant.ofEpochMilli(epochMilli))
     }
 }

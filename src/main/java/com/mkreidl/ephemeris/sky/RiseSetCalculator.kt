@@ -3,71 +3,79 @@ package com.mkreidl.ephemeris.sky
 import com.mkreidl.ephemeris.MILLIS_PER_SIDEREAL_DAY
 import com.mkreidl.ephemeris.SIDEREAL_MILLIS_PER_RADIAN
 import com.mkreidl.ephemeris.time.Instant
-import com.mkreidl.math.*
+import com.mkreidl.math.Angle
+import com.mkreidl.math.Circle
+import com.mkreidl.math.Spherical3
+import com.mkreidl.math.Stereographic
 
-abstract class RiseSetCalculator(
-        private val geographicLocation: Spherical3,
-        protected val mode: EventType,
-        private val lookupDirection: LookupDirection
-) {
+abstract class RiseSetCalculator(protected val mode: EventType, protected val lookupDirection: LookupDirection) {
 
-    enum class EventType(internal val signum: Double) {
+    enum class EventType(internal val sign: Double) {
         RISE(-1.0),
         TRANSIT(0.0),
         SET(1.0)
     }
 
-    enum class LookupDirection {
-        FORWARD,
-        BACKWARD
+    enum class LookupDirection(internal val sign: Int) {
+        FORWARD(1),
+        BACKWARD(-1)
     }
 
-    val time get() = topos.instant
+    abstract fun compute(): Boolean
 
-    private val projection = if (geographicLocation.lat >= 0) Stereographic.N else Stereographic.S
-
-    private var virtualHorizonDeg = OPTICAL_HORIZON_DEG
-    protected lateinit var topos: Topos
-
-    protected var start = Instant.J2000
-        set(start) {
-            field = start
-            topos = Topos.of(geographicLocation, start)
-        }
-
+    protected var topos = Topos(0.0, 0.0, Instant.J2000)
+    private var projection = Stereographic.N
     private lateinit var horizon: Circle
 
-    protected var topocentric = Spherical3.ZERO
+    var geographicLocation = Spherical3.ZERO
+        set(location) {
+            field = location
+            topos = topos.copy(longitude = location.lon, latitude = location.lat)
+            projection = if (geographicLocation.lat >= 0) Stereographic.N else Stereographic.S
+        }
 
-    internal fun isCrossing() = mode == EventType.TRANSIT || !completelyAboveHorizon() && !completelyBelowHorizon()
+    var time = Instant.J2000
+        protected set(time) {
+            field = time
+            topos = topos.copy(instant = time)
+        }
 
-    abstract fun compute(startTimeMs: Long): Boolean
+    protected var startTime = Instant.J2000
+        set(startTime) {
+            field = startTime
+            time = startTime
+        }
 
-    private fun computeHourAngle() = topos.localTrueSiderealTime - Angle.ofRad(topocentric.lon)
-
-    private fun completelyAboveHorizon() =
-            Math.abs(Math.toDegrees(geographicLocation.lat + topocentric.lat)) >= 90 + virtualHorizonDeg
-
-    private fun completelyBelowHorizon() =
-            Math.abs(Math.toDegrees(geographicLocation.lat - topocentric.lat)) >= 90 - virtualHorizonDeg
-
-    internal fun adjustTime(): Boolean {
-        horizon = projection.project(geographicLocation, Math.toRadians(90 - virtualHorizonDeg))
-        val alpha = mode.signum * computeHourAngleAtSet() - computeHourAngle()
-        var update = topos.instant.addMillis((alpha.radians * SIDEREAL_MILLIS_PER_RADIAN).toLong())
-        if (lookupDirection == LookupDirection.FORWARD && update < start)
-            update = update.addMillis(MILLIS_PER_SIDEREAL_DAY.toLong())
-        if (lookupDirection == LookupDirection.BACKWARD && update > start)
-            update = update.addMillis((-MILLIS_PER_SIDEREAL_DAY).toLong())
-        topos = topos.copy(instant = update)
-        return !java.lang.Double.isNaN(alpha.radians) && !java.lang.Double.isInfinite(alpha.radians)
+    fun setStartTimeEpochMilli(epochMilli: Long) {
+        startTime = Instant.ofEpochMilli(epochMilli)
+        time = startTime
     }
 
-    private fun computeHourAngleAtSet(): Angle {
+    protected var virtualHorizon = OPTICAL_HORIZON
+    protected var topocentric = Spherical3.ZERO
+
+    protected fun adjustTime(): Boolean {
+        horizon = projection.project(geographicLocation, PI_2 - virtualHorizon)
+        val alpha = computeHourAngleOfEvent() + topocentric.lon - topos.localTrueSiderealTime.radians
+        val delta = Angle.reduce(alpha) * SIDEREAL_MILLIS_PER_RADIAN
+        val epochMilliNew = time.epochMilli + delta
+        time = time.addMillis(when {
+            lookupDirection == LookupDirection.FORWARD && epochMilliNew < startTime.epochMilli -> delta + MILLIS_PER_SIDEREAL_DAY
+            lookupDirection == LookupDirection.BACKWARD && epochMilliNew > startTime.epochMilli -> delta - MILLIS_PER_SIDEREAL_DAY
+            else -> delta
+        }.toLong())
+        return !java.lang.Double.isNaN(alpha) && !java.lang.Double.isInfinite(alpha)
+    }
+
+    private fun computeHourAngleOfEvent(): Double {
         val dist = horizon.distFromOrigin
         val rHor = horizon.r
         val rOrb = orbitRadius()
-        return Angle.ofRad(Math.acos((rHor * rHor - dist * dist - rOrb * rOrb) / (2.0 * dist * rOrb)))
+        return when (mode) {
+            EventType.RISE -> -Math.acos((rHor * rHor - dist * dist - rOrb * rOrb) / (2.0 * dist * rOrb))
+            EventType.SET -> Math.acos((rHor * rHor - dist * dist - rOrb * rOrb) / (2.0 * dist * rOrb))
+            EventType.TRANSIT -> 0.0
+        }
     }
 
     private fun orbitRadius(): Double {
@@ -75,7 +83,16 @@ abstract class RiseSetCalculator(
         return Math.sqrt((1 + z) / (1 - z))
     }
 
+    protected fun isCrossing() = mode == EventType.TRANSIT || !completelyAboveHorizon() && !completelyBelowHorizon()
+
+    private fun completelyAboveHorizon() =
+            Math.abs(geographicLocation.lat + topocentric.lat) >= PI_2 + virtualHorizon
+
+    private fun completelyBelowHorizon() =
+            Math.abs(geographicLocation.lat - topocentric.lat) >= PI_2 - virtualHorizon
+
     companion object {
-        const val OPTICAL_HORIZON_DEG = -34.0 / 60
+        val OPTICAL_HORIZON = -Math.toRadians(34.0 / 60)
+        const val PI_2 = Math.PI * 0.5
     }
 }

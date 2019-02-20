@@ -1,8 +1,10 @@
 package com.mkreidl.ephemeris.time
 
 import com.mkreidl.ephemeris.*
+import java.text.SimpleDateFormat
+import java.util.*
 
-class Instant internal constructor(val epochMilli: Long) : Comparable<Instant> {
+class Instant private constructor(val epochMilli: Long) : Comparable<Instant> {
 
     val julianDayFraction get() = julianDaysSinceJ2000 + J2000_DAY_NUMBER
 
@@ -20,10 +22,11 @@ class Instant internal constructor(val epochMilli: Long) : Comparable<Instant> {
 
     override fun compareTo(other: Instant) = epochMilli.compareTo(other.epochMilli)
 
-    fun addMillis(millis: Long) = Instant(epochMilli + millis)
+    fun addMillis(millis: Long) = Instant.ofEpochMilli(epochMilli + millis)
 
     override fun equals(other: Any?) = other is Instant && other.epochMilli == epochMilli
     override fun hashCode() = epochMilli.hashCode()
+    override fun toString() = SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS Z").format(Date(epochMilli))!!
 
     companion object {
         val J2000 = ofEpochMilli(946_728_000_000L)
