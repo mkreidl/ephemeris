@@ -83,7 +83,8 @@ abstract class RiseSetCalculator(protected val mode: EventType, protected val lo
         return Math.sqrt((1 + z) / (1 - z))
     }
 
-    protected fun isCrossing() = mode == EventType.TRANSIT || !completelyAboveHorizon() && !completelyBelowHorizon()
+    protected fun eventHappensToday() =
+            mode == EventType.TRANSIT || !completelyAboveHorizon() && !completelyBelowHorizon()
 
     private fun completelyAboveHorizon() =
             Math.abs(geographicLocation.lat + topocentric.lat) >= PI_2 + virtualHorizon

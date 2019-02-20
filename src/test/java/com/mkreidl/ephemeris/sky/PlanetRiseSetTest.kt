@@ -40,7 +40,7 @@ abstract class PlanetRiseSetTest(
         val VANCOUVER = Spherical3(1.0, Math.toRadians(-123.12244), Math.toRadians(49.28098))
         val FAR_NORTH = Spherical3(1.0, Math.toRadians(11.498888), Math.toRadians(77.170555)) // 11d29m56s 77d10m14s
 
-        private const val PRECISION_MS: Long = 30_000
+        private const val PRECISION_MS: Long = 50_000
 
         fun assert(calculator: RiseSetCalculator, expected: Long, precision: Long) {
             println("Expected: ${Instant.ofEpochMilli(expected)}")

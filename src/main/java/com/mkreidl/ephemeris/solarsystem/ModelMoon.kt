@@ -39,7 +39,7 @@ class ModelMoon : OrbitalModel {
                 axis = orbElMoon0.axis + t * orbElMoon1.axis,
                 excentricity = orbElMoon0.excentricity + t * orbElMoon1.excentricity,
                 meanAnomaly = orbElMoon0.meanAnomaly + t * orbElMoon1.meanAnomaly
-        )
+        ).reduce()
         sun = ClassicalOrbitalElements(
                 node = orbElSun0.node + t * orbElSun1.node,
                 inclination = orbElSun0.inclination + t * orbElSun1.inclination,
@@ -47,7 +47,7 @@ class ModelMoon : OrbitalModel {
                 axis = orbElSun0.axis + t * orbElSun1.axis,
                 excentricity = orbElSun0.excentricity + t * orbElSun1.excentricity,
                 meanAnomaly = orbElSun0.meanAnomaly + t * orbElSun1.meanAnomaly
-        )
+        ).reduce()
 
         val posSphericalRaw = moon.computePosition().spherical
         val posSpherical = Spherical3(

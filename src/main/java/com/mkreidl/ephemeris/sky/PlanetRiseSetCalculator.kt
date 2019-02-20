@@ -60,7 +60,7 @@ class PlanetRiseSetCalculator(
         topocentric = topos.computeTopocentricFromTrueEquatorial(geocentric).spherical
         virtualHorizon = RiseSetCalculator.OPTICAL_HORIZON - body.RADIUS_MEAN_M / topocentric.dst
         isVisibleNow = topocentric.lat >= virtualHorizon
-        crossing = isCrossing()
+        crossing = eventHappensToday()
     }
 
     private fun hasAppeared() = wasVisibleBefore == false && isVisibleNow

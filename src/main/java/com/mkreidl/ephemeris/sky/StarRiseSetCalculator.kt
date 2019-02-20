@@ -13,9 +13,10 @@ class StarRiseSetCalculator(private val starIndex: Int, mode: EventType, lookupD
 
     override fun compute(): Boolean {
         topocentric = stars.computeTrueEquatorial(starIndex, time)
-        val isCrossing = isCrossing()
-        if (isCrossing)
+        return if (eventHappensToday()) {
             adjustTime()
-        return isCrossing
+            true
+        } else
+            false
     }
 }

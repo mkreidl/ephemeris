@@ -38,7 +38,7 @@ data class ClassicalOrbitalElements(
     override fun computePhase() = PhaseCartesian(computePosition().cartesian, Vector3.ZERO)
 
     override fun computePosition(): Coordinates {
-        val eccentricAnomaly = computeEccentricAnomaly(1e-12)
+        val eccentricAnomaly = computeEccentricAnomaly(1e-13, 10)
         // Cartesian coordinates in the orbital plane,
         // The ascending node defines the x-axis
         val xv = axis * (Math.cos(eccentricAnomaly) - excentricity)
@@ -61,14 +61,17 @@ data class ClassicalOrbitalElements(
      * @param eps Required precision
      * @return
      */
-    fun computeEccentricAnomaly(eps: Double): Double {
+    fun computeEccentricAnomaly(eps: Double, maxIter: Int = Int.MAX_VALUE): Double {
         var e0: Double
         var excentricAnomaly = meanAnomaly
+        var iter = 0
         // Solve Kepler's equation E - e*Math.sin(E) = M by Newton iteration
         do {
             e0 = excentricAnomaly
             excentricAnomaly = e0 - (e0 - excentricity * Math.sin(e0) - meanAnomaly) / (1.0 - excentricity * Math.cos(e0))
-        } while (Math.abs(excentricAnomaly - e0) > eps)
+            println(excentricAnomaly)
+            ++iter
+        } while (iter < maxIter && Math.abs(excentricAnomaly - e0) > eps)
         return excentricAnomaly
     }
 
