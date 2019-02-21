@@ -1,7 +1,6 @@
 package com.mkreidl.ephemeris.solarsystem
 
-import com.mkreidl.ephemeris.*
-import com.mkreidl.ephemeris.TestUtil.EphemerisData
+import com.mkreidl.ephemeris.solarsystem.TestUtil.EphemerisData
 import com.mkreidl.ephemeris.time.Instant
 import com.mkreidl.math.Angle
 import com.mkreidl.math.Sexagesimal

@@ -1,6 +1,5 @@
 package com.mkreidl.ephemeris.sky
 
-import com.mkreidl.ephemeris.sky.Topos
 import com.mkreidl.ephemeris.time.Instant
 import com.mkreidl.ephemeris.time.SiderealTime
 import com.mkreidl.math.Angle

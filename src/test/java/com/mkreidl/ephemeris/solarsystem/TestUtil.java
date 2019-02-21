@@ -1,10 +1,7 @@
-package com.mkreidl.ephemeris;
+package com.mkreidl.ephemeris.solarsystem;
 
-import com.mkreidl.ephemeris.solarsystem.Body;
-import com.mkreidl.ephemeris.solarsystem.Zodiac;
 import com.mkreidl.math.Angle;
 import com.mkreidl.math.Sexagesimal;
-import org.junit.runners.Parameterized.Parameters;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -79,7 +76,6 @@ public class TestUtil {
         return position;
     }
 
-    @Parameters(name = "{0}")
     public static Iterable<Object[]> solarSystemData(Collection<Body> bodies) {
         final List<Object[]> dataSets = new LinkedList<>();
         final File[] files = new File(DIR_NASA.getFile()).listFiles();
