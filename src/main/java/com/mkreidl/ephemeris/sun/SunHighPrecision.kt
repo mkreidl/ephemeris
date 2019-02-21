@@ -17,7 +17,7 @@ class SunHighPrecision(instant: Instant, ecliptic: Ecliptic = Ecliptic(instant))
     val apparentLatitude get() = apparentPosition.lat
     val apparentDeclination get() = apparentPosEquatorial.lat
 
-    private val earth = EarthMeeus()
+    private val earth = EarthMeeus.createModel()
 
     private val geometricPosition by lazy { computeGeometricPosition() }
     private val apparentPosition by lazy { computeApparentPosition() }

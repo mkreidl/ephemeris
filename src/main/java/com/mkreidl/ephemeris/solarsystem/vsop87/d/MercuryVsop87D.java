@@ -1,6 +1,6 @@
-package com.mkreidl.ephemeris.solarsystem.vsop87d;
+package com.mkreidl.ephemeris.solarsystem.vsop87.d;
 
-import com.mkreidl.ephemeris.solarsystem.ModelVsop87;
+import com.mkreidl.ephemeris.solarsystem.vsop87.ModelVsop87;
 
 public class MercuryVsop87D extends ModelVsop87.LBR
 {

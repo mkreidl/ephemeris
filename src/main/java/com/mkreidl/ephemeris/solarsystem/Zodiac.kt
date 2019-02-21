@@ -11,7 +11,7 @@ class Zodiac(private val ecliptic: Ecliptic) {
 
     fun getEquatorialDirectionMiddle(sign: Sign) = ecliptic.trafoEcl2MeanEqu(sign.posCartMiddle)
 
-    enum class Sign private constructor(ordinal: Int, val longName: String, val shortName: String) {
+    enum class Sign(ordinal: Int, val longName: String, val shortName: String) {
         ARI(1, "Aries", "Ari"),
         TAU(2, "Taurus", "Tau"),
         GEM(3, "Gemini", "Gem"),

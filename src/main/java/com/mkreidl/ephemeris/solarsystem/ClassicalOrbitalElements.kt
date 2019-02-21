@@ -1,5 +1,6 @@
 package com.mkreidl.ephemeris.solarsystem
 
+import com.mkreidl.ephemeris.solarsystem.vsop87.Vsop87OrbitalElements
 import com.mkreidl.math.Angle
 import com.mkreidl.math.Coordinates
 import com.mkreidl.math.PhaseCartesian
@@ -25,7 +26,7 @@ data class ClassicalOrbitalElements(
     override val classical get() = this
 
     override val vsop87 by lazy {
-        VSOP87OrbitalElements(
+        Vsop87OrbitalElements(
                 a = axis,
                 l = meanLongitude,
                 h = excentricity * Math.sin(node + periapsis),

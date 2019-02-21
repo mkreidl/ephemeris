@@ -22,9 +22,6 @@ class MoonPhaseTest(testname: String, private val body: Body, private val instan
             println(solarSystem.getIlluminatedFraction(MOON))
             println((expected.phase + 180) / 360)
             println("=====================")
-            //
-            // Test omitted, since reference seems incorrect
-            //assertEquals( expected.phase, actual.getPhase( new Angle() ).get( Angle.Unit.DEGREES ), 0.36 );
         }
     }
 

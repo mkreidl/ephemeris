@@ -2,8 +2,6 @@ package com.mkreidl.ephemeris.solarsystem
 
 import com.mkreidl.ephemeris.*
 import com.mkreidl.ephemeris.TestUtil.EphemerisData
-import com.mkreidl.ephemeris.solarsystem.meeus.*
-import com.mkreidl.ephemeris.solarsystem.vsop87c.*
 import com.mkreidl.ephemeris.time.Instant
 import com.mkreidl.math.Angle
 import com.mkreidl.math.Sexagesimal
@@ -21,32 +19,6 @@ import java.util.*
 @RunWith(Parameterized::class)
 class SolarSystemGeocentricTest(testname: String, private val body: Body, private val instant: Instant, private val expected: EphemerisData) {
 
-    private val modelsMeeus = mapOf(
-            Body.MERCURY to MercuryMeeus(),
-            Body.VENUS to VenusMeeus(),
-            Body.EARTH to EarthMeeus(),
-            Body.MARS to MarsMeeus(),
-            Body.JUPITER to JupiterMeeus(),
-            Body.SATURN to SaturnMeeus(),
-            Body.URANUS to UranusMeeus(),
-            Body.NEPTUNE to NeptuneMeeus(),
-            Body.MOON to ModelMoon(),
-            Body.PLUTO to ModelPluto()
-    )
-
-    private val modelsVsop87 = mapOf(
-            Body.MERCURY to MercuryVsop87C(),
-            Body.VENUS to VenusVsop87C(),
-            Body.EARTH to EarthVsop87C(),
-            Body.MARS to MarsVsop87C(),
-            Body.JUPITER to JupiterVsop87C(),
-            Body.SATURN to SaturnVsop87C(),
-            Body.URANUS to UranusVsop87C(),
-            Body.NEPTUNE to NeptuneVsop87C(),
-            Body.MOON to ModelMoon(),
-            Body.PLUTO to ModelPluto()
-    )
-
     private var tol = 0.0
 
     @Test
@@ -56,7 +28,7 @@ class SolarSystemGeocentricTest(testname: String, private val body: Body, privat
             Body.PLUTO -> 0.8 * Angle.minute
             else -> 0.8 * Angle.minute
         }.radians
-        val solarSystem = SolarSystem(modelsMeeus)
+        val solarSystem = SolarSystem.createFromMeeus()
         solarSystem.compute(instant)
         test(solarSystem)
     }
@@ -68,7 +40,7 @@ class SolarSystemGeocentricTest(testname: String, private val body: Body, privat
             Body.PLUTO -> 0.8 * Angle.minute  // = 48 sec
             else -> 12.0 * Angle.second  // = 12 sec
         }.radians
-        val solarSystem = SolarSystem(modelsVsop87)
+        val solarSystem = SolarSystem.createFromVsop87C()
         solarSystem.compute(instant)
         test(solarSystem)
     }

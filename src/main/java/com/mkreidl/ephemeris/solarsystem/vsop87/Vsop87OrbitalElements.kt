@@ -1,6 +1,9 @@
-package com.mkreidl.ephemeris.solarsystem
+package com.mkreidl.ephemeris.solarsystem.vsop87
 
-data class VSOP87OrbitalElements(
+import com.mkreidl.ephemeris.solarsystem.ClassicalOrbitalElements
+import com.mkreidl.ephemeris.solarsystem.OrbitalElements
+
+data class Vsop87OrbitalElements(
         val a: Double,
         val l: Double,
         val h: Double,

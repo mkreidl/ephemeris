@@ -1,4 +1,3 @@
 package com.mkreidl.ephemeris
 
-class ToposTest {
-}
+class ToposTest

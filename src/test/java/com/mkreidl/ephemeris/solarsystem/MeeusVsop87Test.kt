@@ -2,6 +2,7 @@ package com.mkreidl.ephemeris.solarsystem
 
 import com.mkreidl.ephemeris.SECONDS_PER_DAY
 import com.mkreidl.ephemeris.solarsystem.meeus.*
+import com.mkreidl.ephemeris.solarsystem.vsop87.ModelVsop87
 import com.mkreidl.math.Spherical3
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -19,14 +20,14 @@ class MeeusVsop87Test(planet: Planet, dataSet: AbstractVsop87Test.DataSet) : Abs
     @Test
     fun testModel() {
         val model: ModelVsop87.LBR = when (planet) {
-            Planet.MER -> MercuryMeeus()
-            Planet.VEN -> VenusMeeus()
-            Planet.EAR -> EarthMeeus()
-            Planet.MAR -> MarsMeeus()
-            Planet.JUP -> JupiterMeeus()
-            Planet.SAT -> SaturnMeeus()
-            Planet.URA -> UranusMeeus()
-            Planet.NEP -> NeptuneMeeus()
+            Planet.MER -> MercuryMeeus.createModel()
+            Planet.VEN -> VenusMeeus.createModel()
+            Planet.EAR -> EarthMeeus.createModel()
+            Planet.MAR -> MarsMeeus.createModel()
+            Planet.JUP -> JupiterMeeus.createModel()
+            Planet.SAT -> SaturnMeeus.createModel()
+            Planet.URA -> UranusMeeus.createModel()
+            Planet.NEP -> NeptuneMeeus.createModel()
             else -> throw IllegalArgumentException("Planet not found")
         }
         var (actualPos, actualVel) = model.compute(instant).spherical

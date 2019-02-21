@@ -3,6 +3,7 @@ package com.mkreidl.ephemeris.solarsystem
 import com.mkreidl.ephemeris.Distance
 import com.mkreidl.ephemeris.sky.Topos
 import com.mkreidl.ephemeris.solarsystem.meeus.*
+import com.mkreidl.ephemeris.solarsystem.vsop87.c.*
 import com.mkreidl.ephemeris.time.Instant
 import com.mkreidl.math.PhaseCartesian
 import com.mkreidl.math.PhaseSpherical
@@ -115,24 +116,31 @@ class SolarSystem(private val models: Map<Body, OrbitalModel>) {
 
     companion object {
         fun createFromMeeus() = SolarSystem(mapOf(
-                Body.SUN to SUN,
-                Body.MERCURY to MercuryMeeus(),
-                Body.VENUS to VenusMeeus(),
-                Body.EARTH to EarthMeeus(),
-                Body.MARS to MarsMeeus(),
-                Body.JUPITER to JupiterMeeus(),
-                Body.SATURN to SaturnMeeus(),
-                Body.URANUS to UranusMeeus(),
-                Body.NEPTUNE to NeptuneMeeus(),
+                Body.SUN to ModelSun,
+                Body.MERCURY to MercuryMeeus.createModel(),
+                Body.VENUS to VenusMeeus.createModel(),
+                Body.EARTH to EarthMeeus.createModel(),
+                Body.MARS to MarsMeeus.createModel(),
+                Body.JUPITER to JupiterMeeus.createModel(),
+                Body.SATURN to SaturnMeeus.createModel(),
+                Body.URANUS to UranusMeeus.createModel(),
+                Body.NEPTUNE to NeptuneMeeus.createModel(),
                 Body.MOON to ModelMoon(),
                 Body.PLUTO to ModelPluto()
         ))
 
-        private object SUN : OrbitalModel {
-            override val type = OrbitalModel.Type.HELIOCENTRIC
-            override val distanceUnit = Distance.AU
-            override val phase = PhaseCartesian.ZERO
-            override fun compute(instant: Instant) = phase
-        }
+        fun createFromVsop87C() = SolarSystem(mapOf(
+                Body.SUN to ModelSun,
+                Body.MERCURY to MercuryVsop87C(),
+                Body.VENUS to VenusVsop87C(),
+                Body.EARTH to EarthVsop87C(),
+                Body.MARS to MarsVsop87C(),
+                Body.JUPITER to JupiterVsop87C(),
+                Body.SATURN to SaturnVsop87C(),
+                Body.URANUS to UranusVsop87C(),
+                Body.NEPTUNE to NeptuneVsop87C(),
+                Body.MOON to ModelMoon(),
+                Body.PLUTO to ModelPluto()
+        ))
     }
 }

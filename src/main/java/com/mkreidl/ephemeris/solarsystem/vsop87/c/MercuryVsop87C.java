@@ -1,6 +1,6 @@
-package com.mkreidl.ephemeris.solarsystem.vsop87c;
+package com.mkreidl.ephemeris.solarsystem.vsop87.c;
 
-import com.mkreidl.ephemeris.solarsystem.ModelVsop87;
+import com.mkreidl.ephemeris.solarsystem.vsop87.ModelVsop87;
 
 public class MercuryVsop87C extends ModelVsop87.XYZ
 {

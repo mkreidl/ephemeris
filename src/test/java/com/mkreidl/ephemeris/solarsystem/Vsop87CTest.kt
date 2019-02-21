@@ -1,7 +1,8 @@
 package com.mkreidl.ephemeris.solarsystem
 
 import com.mkreidl.ephemeris.SECONDS_PER_DAY
-import com.mkreidl.ephemeris.solarsystem.vsop87c.*
+import com.mkreidl.ephemeris.solarsystem.vsop87.ModelVsop87
+import com.mkreidl.ephemeris.solarsystem.vsop87.c.*
 import com.mkreidl.math.Vector3
 import org.junit.Assert.assertEquals
 import org.junit.Test

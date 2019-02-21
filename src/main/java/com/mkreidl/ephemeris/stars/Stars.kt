@@ -71,7 +71,7 @@ class Stars(catalog: StarCatalog) {
 
     fun computeEclipticalApparent(starIndex: Int, instant: Instant, ecliptic: Ecliptic = Ecliptic(instant), sun: Sun = SunLowPrecision(instant)): Spherical3 {
         val position = computeTrueEcliptical(starIndex, instant, ecliptic)
-        return sun.computeAberrationCorrectionEcliptical(position.spherical)
+        return sun.applyAnnualAberration(position.spherical)
     }
 
     fun computeEquatorialApparent(starIndex: Int, instant: Instant, ecliptic: Ecliptic = Ecliptic(instant), sun: Sun = SunLowPrecision(instant)): Spherical3 {

@@ -128,7 +128,7 @@ class Stereographic private constructor(private val centerZ: Double) {
      *
      *
      * (2) Now go the other direction: Given a circle on the unit
-     * sphere, get the \emph{radius} of its image under
+     * sphere, createModel the \emph{radius} of its image under
      * stereographic projection. Obtain the following formula:
      *
      *

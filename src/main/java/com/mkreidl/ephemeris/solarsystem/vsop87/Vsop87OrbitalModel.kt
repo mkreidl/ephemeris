@@ -1,7 +1,8 @@
-package com.mkreidl.ephemeris.solarsystem
+package com.mkreidl.ephemeris.solarsystem.vsop87
 
 import com.mkreidl.ephemeris.Distance
 import com.mkreidl.ephemeris.MILLENNIA_PER_SECOND
+import com.mkreidl.ephemeris.solarsystem.OrbitalModel
 import com.mkreidl.ephemeris.time.Instant
 import com.mkreidl.math.*
 
