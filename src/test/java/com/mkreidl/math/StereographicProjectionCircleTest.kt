@@ -1,8 +1,5 @@
-package math
+package com.mkreidl.math
 
-import com.mkreidl.math.Circle
-import com.mkreidl.math.Spherical3
-import com.mkreidl.math.Stereographic
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith

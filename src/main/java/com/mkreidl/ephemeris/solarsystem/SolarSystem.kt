@@ -5,9 +5,11 @@ import com.mkreidl.ephemeris.sky.Topos
 import com.mkreidl.ephemeris.solarsystem.meeus.*
 import com.mkreidl.ephemeris.time.Instant
 import com.mkreidl.math.PhaseCartesian
+import com.mkreidl.math.PhaseSpherical
 import com.mkreidl.math.times
 
 val PhaseCartesian.retrograde get() = position.x * velocity.y - position.y * velocity.x < 0
+val PhaseSpherical.retrograde get() = velocity.y < 0
 
 class SolarSystem(private val models: Map<Body, OrbitalModel>) {
 

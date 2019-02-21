@@ -1,7 +1,5 @@
-package math
+package com.mkreidl.math
 
-import com.mkreidl.math.Stereographic
-import com.mkreidl.math.Vector3
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith

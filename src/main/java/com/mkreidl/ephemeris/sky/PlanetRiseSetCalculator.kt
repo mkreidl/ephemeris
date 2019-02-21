@@ -64,7 +64,6 @@ class PlanetRiseSetCalculator(
     }
 
     private fun hasAppeared() = wasVisibleBefore == false && isVisibleNow
-
     private fun hasVanished() = wasVisibleBefore == true && !isVisibleNow
 
     companion object {
