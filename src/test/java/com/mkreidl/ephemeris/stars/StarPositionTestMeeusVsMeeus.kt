@@ -63,7 +63,7 @@ class StarPositionTestMeeusVsMeeus {
 
     @Test
     fun testThetaPersei2028November13_J2000_allStars() {
-        val output = DoubleArray(3 * BrightStarCatalog.SIZE)
+        val output = DoubleArray(3 * BrightStarCatalog.size)
         stars.computeEclipticalJ2000(november13_2028, output)
 
         val offset = 3 * thetaPersei

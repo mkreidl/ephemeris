@@ -9,7 +9,7 @@ class StarRiseSetCalculator(private val starIndex: Int, mode: EventType, lookupD
     constructor(starName: String, mode: EventType, lookupDirection: LookupDirection)
             : this(BrightStarCatalog.findIndexByName(starName), mode, lookupDirection)
 
-    private val stars = Stars(BrightStarCatalog.INSTANCE)
+    private val stars = Stars(BrightStarCatalog)
 
     override fun compute(): Boolean {
         topocentric = stars.computeTrueEquatorial(starIndex, time)

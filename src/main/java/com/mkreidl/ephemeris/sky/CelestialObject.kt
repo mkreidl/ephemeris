@@ -33,23 +33,21 @@ data class CelestialObject(
     companion object {
         val NONE = CelestialObject()
 
-        fun of(name: String): CelestialObject {
-            return try {
-                CelestialObject.of(Body.valueOf(name))
-            } catch (unused: IllegalArgumentException) {
-                val constellation = ConstellationsCatalog.findByName(name)
-                if (constellation != null)
-                    CelestialObject.of(constellation)
-                else
-                    CelestialObject.of(BrightStarCatalog.findIndexByName(name))
-            }
+        fun of(name: String) = try {
+            CelestialObject.of(Body.valueOf(name))
+        } catch (unused: IllegalArgumentException) {
+            val constellation = ConstellationsCatalog.findByName(name)
+            if (constellation != null)
+                CelestialObject.of(constellation)
+            else
+                CelestialObject.of(BrightStarCatalog.findIndexByName(name))
         }
 
-        fun of(index: Int) = if (index > -1 && index < BrightStarCatalog.SIZE) {
+        fun of(index: Int) = if (index > -1 && index < BrightStarCatalog.size) {
             CelestialObject(
                     index = index,
-                    scientificName = if (BrightStarCatalog.FLAMSTEED_BAYER[index] != null) BrightStarCatalog.FLAMSTEED_BAYER[index] else "",
-                    trivialName = if (BrightStarCatalog.IAU_NAME[index] != null) BrightStarCatalog.IAU_NAME[index] else "",
+                    scientificName = BrightStarCatalog.FLAMSTEED_BAYER[index] ?: "",
+                    trivialName = BrightStarCatalog.IAU_NAME[index] ?: "",
                     catalogName = "HR " + BrightStarCatalog.BRIGHT_STAR_NUMBER[index]
             )
         } else

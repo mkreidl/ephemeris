@@ -31,6 +31,6 @@ class Constellation internal constructor(val name: String, vararg paths: IntArra
     }
 
     companion object {
-        val stars = Stars(BrightStarCatalog.INSTANCE)
+        private val stars = Stars(BrightStarCatalog)
     }
 }

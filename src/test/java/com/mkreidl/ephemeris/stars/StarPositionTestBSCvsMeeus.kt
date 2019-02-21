@@ -27,20 +27,20 @@ class StarPositionTestBSCvsMeeus {
     private val tolPos = Angle.ofDeg(0, 0, 5.0).radians
     private val tolVel = Angle.ofDeg(0, 0, 0.2).radians
 
-    private val stars = Stars(BrightStarCatalog.INSTANCE)
+    private val stars = Stars(BrightStarCatalog)
 
     @Test
     fun testThetaPerseiPosJ2000() {
-        val ra = BrightStarCatalog.INSTANCE.getRAscJ2000(thetaPersei)
-        val de = BrightStarCatalog.INSTANCE.getDeclJ2000(thetaPersei)
+        val ra = BrightStarCatalog.getRAscJ2000(thetaPersei)
+        val de = BrightStarCatalog.getDeclJ2000(thetaPersei)
         Assert.assertEquals(raJ2000, ra, tolPos)
         Assert.assertEquals(deJ2000, de, tolPos)
     }
 
     @Test
     fun testThetaPerseiVelJ2000() {
-        val vra = BrightStarCatalog.INSTANCE.getVRAscJ2000(thetaPersei)
-        val vde = BrightStarCatalog.INSTANCE.getVDeclJ2000(thetaPersei)
+        val vra = BrightStarCatalog.getVRAscJ2000(thetaPersei)
+        val vde = BrightStarCatalog.getVDeclJ2000(thetaPersei)
         Assert.assertEquals(vraJ2000, vra, tolVel)
         Assert.assertEquals(vdeJ2000, vde, tolVel)
     }
@@ -54,7 +54,7 @@ class StarPositionTestBSCvsMeeus {
 
     @Test
     fun testThetaPersei2028November13_J2000_allStars() {
-        val output = DoubleArray(3 * BrightStarCatalog.SIZE)
+        val output = DoubleArray(3 * BrightStarCatalog.size)
         stars.computeEclipticalJ2000(november13_2028, output)
 
         val offset = 3 * thetaPersei
