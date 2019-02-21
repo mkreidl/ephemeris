@@ -5,6 +5,7 @@ import com.mkreidl.ephemeris.sky.Topos
 import com.mkreidl.ephemeris.solarsystem.meeus.*
 import com.mkreidl.ephemeris.solarsystem.vsop87.c.*
 import com.mkreidl.ephemeris.time.Instant
+import com.mkreidl.math.Angle
 import com.mkreidl.math.PhaseCartesian
 import com.mkreidl.math.PhaseSpherical
 import com.mkreidl.math.times
@@ -95,8 +96,13 @@ class SolarSystem(private val models: Map<Body, OrbitalModel>) {
         return (1 + (helioCart * geoCart) / (helioCart.norm * geoCart.norm)) * 0.5
     }
 
-    fun getPhase(body: Body) =
-            eclipticalHeliocentric.getValue(body).position angle eclipticalGeocentric.getValue(body).position
+    fun getPhaseAngle(body: Body): Angle {
+        val helioCart = eclipticalHeliocentric.getValue(body).position
+        val geoCart = eclipticalGeocentric.getValue(body).position
+        val cos = helioCart * geoCart
+        val sin = helioCart.x * geoCart.y - helioCart.y * geoCart.x
+        return Angle.ofRad(Math.atan2(sin, cos))
+    }
 
     /**
      * Compute angle between the rays originating from the earth (observer),
@@ -104,15 +110,21 @@ class SolarSystem(private val models: Map<Body, OrbitalModel>) {
      *
      * @return Angle in radians
      */
-    fun getElongationRadians(body: Body) =
-            eclipticalGeocentric.getValue(Body.SUN).position angle eclipticalGeocentric.getValue(body).position
+    fun getElongation(body: Body): Angle {
+        val pos = eclipticalGeocentric.getValue(body).position
+        val sun = eclipticalGeocentric.getValue(Body.SUN).position
+        return Angle.ofRad(Math.atan2(sun.x * pos.y - sun.y * pos.x, pos * sun))
+    }
 
-    fun getElongationRadians(body: Body, topos: Topos) =
-            getMeanEclipticalTopocentric(Body.SUN, topos) angle getMeanEclipticalTopocentric(body, topos)
+    fun getElongation(body: Body, topos: Topos): Angle {
+        val pos = getMeanEclipticalTopocentric(body, topos)
+        val sun = getMeanEclipticalTopocentric(Body.SUN, topos)
+        return Angle.ofRad(Math.atan2(sun.x * pos.y - sun.y * pos.x, pos * sun))
+    }
 
-    private fun getElongationSign(body: Body) = Math.signum(getElongationRadians(body).radians)
+    private fun getElongationSign(body: Body) = Math.signum(getElongation(body).radians)
 
-    private fun getElongationSign(body: Body, topos: Topos) = Math.signum(getElongationRadians(body, topos).radians)
+    private fun getElongationSign(body: Body, topos: Topos) = Math.signum(getElongation(body, topos).radians)
 
     companion object {
         fun createFromMeeus() = SolarSystem(mapOf(

@@ -3,6 +3,8 @@ package com.mkreidl.ephemeris.solarsystem
 import com.mkreidl.ephemeris.SECONDS_PER_DAY
 import com.mkreidl.ephemeris.solarsystem.vsop87.ModelVsop87
 import com.mkreidl.ephemeris.solarsystem.vsop87.d.*
+import com.mkreidl.ephemeris.time.Instant
+import com.mkreidl.ephemeris.util.Vsop87TestUtil
 import com.mkreidl.math.Spherical3
 import com.mkreidl.math.Vector3
 import org.junit.Assert.assertEquals
@@ -12,22 +14,22 @@ import org.junit.runners.Parameterized
 import org.junit.runners.Parameterized.Parameters
 
 @RunWith(Parameterized::class)
-class Vsop87DTest(planet: Planet, dataSet: AbstractVsop87Test.DataSet) : AbstractVsop87Test(planet, dataSet) {
+class Vsop87DTest(private val planet: Vsop87TestUtil.Planet, private val instant: Instant, coordinates: DoubleArray) {
 
-    private val expectedPos = Spherical3(dataSet.coordinates[2], dataSet.coordinates[0], dataSet.coordinates[1])
-    private val expectedVel = Vector3(dataSet.coordinates[5], dataSet.coordinates[3], dataSet.coordinates[4])
+    private val expectedPos = Spherical3(coordinates[2], coordinates[0], coordinates[1])
+    private val expectedVel = Vector3(coordinates[5], coordinates[3], coordinates[4])
 
     @Test
     fun testModel() {
         val model: ModelVsop87.LBR = when (planet) {
-            Planet.MER -> MercuryVsop87D()
-            Planet.VEN -> VenusVsop87D()
-            Planet.EAR -> EarthVsop87D()
-            Planet.MAR -> MarsVsop87D()
-            Planet.JUP -> JupiterVsop87D()
-            Planet.SAT -> SaturnVsop87D()
-            Planet.URA -> UranusVsop87D()
-            Planet.NEP -> NeptuneVsop87D()
+            Vsop87TestUtil.Planet.MER -> MercuryVsop87D()
+            Vsop87TestUtil.Planet.VEN -> VenusVsop87D()
+            Vsop87TestUtil.Planet.EAR -> EarthVsop87D()
+            Vsop87TestUtil.Planet.MAR -> MarsVsop87D()
+            Vsop87TestUtil.Planet.JUP -> JupiterVsop87D()
+            Vsop87TestUtil.Planet.SAT -> SaturnVsop87D()
+            Vsop87TestUtil.Planet.URA -> UranusVsop87D()
+            Vsop87TestUtil.Planet.NEP -> NeptuneVsop87D()
             else -> throw IllegalArgumentException("Planet not found")
         }
         var (actualPos, actualVel) = model.compute(instant).spherical
@@ -44,6 +46,6 @@ class Vsop87DTest(planet: Planet, dataSet: AbstractVsop87Test.DataSet) : Abstrac
     companion object {
         @JvmStatic
         @Parameters(name = "{0} -- {1}")
-        fun data() = AbstractVsop87Test.data(Version.D)
+        fun data() = Vsop87TestUtil.data(Vsop87TestUtil.Version.D)
     }
 }

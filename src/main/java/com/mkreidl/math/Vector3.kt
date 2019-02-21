@@ -48,8 +48,6 @@ data class Vector3(val x: Double, val y: Double, val z: Double) : VectorSpace<Do
             z * other.x, z * other.y, z * other.z
     )
 
-    infix fun angle(other: Vector3) = Angle(Math.atan2((this x other).norm, this * other))
-
     override val cartesian get() = this
 
     override val spherical by lazy {

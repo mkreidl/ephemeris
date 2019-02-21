@@ -1,5 +1,7 @@
-package com.mkreidl.ephemeris.solarsystem;
+package com.mkreidl.ephemeris.util;
 
+import com.mkreidl.ephemeris.solarsystem.Body;
+import com.mkreidl.ephemeris.solarsystem.Zodiac;
 import com.mkreidl.math.Angle;
 import com.mkreidl.math.Sexagesimal;
 
@@ -10,31 +12,15 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.mkreidl.ephemeris.solarsystem.Body.MOON;
 
-public class TestUtil {
-    private static final ZoneId UTC = ZoneId.of("UTC");
+public class GeocentricEphemTestUtil {
 
-    private static final SimpleDateFormat NASA_DATE_PARSER =
-            new SimpleDateFormat("yyyy.MM.dd HH:mm:ss", Locale.ENGLISH);
-    private static final SimpleDateFormat VSOP_DATE_PARSER =
-            new SimpleDateFormat("dd/MM/yyyy HH", Locale.ENGLISH);
-
-    private static final DateTimeFormatter NASA_DATE_FORMATTER
-            = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss", Locale.ENGLISH);
-    private static final DateTimeFormatter VSOP_DATE_FORMATTER
-            = DateTimeFormatter.ofPattern("dd/MM/yyyy HH'h'", Locale.ENGLISH);
-    private static final URL DIR_NASA = TestUtil.class.getResource("/NASA_Ephemeris_Data/");
+    private static final URL DIR_NASA = GeocentricEphemTestUtil.class.getResource("/NASA_Ephemeris_Data/");
 
     public static class EphemerisData {
         public Angle longitude;
@@ -76,7 +62,7 @@ public class TestUtil {
         return position;
     }
 
-    public static Iterable<Object[]> solarSystemData(Collection<Body> bodies) {
+    public static Iterable<Object[]> data(Collection<Body> bodies) {
         final List<Object[]> dataSets = new LinkedList<>();
         final File[] files = new File(DIR_NASA.getFile()).listFiles();
 
@@ -84,7 +70,7 @@ public class TestUtil {
             final BufferedReader lineReader;
             String line;
 
-            String dateStr = "";
+            String dateStr;
             boolean geocentric = false;
             double moonPhase = Double.POSITIVE_INFINITY;
             com.mkreidl.ephemeris.time.Instant instant = null;
@@ -94,12 +80,7 @@ public class TestUtil {
                 while ((line = lineReader.readLine()) != null) {
                     if (line.startsWith("Date/Time")) {
                         dateStr = line.substring(11, 30);
-                        instant = TestUtil.getAstronomicalTime(dateStr);
-                        if (instant == null)  // dateStr could not be parsed
-                        {
-                            System.err.println("String '" + dateStr + "' does not represent a valid date.");
-                            continue;
-                        }
+                        instant = com.mkreidl.ephemeris.time.Instant.ofEpochMilli(NASA_DATE_PARSER.parse(dateStr).getTime());
                     }
                     if (line.equals("Geocentric positions"))
                         geocentric = true;
@@ -112,51 +93,25 @@ public class TestUtil {
                         final String objectName = line.substring(0, 15).trim();
                         final Body body = Body.valueOf(objectName.toUpperCase());
                         if (body == MOON)
-                            ephemeris.phase = (moonPhase - 0.5) * 360;
+                            ephemeris.phase = moonPhase * 360;
                         if (bodies.contains(body))
-                            dataSets.add(new Object[]{dateStr + " - geocentric - " + objectName, body, instant, ephemeris});
+                            dataSets.add(new Object[]{body, instant, ephemeris});
                     } catch (IllegalArgumentException | IllegalStateException | StringIndexOutOfBoundsException e) {
                     }
                 }
-            } catch (IOException e) {
+            } catch (IOException | ParseException e) {
+                e.printStackTrace();
             }
         }
         return dataSets;
     }
 
-    public static com.mkreidl.ephemeris.time.Instant getAstronomicalTimeProlepticGregorian(String dateString) {
-        try {
-            final LocalDateTime dateTime = LocalDateTime.parse(dateString, NASA_DATE_FORMATTER);
-            final ZonedDateTime zonedDateTime = ZonedDateTime.of(dateTime, UTC);
-            return com.mkreidl.ephemeris.time.Instant.ofEpochMilli(Instant.from(zonedDateTime).toEpochMilli());
-        } catch (DateTimeParseException e) {
-        }
-        try {
-            final LocalDateTime dateTime = LocalDateTime.parse(dateString, VSOP_DATE_FORMATTER);
-            final ZonedDateTime zonedDateTime = ZonedDateTime.of(dateTime, UTC);
-            return com.mkreidl.ephemeris.time.Instant.ofEpochMilli(Instant.from(zonedDateTime).toEpochMilli());
-        } catch (DateTimeParseException e) {
-        }
-        return null;
-    }
-
-    public static com.mkreidl.ephemeris.time.Instant getAstronomicalTime(String dateString) {
-        try {
-            return com.mkreidl.ephemeris.time.Instant.ofEpochMilli(NASA_DATE_PARSER.parse(dateString).getTime());
-        } catch (ParseException e) {
-        }
-        try {
-            return com.mkreidl.ephemeris.time.Instant.ofEpochMilli(VSOP_DATE_PARSER.parse(dateString).getTime());
-        } catch (ParseException e) {
-        }
-        return null;
-    }
+    private static final SimpleDateFormat NASA_DATE_PARSER = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss", Locale.ENGLISH);
 
     static {
         NASA_DATE_PARSER.setTimeZone(TimeZone.getTimeZone("UTC"));
-        VSOP_DATE_PARSER.setTimeZone(TimeZone.getTimeZone("UTC"));
     }
 
-    private TestUtil() {
+    private GeocentricEphemTestUtil() {
     }
 }

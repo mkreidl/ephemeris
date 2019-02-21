@@ -1,7 +1,8 @@
 package com.mkreidl.ephemeris.solarsystem
 
-import com.mkreidl.ephemeris.solarsystem.TestUtil.EphemerisData
+import com.mkreidl.ephemeris.util.GeocentricEphemTestUtil.EphemerisData
 import com.mkreidl.ephemeris.time.Instant
+import com.mkreidl.ephemeris.util.GeocentricEphemTestUtil
 import com.mkreidl.math.Angle
 import com.mkreidl.math.Sexagesimal
 import com.mkreidl.math.times
@@ -10,13 +11,12 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import org.junit.runners.Parameterized.Parameters
-import java.util.*
 
 /**
  * Parses txt test data produced by http://ephemeris.com/ephemeris.php
  */
 @RunWith(Parameterized::class)
-class SolarSystemGeocentricTest(testname: String, private val body: Body, private val instant: Instant, private val expected: EphemerisData) {
+class SolarSystemGeocentricTest(private val body: Body, private val instant: Instant, private val expected: EphemerisData) {
 
     private var tol = 0.0
 
@@ -78,7 +78,7 @@ class SolarSystemGeocentricTest(testname: String, private val body: Body, privat
 
     companion object {
         @JvmStatic
-        @Parameters(name = "{0}")
-        fun data() = TestUtil.solarSystemData(Arrays.asList(*Body.values()))
+        @Parameters(name = "{0} -- {1}")
+        fun data() = GeocentricEphemTestUtil.data(Body.values().toList())
     }
 }

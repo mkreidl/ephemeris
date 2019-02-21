@@ -70,7 +70,6 @@ data class ClassicalOrbitalElements(
         do {
             e0 = excentricAnomaly
             excentricAnomaly = e0 - (e0 - excentricity * Math.sin(e0) - meanAnomaly) / (1.0 - excentricity * Math.cos(e0))
-            println(excentricAnomaly)
             ++iter
         } while (iter < maxIter && Math.abs(excentricAnomaly - e0) > eps)
         return excentricAnomaly

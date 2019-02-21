@@ -1,18 +1,25 @@
-package com.mkreidl.ephemeris.solarsystem;
+package com.mkreidl.ephemeris.util;
 
 import com.mkreidl.ephemeris.time.Instant;
 import com.mkreidl.math.Angle;
-import org.junit.runners.Parameterized.Parameters;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.Map;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
-public abstract class AbstractVsop87Test {
+public class Vsop87TestUtil {
+
+    public static Iterable<Object[]> data(Version version) {
+        final LinkedList<Object[]> parameters = new LinkedList<>();
+        for (Planet planet : fullData.keySet())
+            for (Instant instant : fullData.get(planet).get(version).keySet())
+                parameters.add(new Object[]{planet, instant, fullData.get(planet).get(version).get(instant)});
+        return parameters;
+    }
 
     public enum Version {
         O, A, B, C, D, E
@@ -22,45 +29,21 @@ public abstract class AbstractVsop87Test {
         SUN, MER, VEN, EAR, EMB, MAR, JUP, SAT, URA, NEP
     }
 
-    protected final double julianDate;
-    protected final Instant instant;
-    protected final Planet planet;
-
-    public AbstractVsop87Test(Planet planet, DataSet dataSet) {
-        this.planet = planet;
-        this.julianDate = dataSet.julianDate;
-        this.instant = dataSet.instant;
-    }
-
-    public static class DataSet {
-        public Planet planet;
-        public Instant instant;
-        String VSOP87filename;
-        String dateString;
-        double julianDate;
-        double[] coordinates = new double[6];
-    }
-
     private static final String DATASETS = "/VSOP87/vsop87.chk";
-    private static final Map<Planet, Map<Version, Map<String, DataSet>>> fullData = new LinkedHashMap<>();
+    private static final SimpleDateFormat VSOP_DATE_PARSER =
+            new SimpleDateFormat("dd/MM/yyyy HH", Locale.ENGLISH);
+
+    private static final Map<Planet, Map<Version, Map<Instant, double[]>>> fullData = new LinkedHashMap<>();
 
     static {
+        VSOP_DATE_PARSER.setTimeZone(TimeZone.getTimeZone("UTC"));
         for (Planet p : Planet.values()) {
-            final Map<Version, Map<String, DataSet>> planetMap = new LinkedHashMap<>();
+            final Map<Version, Map<Instant, double[]>> planetMap = new LinkedHashMap<>();
             for (Version v : Version.values())
                 planetMap.put(v, new LinkedHashMap<>());
             fullData.put(p, planetMap);
         }
         readDataFromFile();
-    }
-
-    @Parameters(name = "{0} -- {1}")
-    public static Iterable<Object[]> data(Version version) {
-        final LinkedList<Object[]> parameters = new LinkedList<>();
-        for (Planet planet : fullData.keySet())
-            for (String timeStr : fullData.get(planet).get(version).keySet())
-                parameters.add(new Object[]{planet, fullData.get(planet).get(version).get(timeStr)});
-        return parameters;
     }
 
     private static void readDataFromFile() {
@@ -70,7 +53,7 @@ public abstract class AbstractVsop87Test {
         String[] parts;
 
         try {
-            URL url = AbstractVsop87Test.class.getResource(DATASETS);
+            URL url = Vsop87TestUtil.class.getResource(DATASETS);
             lineReader = new BufferedReader(new FileReader(url.getPath()));
         } catch (IOException e) {
             return;
@@ -96,24 +79,22 @@ public abstract class AbstractVsop87Test {
                 // Version )-pair
                 final Version version = getVersion(VSOP87filename);
                 final Planet planet = getPlanet(VSOP87filename);
-                final DataSet nextRecord = new DataSet();
-                nextRecord.VSOP87filename = VSOP87filename;
-                nextRecord.dateString = parts[4] + " " + parts[5];
-                nextRecord.julianDate = Double.parseDouble(parts[3].substring(2));
+                final String dateString = parts[4] + " " + parts[5];
+                final double[] coordinates = new double[6];
 
                 for (int i = 0; i <= 3; i += 3) {
                     parts = lineReader.readLine().split("\\s+");
-                    nextRecord.coordinates[i] = Double.parseDouble(parts[2]);
-                    nextRecord.coordinates[i + 1] = Double.parseDouble(parts[5]);
-                    nextRecord.coordinates[i + 2] = Double.parseDouble(parts[8]);
+                    coordinates[i] = Double.parseDouble(parts[2]);
+                    coordinates[i + 1] = Double.parseDouble(parts[5]);
+                    coordinates[i + 2] = Double.parseDouble(parts[8]);
                 }
-                standardizeCoordinates(nextRecord.coordinates, version);
-                nextRecord.instant = TestUtil.getAstronomicalTime(nextRecord.dateString);
-                if (nextRecord.instant == null) {
-                    System.err.println("String '" + nextRecord.dateString + "' does not represent a valid date.");
+                standardizeCoordinates(coordinates, version);
+                final Instant instant = getAstronomicalTime(dateString);
+                if (instant == null) {
+                    System.err.println("String '" + dateString + "' does not represent a valid date.");
                     continue;
                 }
-                fullData.get(planet).get(version).put(nextRecord.dateString, nextRecord);
+                fullData.get(planet).get(version).put(instant, coordinates);
             } catch (IOException e) {
             }
         } while (true);
@@ -139,13 +120,24 @@ public abstract class AbstractVsop87Test {
 
     private static Version getVersion(String fileName) {
         try {
-            return AbstractVsop87Test.Version.valueOf(fileName.substring(6, 7));
+            return Version.valueOf(fileName.substring(6, 7));
         } catch (IllegalArgumentException e) {
-            return AbstractVsop87Test.Version.O;
+            return Version.O;
         }
     }
 
     private static Planet getPlanet(String fileName) {
-        return AbstractVsop87Test.Planet.valueOf(fileName.split("\\.")[1].toUpperCase());
+        return Planet.valueOf(fileName.split("\\.")[1].toUpperCase());
+    }
+
+    private static com.mkreidl.ephemeris.time.Instant getAstronomicalTime(String dateString) {
+        try {
+            return com.mkreidl.ephemeris.time.Instant.ofEpochMilli(VSOP_DATE_PARSER.parse(dateString).getTime());
+        } catch (ParseException e) {
+            return null;
+        }
+    }
+
+    private Vsop87TestUtil() {
     }
 }

@@ -26,10 +26,13 @@ class Instant private constructor(val epochMilli: Long) : Comparable<Instant> {
 
     override fun equals(other: Any?) = other is Instant && other.epochMilli == epochMilli
     override fun hashCode() = epochMilli.hashCode()
-    override fun toString() = SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS Z").format(Date(epochMilli))!!
+    override fun toString() = SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS Z")
+            .apply { timeZone = UTC }
+            .format(Date(epochMilli))!!
 
     companion object {
         val J2000 = ofEpochMilli(946_728_000_000L)
+        val UTC = TimeZone.getTimeZone("UTC")!!
 
         @JvmStatic
         fun ofEpochMilli(epochMilli: Long) = Instant(epochMilli)
