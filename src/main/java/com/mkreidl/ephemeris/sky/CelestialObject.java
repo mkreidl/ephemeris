@@ -1,9 +1,14 @@
 package com.mkreidl.ephemeris.sky;
 
+import com.mkreidl.astro.stars.Constellation;
+import com.mkreidl.astro.stars.HipparcosCatalog;
+import com.mkreidl.astro.stars.StarCatalog;
 import com.mkreidl.ephemeris.solarsystem.Body;
 
 public class CelestialObject
 {
+    private static final StarCatalog hipparcos = HipparcosCatalog.INSTANCE;
+
     public static final CelestialObject NONE = new CelestialObject()
     {
         @Override
@@ -27,23 +32,23 @@ public class CelestialObject
         }
         catch ( IllegalArgumentException unused )
         {
-            final Constellation constellation = Constellations.findByName( name );
+            final Constellation constellation = Constellation.Companion.findByName( name );
             if ( constellation != null )
                 return CelestialObject.of( constellation );
             else
-                return CelestialObject.of( StarsCatalog.findIndexByName( name ) );
+                return CelestialObject.of( hipparcos.findIndexByName( name ) );
         }
     }
 
     public static CelestialObject of( int index )
     {
-        if ( index > -1 && index < StarsCatalog.SIZE )
+        if ( index > -1 && index < hipparcos.getSize() )
         {
             final CelestialObject object = new CelestialObject();
             object.index = index;
-            object.scientificName = StarsCatalog.FLAMSTEED_BAYER[index] != null ? StarsCatalog.FLAMSTEED_BAYER[index] : "";
-            object.trivialName = StarsCatalog.IAU_NAME[index] != null ? StarsCatalog.IAU_NAME[index] : "";
-            object.catalogName = "HR " + Integer.toString( StarsCatalog.BRIGHT_STAR_NUMBER[index] );
+            object.scientificName = hipparcos.FLAMSTEED_BAYER[index] != null ? hipparcos.FLAMSTEED_BAYER[index] : "";
+            object.trivialName = hipparcos.IAU_NAME[index] != null ? hipparcos.IAU_NAME[index] : "";
+            object.catalogName = "HR " + hipparcos.BRIGHT_STAR_NUMBER[index];
             return object;
         }
         else

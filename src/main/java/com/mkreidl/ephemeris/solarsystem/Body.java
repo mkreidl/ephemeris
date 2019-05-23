@@ -17,6 +17,8 @@ public enum Body
     NEPTUNE( 0.0, 0.0, 2.4764e7 ),
     PLUTO( 1.303e22, 2.374e6 / 2, 2.374e6 / 2 );
 
+
+
     public static final Collection<Body> EXTRA_TERRESTRIAL = Arrays.asList(
             SUN, MOON, MERCURY, VENUS, MARS, JUPITER, SATURN, URANUS, NEPTUNE, PLUTO
     );

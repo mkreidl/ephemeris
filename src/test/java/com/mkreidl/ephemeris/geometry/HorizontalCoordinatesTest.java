@@ -88,10 +88,10 @@ public class HorizontalCoordinatesTest
 
             System.out.println( "===================" );
             System.out.println( planet.toString() + " -- height" );
-            System.out.println( Double.toString( heightExpected ) );
+            System.out.println( heightExpected );
             System.out.println( horizontal.getHeight( angle ).get( Angle.Unit.DEGREES ) );
             System.out.println( planet.toString() + " -- azimuth" );
-            System.out.println( Double.toString( azimuthExpected ) );
+            System.out.println( azimuthExpected );
             System.out.println( horizontal.getAzimuth( angle ).get( Angle.Unit.DEGREES ) );
             assertEquals( azimuthExpected, horizontal.getAzimuth( angle ).get( Angle.Unit.DEGREES ), 0.1 );
             assertEquals( heightExpected, horizontal.getHeight( angle ).get( Angle.Unit.DEGREES ), 0.1 );

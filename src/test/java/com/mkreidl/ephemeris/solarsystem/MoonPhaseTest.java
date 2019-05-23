@@ -46,9 +46,9 @@ public class MoonPhaseTest
             solarSystem.compute( time, EARTH );
             final Position actual = solarSystem.getEphemerides( MOON, new Position() );
             // expected.phase has an accuracy to only 0.36, since input data (accuracy 1e-3) was multiplied with 360°
-            System.out.println( Double.toString( actual.getPhase( new Angle() ).get( Angle.Unit.DEGREES ) ) );
-            System.out.println( Double.toString( actual.getIlluminatedFraction() ) );
-            System.out.println( Double.toString( ( expected.phase + 180 ) / 360 ) );
+            System.out.println( actual.getPhase( new Angle() ).get( Angle.Unit.DEGREES ) );
+            System.out.println( actual.getIlluminatedFraction() );
+            System.out.println( ( expected.phase + 180 ) / 360 );
             System.out.println( "=====================" );
             //
             // Test omitted, since reference seems incorrect

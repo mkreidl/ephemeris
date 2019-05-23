@@ -26,15 +26,15 @@ public class PlanetRiseSetCalculator extends RiseSetCalculator
         return new PlanetRiseSetCalculator( solarSystem, body );
     }
 
-    private PlanetRiseSetCalculator( SolarSystem solarSystem, Body body )
+    PlanetRiseSetCalculator( SolarSystem solarSystem, Body body )
     {
         this.solarSystem = solarSystem;
         this.body = body;
     }
-    
+
     public void setPrecision( long precisionMs )
     {
-      this.precisionMs = precisionMs;
+        this.precisionMs = precisionMs;
     }
 
     @Override

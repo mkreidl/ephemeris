@@ -8,7 +8,6 @@ import com.mkreidl.ephemeris.sky.CelestialObject;
 import com.mkreidl.ephemeris.sky.coordinates.Equatorial;
 import com.mkreidl.ephemeris.solarsystem.Body;
 
-
 public class Astrolabe extends Stereographic
 {
     public enum Hemisphere

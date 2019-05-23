@@ -193,6 +193,19 @@ public class Position
         }
     }
 
+    public Cartesian illuminationDirection()
+    {
+        final Cartesian pos = get( new Equatorial.Cart(), CoordinatesCenter.TOPOCENTRIC );
+        final Cartesian sun = posSun.toEquatorial( currentEcliptic, new Equatorial.Cart() );
+        final double factor = ( pos.x * sun.x + pos.y * sun.y + pos.z * sun.z )
+                / ( pos.x * pos.x + pos.y * pos.y + pos.z * pos.z );
+        return new Cartesian(
+                sun.x - factor * pos.x,
+                sun.y - factor * pos.y,
+                sun.z - factor * pos.z
+        );
+    }
+
     /**
      * Compute the phase angle
      */

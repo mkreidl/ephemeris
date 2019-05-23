@@ -1,5 +1,7 @@
 package com.mkreidl.ephemeris.sky;
 
+import com.mkreidl.astro.stars.HipparcosCatalog;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -61,8 +63,10 @@ public class Constellation
         boolean hasStarSouthern = false;
         for ( int star : starList )
         {
-            hasStarNorthern |= Stars.POS_J2000[3 * star + 2] > 0;
-            hasStarSouthern |= Stars.POS_J2000[3 * star + 2] < 0;
+            final HipparcosCatalog stars = HipparcosCatalog.INSTANCE;
+            final double z = stars.phaseEclJ2000[3 * star + 2].getPosition().z;
+            hasStarNorthern |= z > 0;
+            hasStarSouthern |= z < 0;
         }
         if ( hasStarNorthern && hasStarSouthern )
             return Hemisphere.ZODIAC;

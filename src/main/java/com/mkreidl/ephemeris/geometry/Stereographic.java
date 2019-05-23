@@ -42,6 +42,18 @@ public class Stereographic
         return output;
     }
 
+    public Cartesian applyTangentialMap( Cartesian locus, Cartesian tangential )
+    {
+        final double stretch = centerZ / ( centerZ - locus.z );
+        final double d_dz_stretch = centerZ * stretch * stretch * tangential.z;
+        tangential.set(
+                stretch * tangential.x + d_dz_stretch * locus.x,
+                stretch * tangential.y + d_dz_stretch * locus.y,
+                0.0
+        );
+        return tangential;
+    }
+
     public Matrix3x3 getJacobian( Cartesian locus, Matrix3x3 j )
     {
         final double stretch = 1.0 - locus.z / centerZ;

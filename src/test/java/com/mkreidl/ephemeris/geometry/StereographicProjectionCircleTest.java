@@ -110,7 +110,7 @@ public class StereographicProjectionCircleTest
                 assertEquals( 0.0, actual.x, tolerance );
                 assertEquals( 0.0, actual.y, tolerance );
                 assertEquals( stereoS.project1D( PI / 2 - alpha ), actual.r, tolerance );
-                System.out.println( Float.toString( (float)( alpha * 180 / PI ) ) + ": " + stereoN.project( eclipticPole, alpha, actual ) );
+                System.out.println( (float)( alpha * 180 / PI ) + ": " + stereoN.project( eclipticPole, alpha, actual ) );
             }
         }
     }

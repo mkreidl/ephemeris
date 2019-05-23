@@ -12,7 +12,7 @@ public abstract class RiseSetCalculator
 {
     public enum EventType
     {
-        RISE( -1 ), TRANSIT(0), SET( 1 );
+        RISE( -1 ), TRANSIT( 0 ), SET( 1 );
         private final int signum;
 
         EventType( int signum )
@@ -24,6 +24,18 @@ public abstract class RiseSetCalculator
     public enum LookupDirection
     {
         FORWARD, BACKWARD
+    }
+
+    public static RiseSetCalculator getDummy()
+    {
+        return new RiseSetCalculator()
+        {
+            @Override
+            public boolean compute( long startTimeMs )
+            {
+                return false;
+            }
+        };
     }
 
     public static final double OPTICAL_HORIZON_DEG = -34.0 / 60;
@@ -114,14 +126,15 @@ public abstract class RiseSetCalculator
     {
         updateHorizon();
         final double alpha;
-        switch(mode) {
-          case RISE:
-          case SET:
-            alpha = mode.signum * computeHourAngleAtSet() - computeHourAngle();
-            break;
-          default:
-            alpha = -computeHourAngle();
-            break;
+        switch ( mode )
+        {
+            case RISE:
+            case SET:
+                alpha = mode.signum * computeHourAngleAtSet() - computeHourAngle();
+                break;
+            default:
+                alpha = -computeHourAngle();
+                break;
         }
         time.addMillis( (long)( alpha * RAD_TO_SIDEREAL_MILLIS ) );
         if ( lookupDirection == LookupDirection.FORWARD && time.getTime() < startTimeMs )

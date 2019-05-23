@@ -2,6 +2,7 @@ package com.mkreidl.ephemeris.astrolabe;
 
 import com.mkreidl.ephemeris.Distance;
 import com.mkreidl.ephemeris.Position;
+import com.mkreidl.ephemeris.geometry.Angle;
 import com.mkreidl.ephemeris.geometry.Cartesian;
 import com.mkreidl.ephemeris.geometry.Circle;
 import com.mkreidl.ephemeris.sky.coordinates.Equatorial;
@@ -25,6 +26,7 @@ public class Planets extends AbstractPart
     private final Map<Body, Circle> apparentDisks = new EnumMap<>( Body.class );
     private final Map<Body, Equatorial.Sphe> topocentricPositions = new EnumMap<>( Body.class );
     private final Map<Body, Cartesian> projectedPositions = new EnumMap<>( Body.class );
+    public final Map<Body, Cartesian> illuminationDirection = new EnumMap<>( Body.class );
 
     public List<Body> sortedByDistance = new ArrayList<>( Body.EXTRA_TERRESTRIAL );
 
@@ -36,6 +38,7 @@ public class Planets extends AbstractPart
             projectedPositions.put( body, new Cartesian() );
             topocentricPositions.put( body, new Equatorial.Sphe() );
             apparentDisks.put( body, new Circle() );
+            illuminationDirection.put( body, new Cartesian() );
         }
     }
 
@@ -88,6 +91,10 @@ public class Planets extends AbstractPart
         astrolabe.project( onUnitSphere, projectedPositions.get( object ) );
         final double apparentRadius = object.RADIUS_EQUATORIAL_M / topocentric.distance( Distance.m );
         astrolabe.project( topocentric, apparentRadius, apparentDisks.get( object ) );
+        final Cartesian illuminationProjected = position.illuminationDirection();
+        astrolabe.applyTangentialMap( onUnitSphere, illuminationProjected );
+        illuminationProjected.z = position.getPhase( new Angle() ).getRadians();
+        illuminationDirection.put( object, illuminationProjected );
     }
 
     public List<Body> getSortedByDistance()

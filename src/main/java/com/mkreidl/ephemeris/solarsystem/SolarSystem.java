@@ -3,8 +3,6 @@ package com.mkreidl.ephemeris.solarsystem;
 import com.mkreidl.ephemeris.Position;
 import com.mkreidl.ephemeris.Time;
 import com.mkreidl.ephemeris.geometry.Cartesian;
-import com.mkreidl.ephemeris.geometry.Coordinates;
-import com.mkreidl.ephemeris.geometry.Matrix3x3;
 import com.mkreidl.ephemeris.sky.coordinates.Ecliptical;
 import com.mkreidl.ephemeris.sky.coordinates.Equatorial;
 import com.mkreidl.ephemeris.sky.coordinates.Horizontal;

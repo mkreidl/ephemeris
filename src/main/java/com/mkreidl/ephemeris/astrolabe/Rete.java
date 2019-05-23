@@ -1,18 +1,19 @@
 package com.mkreidl.ephemeris.astrolabe;
 
+import com.mkreidl.astro.stars.Constellation;
+import com.mkreidl.astro.stars.HipparcosCatalog;
+import com.mkreidl.astro.stars.Stars;
+import com.mkreidl.astro.time.Instant;
 import com.mkreidl.ephemeris.geometry.Angle;
 import com.mkreidl.ephemeris.geometry.Cartesian;
 import com.mkreidl.ephemeris.geometry.Circle;
 import com.mkreidl.ephemeris.geometry.Coordinates;
 import com.mkreidl.ephemeris.geometry.Matrix3x3;
 import com.mkreidl.ephemeris.geometry.Spherical;
-import com.mkreidl.ephemeris.sky.Constellation;
-import com.mkreidl.ephemeris.sky.Constellations;
-import com.mkreidl.ephemeris.sky.Stars;
-import com.mkreidl.ephemeris.sky.StarsCatalog;
 import com.mkreidl.ephemeris.sky.coordinates.Equatorial;
 import com.mkreidl.ephemeris.solarsystem.Ecliptic;
 import com.mkreidl.ephemeris.solarsystem.Zodiac;
+import com.mkreidl.math.Vector3;
 
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -20,6 +21,8 @@ import java.util.Map;
 
 public class Rete extends AbstractPart
 {
+    private static final int starsCount = HipparcosCatalog.INSTANCE.getSize();
+
     public static final int POINT_COUNT_SIGN_BOUNDARY = 31;
 
     public final Circle equator = new Circle( 0.0, 0.0, 1.0 );
@@ -34,13 +37,13 @@ public class Rete extends AbstractPart
 
     private final Map<Zodiac.Sign, Cartesian> signs = new EnumMap<>( Zodiac.Sign.class );
     private final Map<Zodiac.Sign, Cartesian[]> signBoundariesEcliptical = new EnumMap<>( Zodiac.Sign.class );
-    private final double[] starsEclipticalJ2000 = new double[3 * StarsCatalog.SIZE];
-    private final double[] starsEquatorialToDate = new double[3 * StarsCatalog.SIZE];
+    private final double[] starsEclipticalJ2000 = new double[3 * starsCount];
+    private final double[] starsEquatorialToDate = new double[3 * starsCount];
 
     private final Map<Constellation, Cartesian> constellationCenterMap = new HashMap<>();
     public final Map<Zodiac.Sign, Cartesian> signsCenter = new EnumMap<>( Zodiac.Sign.class );
     public final Map<Zodiac.Sign, Cartesian[]> signBoundariesProjected = new EnumMap<>( Zodiac.Sign.class );
-    public final float[] projectedPos = new float[2 * StarsCatalog.SIZE];
+    public final float[] projectedPos = new float[2 * starsCount];
 
     Rete( Astrolabe astrolabe )
     {
@@ -60,7 +63,7 @@ public class Rete extends AbstractPart
                 signBoundariesProjected.get( sign )[i] = new Cartesian();
             }
         }
-        for ( Constellation constellation : Constellations.ALL )
+        for ( Constellation constellation : Constellation.ALL )
             constellationCenterMap.put( constellation, new Cartesian() );
     }
 
@@ -70,13 +73,14 @@ public class Rete extends AbstractPart
         zodiac.compute( astrolabe.time );
         final Matrix3x3 transformEclipticalJ2000ToEquatorial = new Matrix3x3();
         Ecliptic.computeEclJ2000ToEquToDate( astrolabe.time, transformEclipticalJ2000ToEquatorial );
-        Stars.computeEclipticalJ2000( astrolabe.time, starsEclipticalJ2000 );
-        for ( int i = 0; i < StarsCatalog.SIZE; ++i )
+        final Instant instant = Instant.ofEpochMilli( astrolabe.getTimeInMillis() );
+        Stars.Companion.getHipparcos().computeEclipticalJ2000( instant, starsEclipticalJ2000, 0, 1 );
+        for ( int i = 0; i < starsCount; ++i )
             transformEclipticalJ2000ToEquatorial.applyTo( starsEclipticalJ2000, starsEquatorialToDate, 3 * i );
-        for ( Constellation constellation : Constellations.ALL )
+        for ( Constellation constellation : Constellation.ALL )
         {
-            final Cartesian constellationCenter = constellationCenterMap.get( constellation );
-            Stars.computeConstellationCenter( constellation, starsEquatorialToDate, constellationCenter );
+            final Vector3 center = constellation.computeCenter( starsEquatorialToDate );
+            constellationCenterMap.get( constellation ).set( center.x, center.y, center.z );
         }
     }
 
@@ -116,7 +120,7 @@ public class Rete extends AbstractPart
         final Cartesian tmpCartesian = new Cartesian();
         int srcOffset = -1;
         int targetOffset = -1;
-        for ( int i = 0; i < StarsCatalog.SIZE; ++i )
+        for ( int i = 0; i < starsCount; ++i )
         {
             tmpCartesian.set(
                     starsEquatorialToDate[++srcOffset],
