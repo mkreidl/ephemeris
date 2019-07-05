@@ -1,5 +1,7 @@
 package com.mkreidl.ephemeris.astrolabe;
 
+import com.mkreidl.astro.solarsystem.SolarSystem;
+import com.mkreidl.astro.time.Instant;
 import com.mkreidl.ephemeris.Distance;
 import com.mkreidl.ephemeris.Position;
 import com.mkreidl.ephemeris.geometry.Angle;
@@ -7,8 +9,7 @@ import com.mkreidl.ephemeris.geometry.Cartesian;
 import com.mkreidl.ephemeris.geometry.Circle;
 import com.mkreidl.ephemeris.sky.coordinates.Equatorial;
 import com.mkreidl.ephemeris.solarsystem.Body;
-import com.mkreidl.ephemeris.solarsystem.SolarSystem;
-import com.mkreidl.ephemeris.solarsystem.SolarSystemMeeus;
+import com.mkreidl.math.PhaseCartesian;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,7 +22,7 @@ public class Planets extends AbstractPart
 {
     private final Cartesian onUnitSphere = new Cartesian();
     private final Position position = new Position();
-    private final SolarSystem solarSystem = new SolarSystemMeeus();
+    private final SolarSystem solarSystem = SolarSystem.Companion.createFromMeeus();
 
     private final Map<Body, Circle> apparentDisks = new EnumMap<>( Body.class );
     private final Map<Body, Equatorial.Sphe> topocentricPositions = new EnumMap<>( Body.class );
@@ -55,7 +56,8 @@ public class Planets extends AbstractPart
     @Override
     protected void onSynchronize()
     {
-        solarSystem.compute( astrolabe.time );
+        final Instant instant = Instant.ofEpochMilli( astrolabe.time.getTime() );
+        solarSystem.compute( instant );
     }
 
     @Override
@@ -71,22 +73,54 @@ public class Planets extends AbstractPart
         for ( Body object : Body.values() )
             recompute( object );
         Collections.sort( sortedByDistance, ( o1, o2 ) ->
-                Double.compare( solarSystem.getGeocentricDistance( o2 ),
-                        solarSystem.getGeocentricDistance( o1 ) ) );
+                Double.compare( solarSystem.getGeocentricDistance( bodyAdapter( o2 ) ),
+                        solarSystem.getGeocentricDistance( bodyAdapter( o1 ) ) ) );
         //CHECK? onRecomputeListener.onRecomputeProjection();
     }
 
     void synchronize( Body body )
     {
-        solarSystem.compute( astrolabe.time, body );
+        final Instant instant = Instant.ofEpochMilli( astrolabe.time.getTime() );
+        solarSystem.computeSingle( instant, bodyAdapter( body ) );
         recompute( body );
         onRecomputeListener.onRecompute();
+    }
+
+    private static com.mkreidl.astro.solarsystem.Body bodyAdapter( Body body )
+    {
+        switch ( body )
+        {
+            case SUN:
+                return com.mkreidl.astro.solarsystem.Body.SUN;
+            case MOON:
+                return com.mkreidl.astro.solarsystem.Body.MOON;
+            case MERCURY:
+                return com.mkreidl.astro.solarsystem.Body.MERCURY;
+            case VENUS:
+                return com.mkreidl.astro.solarsystem.Body.VENUS;
+            case EARTH:
+                return com.mkreidl.astro.solarsystem.Body.EARTH;
+            case MARS:
+                return com.mkreidl.astro.solarsystem.Body.MARS;
+            case JUPITER:
+                return com.mkreidl.astro.solarsystem.Body.JUPITER;
+            case SATURN:
+                return com.mkreidl.astro.solarsystem.Body.SATURN;
+            case URANUS:
+                return com.mkreidl.astro.solarsystem.Body.URANUS;
+            case NEPTUNE:
+                return com.mkreidl.astro.solarsystem.Body.NEPTUNE;
+            case PLUTO:
+                return com.mkreidl.astro.solarsystem.Body.PLUTO;
+            default:
+                return null;
+        }
     }
 
     private void recompute( Body object )
     {
         final Equatorial.Sphe topocentric = topocentricPositions.get( object );
-        solarSystem.getEphemerides( object, position );
+        getEphemerides( object, position );
         position.get( topocentric, Position.CoordinatesCenter.TOPOCENTRIC ).transform( onUnitSphere ).normalize();
         astrolabe.project( onUnitSphere, projectedPositions.get( object ) );
         final double apparentRadius = object.RADIUS_EQUATORIAL_M / topocentric.distance( Distance.m );
@@ -95,6 +129,13 @@ public class Planets extends AbstractPart
         astrolabe.applyTangentialMap( onUnitSphere, illuminationProjected );
         illuminationProjected.z = position.getPhase( new Angle() ).getRadians();
         illuminationDirection.put( object, illuminationProjected );
+    }
+
+    private void getEphemerides( final Body body, final Position position )
+    {
+        final PhaseCartesian phaseBody = solarSystem.getTrueEclipticalGeocentric( bodyAdapter( body ) );
+        final PhaseCartesian phaseEarth = solarSystem.getTrueEclipticalHeliocentric( com.mkreidl.astro.solarsystem.Body.EARTH );
+        position.setGeocentricPhase( phaseBody, phaseEarth );
     }
 
     public List<Body> getSortedByDistance()

@@ -9,6 +9,8 @@ import com.mkreidl.ephemeris.sky.coordinates.Equatorial;
 import com.mkreidl.ephemeris.sky.coordinates.Horizontal;
 import com.mkreidl.ephemeris.solarsystem.Body;
 import com.mkreidl.ephemeris.solarsystem.Ecliptic;
+import com.mkreidl.math.PhaseCartesian;
+import com.mkreidl.math.Vector3;
 
 
 public class Position
@@ -43,6 +45,20 @@ public class Position
         helioCart.set( pos );
         geoCart.set( pos );
         posSun.set( earth ).scale( -1 );
+    }
+
+    public void setGeocentricPhase( PhaseCartesian phase, PhaseCartesian earth ) {
+        final Vector3 position = phase.getPosition();
+        final Vector3 positionEarth = earth.getPosition();
+        geoCart.set( position.x, position.y, position.z );
+        posSun.set(-positionEarth.x, -positionEarth.y, -positionEarth.z);
+        helioCart.set( geoCart ).sub( posSun );
+
+        final Vector3 velocity = phase.getVelocity();
+        final Vector3 velocityEarth = earth.getVelocity();
+        velocityGeocentric.set( velocity.x, velocity.y, velocity.z );
+        velocitySun.set(-velocityEarth.x, -velocityEarth.y, -velocityEarth.z);
+        velocityHeliocentric.set( velocityGeocentric ).sub( velocitySun );
     }
 
     public void setHeliocentricPosition( Ecliptical.Cart heliocentric, Ecliptical.Cart earth )
