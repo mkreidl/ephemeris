@@ -78,8 +78,8 @@ public class CelestialObject
     private int index = -1;
     private Body planet = null;
     private Constellation constellation = null;
-    private String scientificName = "";
-    private String trivialName = "";
+    private String scientificName = null;
+    private String trivialName = null;
     private String catalogName = "";
 
     public boolean isVoid()
